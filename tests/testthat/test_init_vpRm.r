@@ -1,0 +1,31 @@
+tests_dir <- system.file("tests",package="vpRm")
+
+### test init_vpRm()
+### this might be excessive testing
+test_that("init_vpRm created correct directory structure",{
+
+	directory <- file.path(tests_dir,"test_init_vpRm")
+	init_vpRm(directory)
+
+	expect_equal(
+	file.exists(
+		directory
+		, file.path(directory,"driver_data")
+		, file.path(directory,"driver_data","veg_index")
+		, file.path(directory,"driver_data","par")
+		, file.path(directory,"driver_data","surface_temp")
+		, file.path(directory,"driver_data","green_season")
+		, file.path(directory,"driver_data","landcover")
+		, file.path(directory,"driver_data","permeability")
+
+		, file.path(directory,"processed_input")
+
+		, file.path(directory,"output")
+		)#end file.exists
+	, rep(T, 10)
+	)#end expect equal	
+
+	### remove created directories	
+	unlink(directory,recursive=T)
+
+})#end test_that
