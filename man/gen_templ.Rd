@@ -5,16 +5,36 @@
 \title{Gen_Raster_Templ()
 Creates the raster brick/stack/ netCDF4 structure that will be filled with processed driver data and VPRM NEE output.}
 \usage{
-gen_templ(domain, lons, lats, times)
+gen_templ(
+  matchdomain = NULL,
+  lons = NULL,
+  lats = NULL,
+  times = NULL,
+  xres = NULL,
+  yres = NULL,
+  projection = "+proj=longlat",
+  vpRm_dir = ".",
+  outfile,
+  verbose = F
+)
 }
 \arguments{
-\item{domain}{}
+\item{matchdomain}{}
 
-\item{lons}{}
+\item{lons}{\subsection{NOT IMPLEMENTED}{
+}}
 
-\item{lats}{}
+\item{lats}{\subsection{NOT IMPLEMENTED}{
+}}
 
-\item{times}{}
+\item{times}{\subsection{NOT IMPLEMENTED}{
+}}
+
+\item{projection}{\subsection{NOT IMPLEMENTED}{
+}}
+
+\item{outfile}{\subsection{NOT IMPLEMENTED}{
+}}
 }
 \description{
 Gen_Raster_Templ()
