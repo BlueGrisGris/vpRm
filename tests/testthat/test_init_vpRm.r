@@ -2,7 +2,7 @@ tests_dir <- system.file("tests",package="vpRm")
 
 ### test init_vpRm()
 ### this might be excessive testing
-test_that("init_vpRm created correct directory structure",{
+test_that("does init_vpRm create the correct directory structure?",{
 
 	directory <- file.path(tests_dir,"test_init_vpRm")
 	init_vpRm(directory)
@@ -22,7 +22,8 @@ test_that("init_vpRm created correct directory structure",{
 
 		, file.path(directory,"output")
 		)#end file.exists
-	, rep(T, 10)
+
+		, rep(T, 10)
 	)#end expect equal	
 
 	### remove created directories	
