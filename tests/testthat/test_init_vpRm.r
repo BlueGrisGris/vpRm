@@ -18,7 +18,7 @@ test_that("does init_vpRm create the correct directory structure?",{
 		, file.path(directory,"driver_data","landcover")
 		, file.path(directory,"driver_data","permeability")
 
-		, file.path(directory,"processed_input")
+		, file.path(directory,"processed")
 
 		, file.path(directory,"output")
 		)#end file.exists

@@ -15,7 +15,7 @@ init_vpRm <- function(directory){
 	dir.create(file.path(directory,"driver_data","landcover"))
 	dir.create(file.path(directory,"driver_data","permeability"))
 
-	dir.create(file.path(directory,"processed_input"))
+	dir.create(file.path(directory,"processed"))
 
 	dir.create(file.path(directory,"output"))
 

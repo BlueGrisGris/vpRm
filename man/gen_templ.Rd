@@ -7,12 +7,11 @@ Creates the raster brick/stack/ netCDF4 structure that will be filled with proce
 \usage{
 gen_templ(
   matchdomain = NULL,
-  lons = NULL,
-  lats = NULL,
-  times = NULL,
+  spatextect,
   xres = NULL,
   yres = NULL,
-  projection = "+proj=longlat",
+  times = NULL,
+  lc_filename,
   vpRm_dir = ".",
   outfile,
   verbose = F
@@ -21,19 +20,19 @@ gen_templ(
 \arguments{
 \item{matchdomain}{}
 
+\item{times}{\subsection{NOT IMPLEMENTED}{
+}}
+
+\item{outfile}{\subsection{NOT IMPLEMENTED}{
+}}
+
 \item{lons}{\subsection{NOT IMPLEMENTED}{
 }}
 
 \item{lats}{\subsection{NOT IMPLEMENTED}{
 }}
 
-\item{times}{\subsection{NOT IMPLEMENTED}{
-}}
-
 \item{projection}{\subsection{NOT IMPLEMENTED}{
-}}
-
-\item{outfile}{\subsection{NOT IMPLEMENTED}{
 }}
 }
 \description{

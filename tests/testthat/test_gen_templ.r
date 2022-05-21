@@ -10,7 +10,10 @@ test_that("multiplication works", {
 matchdomain1 <- file.path(stilt_dir,"by-id","202001310500_-72.1898_42.5331_364","202001310500_-72.1898_42.5331_364_foot.nc")
 matchdomain2 <- file.path(stilt_dir,"by-id","202007210500_-72.1898_42.5331_364","202007210500_-72.1898_42.5331_364_foot.nc")
 matchdomain3 <- file.path(stilt_dir,"by-id","202010101200_-72.1898_42.5331_364","202010101200_-72.1898_42.5331_364_foot.nc")
+matchdomain <- matchdomain1
 matchdomain <- c(matchdomain1,matchdomain2,matchdomain3)
+lc_filename <- file.path("~/Desktop/research/phd/em27_carbfor/vprm/NLCD/LC/nlcd_2019_land_cover_l48_20210604.img")
+	
 
 
 
