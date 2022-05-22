@@ -1,7 +1,7 @@
 #' vpRm_init
 #' Initialize directory structure for vpRm
 
-#' @param directory
+#' @param directory (chr) filepath of the root of the vpRm directory tree
 
 #' @export
 init_vpRm <- function(directory){
@@ -19,6 +19,6 @@ init_vpRm <- function(directory){
 
 	dir.create(file.path(directory,"output"))
 
-	return(NULL)
+	return(directory)
 
 }#end function vpRm_init

@@ -25,7 +25,7 @@ lc_test <- terra::crop(lc,ext(proj_domain)*1.5)
 plot(proj_domain)
 plot(lc_test,type= "classes")
 
-lc_test <- aggregate(lc_test,fact = 100, fun="modal")
+lc_test <- aggregate(lc_test,fact = 2000, fun="modal")
 
 plot(lc_test,type= "classes")
 writeCDF(lc_test, file.path("~/Downloads", "lc_test.nc"), overwrite=T)

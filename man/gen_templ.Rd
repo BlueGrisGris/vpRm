@@ -5,35 +5,16 @@
 \title{Gen_Raster_Templ()
 Creates the raster brick/stack/ netCDF4 structure that will be filled with processed driver data and VPRM NEE output.}
 \usage{
-gen_templ(
-  matchdomain = NULL,
-  spatextect,
-  xres = NULL,
-  yres = NULL,
-  times = NULL,
-  lc_filename,
-  vpRm_dir = ".",
-  outfile,
-  verbose = F
-)
+gen_templ(matchdomain = NULL, lc_filename, vpRm_dir = ".", verbose = F)
 }
 \arguments{
-\item{matchdomain}{}
+\item{matchdomain}{(chr) filepath(s) of geospatial data files readable by terra::rast to run vpRm over.}
 
-\item{times}{\subsection{NOT IMPLEMENTED}{
-}}
+\item{lc_filename}{(chr) landcover data filepath}
 
-\item{outfile}{\subsection{NOT IMPLEMENTED}{
-}}
+\item{vpRm_dir}{(chr) filepath of the vpRm directory}
 
-\item{lons}{\subsection{NOT IMPLEMENTED}{
-}}
-
-\item{lats}{\subsection{NOT IMPLEMENTED}{
-}}
-
-\item{projection}{\subsection{NOT IMPLEMENTED}{
-}}
+\item{verbose}{(bool) Print messages?}
 }
 \description{
 Gen_Raster_Templ()

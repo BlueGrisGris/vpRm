@@ -7,6 +7,9 @@ Initialize directory structure for vpRm}
 \usage{
 init_vpRm(directory)
 }
+\arguments{
+\item{directory}{(chr) filepath of the root of the vpRm directory tree}
+}
 \description{
 vpRm_init
 Initialize directory structure for vpRm
