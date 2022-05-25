@@ -71,13 +71,13 @@ terra::rast(stilt_names )
 #### Actually create the test temp from HRRR
 ################
 
-hrrr_dir <- "~/Downloads/hrrr_temp_test/"
+hrrr_dir <- "~/Desktop/hrrr_temp_test/"
 hrrr_filenames <- file.path(hrrr_dir, list.files(hrrr_dir,pattern = ".nc"))
 
 hrrr <- rast(hrrr_filenames)
 print(hrrr)
 ### for some reason extra vars messed up like it grabbed a different variable?
-plot(hrrr)
+plot(hrrr[[1]])
 ### just take good for now, learn about rast later
 plot(hrrr[[1:8]])
 hrrr <- hrrr[[1:8]]
