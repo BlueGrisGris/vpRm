@@ -15,9 +15,10 @@ matchdomain <- Get_Stilt_Out_Filenames(stilt_dir,"foot")
 
 test_that("does gen_templ() create a good template?", {
 ### get stilt filenames
-templ <- gen_templ(matchdomain,lc_filename, vpRm_dir)
+templ <- gen_plate(matchdomain,lc_filename, vpRm_dir)
 	### TODO: understand these magic numbers that come from projecting matchdomain
 	expect_equal(dim(templ),c(21,17,19))
-	expect_equal(file.exists(file.path(vpRm_dir, "processed", c("lc.nc","isa.nc","par.nc","veg.nc","temp.nc") )), rep(T, 5))
+	expect_true(file.exists(file.path(vpRm_dir, "processed", "plate.nc" )))
 })
+
 unlink(vpRm_dir,recursive=T)
