@@ -30,4 +30,4 @@ goes_test <- aggregate(goes_test,fact = 20, fun="mean")
 
 plot(goes_test)
 
-writeCDF(goes_test, file.path("~/Downloads", "goes_test.nc"), overwrite=T)
+# writeCDF(goes_test, file.path("~/Downloads", "goes_test.nc"), overwrite=T)
