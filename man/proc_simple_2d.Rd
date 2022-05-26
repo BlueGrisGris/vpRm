@@ -3,7 +3,7 @@
 \name{proc_simple_2d}
 \alias{proc_simple_2d}
 \title{proc_simple_2d
-Convert Land cover data to match crs and extent to template}
+Convert 2d data to match crs and extent to template}
 \usage{
 proc_simple_2d(driver, plate)
 }
@@ -14,5 +14,5 @@ proc_simple_2d(driver, plate)
 }
 \description{
 proc_simple_2d
-Convert Land cover data to match crs and extent to template
+Convert 2d data to match crs and extent to template
 }

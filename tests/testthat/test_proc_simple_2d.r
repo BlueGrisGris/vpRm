@@ -13,18 +13,12 @@ test_that("does proc_simple_2d work on lc?", {
 
 proc_lc <- proc_simple_2d(lc,plate)
 
-if(F){
-terra::plot(plate[[1]])
-terra::plot(driver)
-terra::plot(processed)
-terra::plot(proc_lc)
-terra::values(proc_lc)
-}
-
 ### nrows and ncols should match, but only 1 layer for land cover and 19 time layers for template
 expect_equal( c(dim(proc_lc)[c(1,2)],1), c(dim(plate)[c(1,2)],1) )
 ### make sure it has data over the whole domain of plate ### TODO: or provide error and offer proc_interp
-expect_equal( length(which(!is.nan(terra::values(proc_lc)))) , length(terra::values(plate)) )
+### if plate has multiple time layers, subset
+expect_equal( length(which(!is.nan(terra::values(proc_lc)))) , length(terra::values(plate[[1]])) )
 }) #end test_that()
 
 ### TODO: test proc_simple_2d on isa data
+### TODO: test error behavior

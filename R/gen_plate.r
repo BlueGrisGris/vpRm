@@ -71,6 +71,10 @@ plate <- terra::rast(
 		     , crs = lc_crs
 	)#end terra::rast
 }#if(!is.null(matchdomain)){
+### it seems that populating with dummy data is need for terra::project not to populate return w NaNs?
+suppressWarnings( ### warning repeat by terra::values
+terra::values(plate) <- 1:(terra::ncell(plate))
+)#end suppressWarnings
 
 #########################
 ### create plateate from given coordinates
