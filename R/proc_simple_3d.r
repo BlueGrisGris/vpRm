@@ -25,7 +25,7 @@ if(class(plate)[[1]] != "SpatRaster"){
 ### TODO: this one is less likely to be always bigger than our domain
 ### TODO: when we think about performance, these new SpatRaster that we make are stored in memory.....
 ### reproject
-processed <- terra::project(driver, plate) 
+processed <- terra::project(driver, plate, method = "cubicspline") 
 ### check that the driver covers the times we need
 if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 	stop("There are times in plate that are not in driver")

@@ -24,12 +24,14 @@ do
 
 #	echo $url
 
-	prefix=`echo ~/Downloads/hrrr/`
+	prefix=`echo ~/Downloads/hrrr_grb2/`
 	### fetch from Utah University hrrr archive.  Someday should transition to the GCP archive
 	url=`echo https://pando-rgw01.chpc.utah.edu/hrrr/sfc/$date/hrrr.t$hh\z.wrfsfcf00.grib2`
 	wget --no-check-certificate --directory-prefix=$prefix $url
 	### convert from grb2 to nc, only take the var you want
-	wgrib2 $prefix\/hrrr.t$hh\z.wrfsfcf00.grib2 -match "TMP:2 m above ground" -netcdf ~/Downloads/hrrr/hrrr_$date\_$hh\.nc
+#	wgrib2 $prefix\/hrrr.t$hh\z.wrfsfcf00.grib2 -match "TMP:2 m above ground" -netcdf ~/Downloads/hrrr/hrrr_$date\_$hh\.nc
+	### can keep in grib2 which is more storage efficient.  terra::rast actually handles this fine 
+	wgrib2 $prefix\/hrrr.t$hh\z.wrfsfcf00.grib2 -match "TMP:2 m above ground" -grib ~/Downloads/hrrr/hrrr_$date\_$hh\.grib2
 	rm $prefix\/hrrr.t$hh\z.wrfsfcf00.grib2
 done
 done
