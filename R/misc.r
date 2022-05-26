@@ -17,3 +17,15 @@ Get_Stilt_Out_Filenames <- function(stilt_out_dir,outtype){
 	}#end if outtype == "traj"
 	return(file_names)
 }#end func Get_Stilt_Out_Filenames
+
+### make sure inputs that we expect to be rasterizableare 
+sanitize_raster <- function(raster){
+if(class(raster)[[1]] != "SpatRaster"){
+	if(class(raster)[[1]] != "character"){
+		stop("input must be either a terra::rasted land cover or a filepath to such")
+	}#end if(!class(driver)[[1]] != c){
+	raster <- terra::rast(raster)
+}#end if(class(driver)[[1]]{
+return(raster)
+}#end func sanitize_driver
+

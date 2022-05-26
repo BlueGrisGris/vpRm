@@ -7,20 +7,10 @@
 #' @export
 proc_simple_3d <- function(driver, plate){
 	### TODO: just make this piece proc_simple_2d()
-### touch lc driver data 
-if(class(driver)[[1]] != "SpatRaster"){
-	if(class(driver)[[1]] != "character"){
-		stop("data to be processed must be either a terra::rasted land cover or a filepath to such")
-	}#end if(!class(driver)[[1]] != c){
-	driver <- terra::rast(driver)
-}#end if(class(driver)[[1]]{
+### touch driver data 
+driver <- sanitize_raster(driver)
 ### touch plate
-if(class(plate)[[1]] != "SpatRaster"){
-	if(class(plate)[[1]] != "character"){
-		stop("plate must be either a terra::rasted vpRm template or a filepath to such")
-	}#end if(!class(driver)[[1]] != c){
-	plate <- terra::rast(plate)
-}#end if(class(driver)[[1]]{
+plate <- sanitize_raster(plate)
 
 ### TODO: this one is less likely to be always bigger than our domain
 ### TODO: when we think about performance, these new SpatRaster that we make are stored in memory.....

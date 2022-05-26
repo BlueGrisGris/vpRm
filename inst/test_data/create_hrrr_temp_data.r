@@ -8,6 +8,7 @@ hrrr <- rast(hrrr_filenames)
 print(hrrr)
 plot(hrrr)
 time(hrrr)
+units(hrrr)
 
 ### TODO: big uh oh.  CRS is not being transferred?
 ### also .nc is in K, while the native grb2 is in C. wtf man
@@ -47,9 +48,9 @@ plot(hrrr_test)
 
 hrrr_test <- aggregate(hrrr_test,fact = 20, fun="mean")
 time(hrrr_test) <- zz[19:30]
-units(hrrr_test) <- 
+terra::units(hrrr_test) <- rep("C", length(hrrr_test))
 plot(hrrr_test)
 
 # plot(hrrr_test)
 
-writeCDF(hrrr_test, file.path("~/Downloads", "hrrr_test.nc"), overwrite=T)
+writeCDF(hrrr_test, file.path("~/Downloads", "hrrr_temp_test.nc"), overwrite=T)

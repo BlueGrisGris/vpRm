@@ -1,6 +1,6 @@
 data_dir <- system.file("test_data",package="vpRm",mustWork = T)
 list.files(data_dir)
-
+### for testing
 get_test_data <- function(filename){
 	test_data_filename <- file.path(data_dir, filename)
 	#         print(paste(test_data_filename, "exists", file.exists(test_data_filename)))
@@ -8,14 +8,15 @@ get_test_data <- function(filename){
 	return(test_data)
 }#end func get_test_data.r
 
+
 plate_full <- get_test_data("plate.nc")
 ### TODO: do we want lubridate as dependency?
 plate <- plate_full[[ lubridate::day( terra::time(plate_full))!=30 ]]
 
 goes <- get_test_data("goes_test.nc")
-terra::plot(goes[[15]])
 ### TODO: the edge of test data is NaN 
 which(is.nan(terra::values(goes[[15]])))
+
 test_that("does proc_simple_3d work on test goes data?", {
 	proc_par <- proc_simple_3d(goes,plate)
 	### dimensions of processed should match template

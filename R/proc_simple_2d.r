@@ -6,22 +6,10 @@
 
 #' @export 
 proc_simple_2d <- function(driver, plate){
-
-
-### touch lc driver data 
-if(class(driver)[[1]] != "SpatRaster"){
-	if(class(driver)[[1]] != "character"){
-		stop("data to be processed must be either a terra::rasted land cover or a filepath to such")
-	}#end if(!class(driver)[[1]] != c){
-	driver <- terra::rast(driver)
-}#end if(class(driver)[[1]]{
+### touch driver data 
+driver <- sanitize_raster(driver)
 ### touch plate
-if(class(plate)[[1]] != "SpatRaster"){
-	if(class(plate)[[1]] != "character"){
-		stop("plate must be either a terra::rasted vpRm template or a filepath to such")
-	}#end if(!class(driver)[[1]] != c){
-	plate <- terra::rast(plate)
-}#end if(class(driver)[[1]]{
+plate <- sanitize_raster(plate)
 
 ### TODO: right now domain will always be encompassed by LC, bc LC is CONUS.  This will not be the case forever.
 
