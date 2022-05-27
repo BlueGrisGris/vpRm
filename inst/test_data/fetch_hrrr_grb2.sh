@@ -31,7 +31,7 @@ do
 	### convert from grb2 to nc, only take the var you want
 #	wgrib2 $prefix\/hrrr.t$hh\z.wrfsfcf00.grib2 -match "TMP:2 m above ground" -netcdf ~/Downloads/hrrr/hrrr_$date\_$hh\.nc
 	### can keep in grib2 which is more storage efficient.  terra::rast actually handles this fine 
-	wgrib2 $prefix\/hrrr.t$hh\z.wrfsfcf00.grib2 -match "TMP:2 m above ground" -grib ~/Downloads/hrrr/hrrr_$date\_$hh\.grib2
+	wgrib2 $prefix\/hrrr.t$hh\z.wrfsfcf00.grib2 -match "TMP:2 m above ground" -grib $prefix\/hrrr_$date\_$hh\.grib2
 	rm $prefix\/hrrr.t$hh\z.wrfsfcf00.grib2
 done
 done
