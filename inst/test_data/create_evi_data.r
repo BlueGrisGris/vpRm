@@ -4,20 +4,42 @@ library(terra)
 
 evi_dir <- c( "~/Desktop/landsat/landsat8" ,"~/Desktop/landsat/landsat7")
 
-evi_8_filename <- file.path(evi_dir[1],list.files(evi_dir[1],pattern = "20200105"))
-
 evi_7_filename <- file.path(evi_dir[2],list.files(evi_dir[2])[1:2])
 
-evi <- rast(evi_8_filename)
+evi_8_filename <- file.path(evi_dir[1],list.files(evi_dir[1],pattern = "20200105"))
+
+
+evi1 <- rast(evi_8_filename[1])
+plot(evi1[[1]])
+evi2 <- rast(evi_8_filename[2])
+plot(evi2[[1]])
+
+ext1 <- ext(evi1)
+ext2 <- ext(evi2)
+
+
+ll <- lapply(evi_8_filename, function(fn){
+	print(fn)
+	evi <- rast(fn)
+	return(evi)
+})#end lapply
+
+cc <- sprc(ll)
+### TODO: remove extraneous before slow mosaic step
+mm <- mosaic(cc, fun = "max")
+
+plot(mm[[1]])
+
+
+
+
 
 extract_evi_time <- function(evi_filenames){
 	xx <- stringr::str_split(evi_filenames, "_", simplify = T)[,3]
 	return(lubridate::ymd(substr(xx,1,8)))
 }#end func extract_evi_time
 
-time(evi) <- 
-
-	extract_evi_time(evi_8_filename)
+time(evi) <- extract_evi_time(evi_8_filename)
 
 rast(evi_8_filename)
 
