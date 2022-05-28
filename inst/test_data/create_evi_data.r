@@ -1,7 +1,5 @@
 library(terra)
 
-
-
 evi_dir <- c( "~/Desktop/landsat/landsat8" ,"~/Desktop/landsat/landsat7")
 
 evi_7_filename <- file.path(evi_dir[2],list.files(evi_dir[2])[1:2])
@@ -25,10 +23,25 @@ ll <- lapply(evi_8_filename, function(fn){
 })#end lapply
 
 cc <- sprc(ll)
-### TODO: remove extraneous before slow mosaic step
+### TODO: remove extraneous bands before slow mosaic step
 mm <- mosaic(cc, fun = "max")
+mm <- mm[[1]]
+### example slant foot
+foot <- rast("~/Desktop/stilt_slant_hb_202001071300.nc")
+foot <- project(foot[[1]], mm)
+mm_foot <- merge(gee, mm,foot)
 
-plot(mm[[1]])
+plot(foot)
+plot(gee)
+plot(mm)
+plot(mm_foot)
+
+gee_files <- file.path("~/Desktop/landsat_evi","20200125.tif")
+gee <- rast(gee_files)
+gee <- project(gee, mm_foot)
+
+
+
 
 
 
