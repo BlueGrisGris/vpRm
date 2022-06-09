@@ -2,7 +2,7 @@ library(terra)
 
 evi_dir <- c( "~/Desktop/landsat/landsat8" ,"~/Desktop/landsat/landsat7")
 
-evi_7_filename <- file.path(evi_dir[2],list.files(evi_dir[2])[1:2])
+evi_7_filename <- file.path(evi_dir[2],list.files(evi_dir[2]))
 
 evi_8_filename <- file.path(evi_dir[1],list.files(evi_dir[1],pattern = "20200105"))
 
@@ -16,16 +16,18 @@ ext1 <- ext(evi1)
 ext2 <- ext(evi2)
 
 
-ll <- lapply(evi_8_filename, function(fn){
+ll <- lapply(evi_7_filename, function(fn){
 	print(fn)
-	evi <- rast(fn)
-	return(evi)
+	#         evi <- rast(fn)
+	#         return(evi)
+	return(rast(fn)[[1]])
 })#end lapply
 
 cc <- sprc(ll)
 ### TODO: remove extraneous bands before slow mosaic step
-mm <- mosaic(cc, fun = "max")
-mm <- mm[[1]]
+### TODO: how to mosaic w na.rm = T
+mm <- mosaic(cc[1:2], fun = "mean",na.rm = T)
+# mm <- mm[[1]]
 ### example slant foot
 foot <- rast("~/Desktop/stilt_slant_hb_202001071300.nc")
 foot <- project(foot[[1]], mm)
@@ -36,9 +38,13 @@ plot(gee)
 plot(mm)
 plot(mm_foot)
 
-gee_files <- file.path("~/Desktop/landsat_evi","20200125.tif")
+gee_files <- file.path("~/Desktop/landsat_evi","20200117.tif")
 gee <- rast(gee_files)
+values(gee)
+plot(gee)
 gee <- project(gee, mm_foot)
+library(ncdf4)
+nc_open(gee_files)
 
 
 
@@ -70,4 +76,14 @@ print(fn)
 plot(evi)
 evi_test <- terra::crop(evi,ext(proj_domain)*1.7)
 }#end for fn
+
+
+###################
+### composite in R
+###################
+
+### lapply read for each of needed 
+
+
+
 
