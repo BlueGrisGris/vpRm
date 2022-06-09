@@ -38,14 +38,19 @@ plot(gee)
 plot(mm)
 plot(mm_foot)
 
-gee_files <- file.path("~/Desktop/landsat_evi","20200117.tif")
+#  gee_files <- file.path("~/Desktop/landsat_evi","20200117.tif")
+gee_path <- file.path("~/Desktop/landsat_evi")
+gee_files <- file.path(gee_path,list.files(gee_path))[1]
 gee <- rast(gee_files)
 values(gee)
 plot(gee)
-gee <- project(gee, mm_foot)
+gee <- project(gee, foot)
+plot(merge(gee, foot))
 library(ncdf4)
 nc_open(gee_files)
 
+foot <- aggregate(foot, fact = 20 , func = "mean")
+writeCDF(foot, file = file.path("~/Desktop/evi_test.nc"))
 
 
 
