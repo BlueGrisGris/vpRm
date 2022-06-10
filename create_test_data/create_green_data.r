@@ -12,7 +12,7 @@ plot(down)
 ### use completely artificial green test data for now
 
 data_dir <- system.file("test_data", package="vpRm",mustWork=T)
-out_dir <- system.file("~/Desktop/research/vpRm/inst/test_data/")
+out_dir <- file.path("~/Desktop/research/vpRm/inst/test_data/")
 list.files(data_dir)
 
 up <- rast( file.path(data_dir, "goes_test.nc") )[[1]]
