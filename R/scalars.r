@@ -14,5 +14,12 @@ Tscalar <- function(Tair, Tmin, Tmax){
 Pscalar <- function(EVI, EVImax, EVImin){
 	return(
 	       (EVI - EVImin)/(EVImax-EVImin)
-	       )#end return
+	)#end return
 }#end func Pscalar
+
+### From Mahadevan 2008
+Wscalar <- function(LSWI,LSWImax){
+	return(
+		(1+LSWI)/(1+LSWImax)
+	)#end return
+}#end func Wscalar
