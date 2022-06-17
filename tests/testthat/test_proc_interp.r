@@ -10,9 +10,10 @@ get_test_data <- function(filename){
 
 plate <- get_test_data("plate.nc")
 
-landsat <- landsat("plate.nc")
+# landsat <- landsat("plate.nc")
 
 
+skip("not done")
 test_that("does proc_interp work on test landsat data?", {
 	proc_par <- proc_simple_3d(goes,plate)
 	### dimensions of processed should match template
