@@ -30,9 +30,9 @@ if(is.null(matchdomain)){
 
 ### make sure there is enough info provided to create a plateate
 ### TODO: or could let partial user specs overwrite the input where they exist?
-if(!is.null(matchdomain)&( is.null(lons)| is.null(lats)|is.null(times)|is.null(xres)|is.null(yres) ) ){
-	stop("If an example format is not provided via matchdomain, all of lon, lat, times, xres, yres must be provided")
-}#end if(!is.null(matchdomain)&( is.null(lons)| is.null(lats)|is.null(times)|is.null(xres)|is.null(yres) ) ){ #TODO:put back once lat/lons implemented
+	# if(!is.null(matchdomain)&( is.null(lons)| is.null(lats)|is.null(times)|is.null(xres)|is.null(yres) ) ){
+	#         stop("If an example format is not provided via matchdomain, all of lon, lat, times, xres, yres must be provided")
+	# }#end if(!is.null(matchdomain)&( is.null(lons)| is.null(lats)|is.null(times)|is.null(xres)|is.null(yres) ) ){ #TODO:put back once lat/lons implemented
 
 }#end if !is.null matchdomain
 
