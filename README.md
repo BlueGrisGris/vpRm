@@ -15,3 +15,6 @@ This package should:
 ## Version 0.0.0.9000 "Picea Pungens"
 - No minimum viable soluton
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/BlueGrisGris/vpRm/workflows/R-CMD-check/badge.svg)](https://github.com/BlueGrisGris/vpRm/actions)
+<!-- badges: end -->
