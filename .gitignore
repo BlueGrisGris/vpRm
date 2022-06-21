@@ -4,5 +4,7 @@
 .httr-oauth
 .DS_Store
 
-**jukit
+**jukit/
+**__pycache__/
+*/.ipynb_checkpoints/
 *.sw*
