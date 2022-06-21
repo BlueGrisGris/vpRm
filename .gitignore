@@ -6,4 +6,5 @@
 
 **jukit/
 **__pycache__/
+*/.ipynb_checkpoints/
 *.sw*

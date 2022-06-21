@@ -1,3 +1,4 @@
+
 import ee
 
 ### only need to do 1st time using python ee api
@@ -42,9 +43,26 @@ evi = ee.ImageCollection("LANDSAT/LC08/C01/T1_8DAY_EVI")\
         .filterBounds(roi)\
         .select("EVI")
 
+# |%%--%%| <NONE|NONE>
+
 import geemap
+colorizedVis = {
+  min: 0.0,
+  max: 1.0,
+  "palette": [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+}
 mm = geemap.Map()
-mm.addLayer(evi)
+mm.addLayer(evi, colorizedVis)
+
+# |%%--%%| <NONE|kAzJIRXXwT>
+
+mm
+
+# |%%--%%| <kAzJIRXXwT|NONE>
 
 #out_dir = "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/landsat7"
 out_dir = "landsat_evi"
