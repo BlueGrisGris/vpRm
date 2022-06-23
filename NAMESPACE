@@ -2,7 +2,7 @@
 
 export(Get_Stilt_Out_Filenames)
 export(gen_plate)
-export(init_vpRm)
+export(proc_drivers.vpRm)
 export(proc_interp)
 export(proc_simple_2d)
 export(proc_simple_3d)

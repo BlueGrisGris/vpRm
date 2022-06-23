@@ -9,7 +9,6 @@ vpRm_dir <- file.path("/tmp", "vpRm")
 ### rast lc 
 lc_filename <- file.path(data_dir, "lc_test.nc") 
 lc <- terra::rast(lc_filename)
-init_vpRm(vpRm_dir)
 
 matchdomain <- Get_Stilt_Out_Filenames(stilt_dir,"foot")
 
