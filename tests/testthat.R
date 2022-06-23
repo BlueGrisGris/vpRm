@@ -13,6 +13,7 @@ evi_dir <- file.path(data_dir, "evi_test.nc")
 green_dir <- file.path(data_dir, "greendown_test.nc") 
 plate_dir <- file.path(data_dir, "plate.nc") 
 
+print("hello")
 vpRm_dir <- file.path("/tmp", "vpRm")
 
 test_check("vpRm")

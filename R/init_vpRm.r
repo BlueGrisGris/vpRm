@@ -1,3 +1,5 @@
+#### TODO: make it a method that is optionally called on vpRm() helper 
+
 #' vpRm_init
 #' Initialize directory structure for vpRm
 
