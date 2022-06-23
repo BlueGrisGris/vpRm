@@ -29,3 +29,9 @@ if(class(raster)[[1]] != "SpatRaster"){
 return(raster)
 }#end func sanitize_driver
 
+Save_Rast <- function(rast, filename){
+	suppressWarnings( ### warning when saving an empty netcdf
+	terra::writeCDF( rast , filename = filename , overwrite = T )#end terra::writeCDF
+	)#end suppressWarnings
+	return(rast)
+}#end Save_Rast <- function(rast, filename){
