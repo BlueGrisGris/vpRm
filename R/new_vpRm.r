@@ -70,7 +70,7 @@ vpRm <- list(
 	, temp_dir = temp_dir
 	, par_dir = par_dir
 	, evi_dir = evi_dir
-	, greenup_dir = greenup_dir
+	, green_dir = greenup_dir
 
 
 	, proc_dir = proc_dir
@@ -80,7 +80,7 @@ vpRm <- list(
 	, temp_proc_dir = temp_proc_dir
 	, par_proc_dir = par_proc_dir
 	, evi_proc_dir = evi_proc_dir
-	, greenup_proc_dir = greenup_proc_dir
+	, green_proc_dir = greenup_proc_dir
 
 	, out_dir = out_dir
 	, gee_dir = gee_dir

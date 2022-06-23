@@ -74,6 +74,8 @@ suppressWarnings( ### warning repeat by terra::values
 terra::values(plate) <- 1:(terra::ncell(plate))
 )#end suppressWarnings
 
+# Save_Rast(plate, plate_dir)
+
 #########################
 ### create plate from given coordinates
 ### TO BE IMPLEMENTED
