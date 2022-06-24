@@ -7,6 +7,7 @@ new_vpRm <- function(
 	#         , proc_dir = NULL
 	#         , out_dir = NULL
 	, lc_dir = NULL
+	, isa_dir = NULL
 	, temp_dir = NULL
 	, par_dir = NULL
 	, evi_dir = NULL
@@ -35,6 +36,7 @@ dir.create(proc_dir, recursive = T, showWarnings = F)
 dir.create(out_dir, recursive = T, showWarnings = F)
 
 lc_proc_dir <- file.path(proc_dir, "lc.nc")
+isa_proc_dir <- file.path(proc_dir, "isa.nc")
 plate_dir <- file.path(proc_dir, "plate.nc")
 temp_proc_dir <- file.path(proc_dir, "temp.nc")
 par_proc_dir <- file.path(proc_dir, "par.nc")
@@ -54,6 +56,7 @@ nee_dir <- file.path(out_dir, "nee.nc")
 ### vprm_params
 #########################
 ### TODO: implement user defined paraams
+
 params <- vpRm::vprm_params
 
 #########################
@@ -67,6 +70,7 @@ vpRm <- list(
 
 	#         , driver_dir = driver_dir
 	, lc_dir = lc_dir 	
+	, isa_dir = isa_dir 	
 	, temp_dir = temp_dir
 	, par_dir = par_dir
 	, evi_dir = evi_dir
@@ -77,6 +81,7 @@ vpRm <- list(
 	, plate_dir = plate_dir
 
 	, lc_proc_dir = lc_proc_dir 	
+	, isa_proc_dir = isa_proc_dir 	
 	, temp_proc_dir = temp_proc_dir
 	, par_proc_dir = par_proc_dir
 	, evi_proc_dir = evi_proc_dir
