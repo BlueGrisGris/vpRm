@@ -1,3 +1,5 @@
+### TODO:
+skip("test not done")
 test_that("does process_vpRm() make result in correct dims?",{
 	vpRm <- new_vpRm(vpRm_dir, lc_dir, temp_dir, par_dir, evi_dir, green_dir)
 	plate <- gen_plate(matchdomain, vpRm$dirs$lc_dir)

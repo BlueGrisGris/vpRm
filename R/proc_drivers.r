@@ -17,7 +17,6 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process isa
 	isa <- terra::rast(vpRm$dirs$isa_dir)
 	isa_proc <- proc_simple_2d(isa,plate)
-	print(vpRm$dirs$isa_proc_dir)
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 
 	####### process temp
