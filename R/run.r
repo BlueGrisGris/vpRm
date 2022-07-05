@@ -31,11 +31,12 @@ beta <-  sum( (lc == vprm_params[,"lc"])*vprm_params[,"beta"] )
 
 if(F){
 terra::plot(Tscalar)
+terra::plot(temp)
 terra::plot(lambda)
 terra::plot(Tmin)
 terra::plot(Tmax)
 terra::plot(pw_idx)
-terra::plot(xx)
+terra::plot(lc)
 terra::plot(alpha)
 terra::plot(yy)
 }#end if F
@@ -45,7 +46,6 @@ terra::plot(yy)
 #############################################
 
 Tscalar <- Tscalar(temp, Tmin, Tmax)
-
 Pscalar <- Pscalar(EVI, EVImin, EVImax) 
 Wscalar <- Wscalar(LSWI, LSWImax)  
 
