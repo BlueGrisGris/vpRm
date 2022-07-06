@@ -89,8 +89,15 @@ ggplot(evi_sample, aes(y = evi, x = doy)) +
 
 time(evi) <- evi_times
 
-up_cutoff <- ((evi>.85*max(evi))*doy)
-plot(up_cutoff)
+greenup <- ((evi>.85*max(evi))*doy)
+greenup[greenup == 0] <- NA
+greenup <- min(greenup, na.rm = T)
+
+plot(greenup)
+
+
+lapp(up_cutoff, fun = function(uc){mink
+min((up_cutoff>0)*(up_cutoff))
 
 ### starting thing we will replace zeros with the doy where it exceeds some cutoff
 greenup <- evi[[1]]
@@ -119,17 +126,19 @@ ll <- lapply(up_cutoff, function(uc){
 	greenup
 })#end lapply
 
-### TODO: mask where 
+### TODO: mask where na
+for(uc in up_cutoff){
+	print(uc)
+}#end for
+
 zz <- sds(greenup, up_cutoff)
 ff <- function(gg,uc){
-	browser()
-	str(gg)
-	str(uc)
-	gg == 0
-	uc != 0
-	if(gg == 0 & uc != 0){
-		gg <- uc 
-	}#end if 
+	#         browser()
+	for(uc_lyr in uc){
+		if(gg == 0 & uc_lyr != 0){
+			gg <- uc 
+		}#end if 
+	}
 	return(gg)
 }# end fucn
 
