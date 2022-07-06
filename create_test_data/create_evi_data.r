@@ -65,11 +65,72 @@ writeCDF(evi_extrema, file.path("~/Downloads", "evi_extrema_test.nc"), overwrite
 ### Create green
 ##################################
 
-vals <- values(evi)
-# hist(evi)
+### sample pixels
+sample_size <- 1000
+# set.seed(41)
 
-list.files(data_dir)
-rast(file.path(data_dir,"evi_extrema_test.nc" ))
-xx <- rast("~/Downloads/evi_test.nc")
-print(class(time(xx)))
-print(xx)
+xx <- sample(1:nrow(evi), sample_size)
+yy <- sample(1:ncol(evi), sample_size)
+evi_sample <- evi[cellFromRowCol(evi, xx, yy)] 
+colnames(evi_sample) <- evi_times
+evi_sample$xx <- xx
+evi_sample$yy <- yy
+evi_sample <- tidyr::pivot_longer(evi_sample, cols = colnames(evi_sample)[1:nlyr(evi)], names_to = "doy", values_to = "evi") 
+evi_sample <- evi_sample[!is.na(evi_sample$evi),]
+
+library(ggplot2)
+print(
+ggplot(evi_sample, aes(y = evi, x = doy)) +
+		       #                        , color = paste(xx,yy,sep = "_"))) + 
+	#         geom_line(aes(group = paste(xx,yy,sep = "_"))) +
+	geom_line() +
+	theme_classic()
+)#end pring
+
+time(evi) <- evi_times
+
+up_cutoff <- ((evi>.85*max(evi))*doy)
+plot(up_cutoff)
+
+### starting thing we will replace zeros with the doy where it exceeds some cutoff
+greenup <- evi[[1]]
+values(greenup) <- 0
+plot(greenup)
+
+for(dd in nlyr(up_cutoff)){
+	if(pixel == 0){
+		lapp
+		pixel <- up_cutoff[[dd]]
+	}#end if(pixel == 0){
+}#end for dd
+
+
+ff <- function(up_cutoff){
+	if(greenup == 0 & up_cutoff != 0){greenup <- up_cutoff}
+}#end ff
+
+for(uc in up_cutoff){
+	print(uc)
+}#end for uc
+
+ll <- lapply(up_cutoff, function(uc){
+	replace_greenup <- (greenup == 0 & uc != 0)
+	greenup <- replace_greenup*max(uc)
+	greenup
+})#end lapply
+
+### TODO: mask where 
+zz <- sds(greenup, up_cutoff)
+ff <- function(gg,uc){
+	browser()
+	str(gg)
+	str(uc)
+	gg == 0
+	uc != 0
+	if(gg == 0 & uc != 0){
+		gg <- uc 
+	}#end if 
+	return(gg)
+}# end fucn
+
+lapp(zz,ff) 
