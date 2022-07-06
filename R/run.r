@@ -53,6 +53,7 @@ EVImin <- EVIextrema[[2]]
 Pscalar <- Pscalar(EVI, EVImin, EVImax) 
 
 ### TODO: resolve LSWI conundrum
+### option: actually calculate the linear dependence betw/ evi lswi
 LSWI <- EVI/2.5
 LSWImax <- EVImax/2.5
 Wscalar <- Wscalar(LSWI, LSWImax)  
@@ -74,14 +75,15 @@ gee <- gee(
 ### TODO: Set gee to zero outside of growing season
 ### but not for evergreen?
 
-# Save_Rast(gee, vpRm$dirs$gee)
+### gee = zero where there is water
+gee <- gee * (lc!=11)
+
+Save_Rast(gee, vpRm$dirs$gee)
 
 #############################################
 ### calculate respiration
 #############################################
 
-### gee = zero where there is water
-gee <- gee * (lc!=11)
 
 respir <- respir(
 	temp
@@ -92,6 +94,7 @@ respir <- respir(
 	, EVI
 )#end respir
 
+### respir = zero where there is water
 respir <- respir * (lc!=11)
 
 Save_Rast(respir, vpRm$dirs$respir)

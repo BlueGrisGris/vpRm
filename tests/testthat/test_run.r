@@ -15,4 +15,6 @@ test_that("does run.vpRm produce the correct results?",{
 	vpRm <- proc_drivers.vpRm(vpRm)
 	vpRm <- run.vpRm(vpRm)
 	expect_equal( dim(terra::rast(vpRm$dirs$nee_dir)) , dim(plate))
+	expect_equal( dim(terra::rast(vpRm$dirs$gee_dir)) , dim(plate))
+	expect_equal( dim(terra::rast(vpRm$dirs$respir_dir)) , dim(plate))
 }) #end test_that("does run.vpRm produce the correct results?"{
