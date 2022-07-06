@@ -89,15 +89,3 @@ ggplot(evi_sample, aes(y = evi, x = doy)) +
 	geom_line() +
 	theme_classic()
 )#end pring
-
-greenup <- ((evi>.85*max(evi))*doy)
-greenup[greenup <= 0] <- NA
-greenup <- min(greenup, na.rm = T)
-
-plot(greenup)
-
-greendown <- ((evi<.25*max(evi))*doy)
-greendown[greendown <= 0] <- NA
-greendown <- max(greendown, na.rm = T)
-
-plot(greendown)
