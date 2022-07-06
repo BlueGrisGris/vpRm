@@ -3,11 +3,16 @@
 #' @export
 run.vpRm <- function(vpRm){
 
+#############################################
+### point to processed drivers
+#############################################
+
 lc <- terra::rast(vpRm$dirs$lc_proc_dir)
 isa <- terra::rast(vpRm$dirs$isa_proc_dir)
 temp <- terra::rast(vpRm$dirs$temp_proc_dir)
-par <- terra::rast(vpRm$dirs$par_proc_dir)
+PAR <- terra::rast(vpRm$dirs$par_proc_dir)
 EVI <- terra::rast(vpRm$dirs$evi_proc_dir)
+EVIextrema <- terra::rast(vpRm$dirs$evi_extrema_proc_dir)
 green <- terra::rast(vpRm$dirs$green_proc_dir)
 vprm_params <- vpRm$params
 
@@ -30,9 +35,9 @@ alpha <- sum( (lc == vprm_params[,"lc"])*vprm_params[,"alpha"] )
 beta <-  sum( (lc == vprm_params[,"lc"])*vprm_params[,"beta"] )
 
 if(F){
-terra::plot(Tscalar)
-terra::plot(temp)
-terra::plot(lambda)
+terra::plot(Pscalar)
+terra::plot(plate)
+terra::plot(EVI)
 terra::plot(Tmin)
 terra::plot(Tmax)
 terra::plot(pw_idx)
@@ -46,13 +51,20 @@ terra::plot(yy)
 #############################################
 
 Tscalar <- Tscalar(temp, Tmin, Tmax)
+
+### TODO: dates look wrong
+EVImax <- EVIextrema[[1]]
+EVImin <- EVIextrema[[2]]
 Pscalar <- Pscalar(EVI, EVImin, EVImax) 
+
+### TODO: resolve LSWI conundrum
+LSWI <- EVI/2.5
+LSWImax <- EVImax/2.5
 Wscalar <- Wscalar(LSWI, LSWImax)  
 
 #############################################
 ### calculate gee
 #############################################
-
 
 gee <- gee(
 	   lambda
@@ -65,6 +77,7 @@ gee <- gee(
 )#end gee
 
 ### TODO: Set gee to zero outside of growing season
+### but not for evergreen?
 
 # Save_Rast(gee, vpRm$dirs$gee)
 
@@ -74,8 +87,6 @@ gee <- gee(
 
 ### gee = zero where there is water
 gee <- gee * (lc!=11)
-terra::plot(lc == vprm_params[,"lc"])
- 
 
 respir <- respir(
 	temp

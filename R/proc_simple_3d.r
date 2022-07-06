@@ -1,11 +1,13 @@
 #' proc_simple_3d 
 #' Convert 3d data to match crs and extent to template
 #'
-#' @param driver (Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for  land cover data file to be processed
+#' @param driver (Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for data file to be processed
 #' @param plate (Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for vpRm template
+#' @param strict_times (bool): Must every time in the vpRm template exist in the driver data?
+#' @param times_driver (Date, chr): dates of driver if not parsable by terra::rast
 #' 
 #' @export
-proc_simple_3d <- function(driver, plate){
+proc_simple_3d <- function(driver, plate, strict_times = T, times_driver = NULL){
 	### TODO: just make this piece proc_simple_2d()
 ### touch driver data 
 driver <- sanitize_raster(driver)
@@ -15,10 +17,32 @@ plate <- sanitize_raster(plate)
 ### TODO: this one is less likely to be always bigger than our domain
 ### TODO: when we think about performance, these new SpatRaster that we make are stored in memory.....
 ### reproject
-processed <- terra::project(driver, plate, method = "cubicspline") 
+processed <- terra::project(driver, plate, method = "cubicspline")
+
 ### check that the driver covers the times we need
+### TODO: test strict times behavior
 if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
-	stop("There are times in plate that are not in driver")
+	### but only if when we want to check
+	if(strict_times){
+		### TODO: error should spec which driver
+		stop("There are times in plate that are not in driver")
+	}#end if(strict_times){
+
+	### otherwise, match to closest
+
+	if(is.null(terra::time(driver))){
+		if(is.null(times_driver)){
+			stop("driver must have terra::rast parseable times, or times must be supplied")
+		}#end if(is.null(times_driver)){
+	}else{#end if(is.null(time(driver)) 
+		times_driver <- terra::time(driver)
+	}#end else
+
+	### stepwise time interpolation
+	idx <- findInterval(lubridate::yday(terra::time(plate)),vec = lubridate::yday(times_driver))
+	driver <- driver[[idx]]	
+	terra::time(driver) <- terra::time(plate)
+
 }#end if(length(which( terra::time(plate) %in% terra::time(driver))) != 0){
 
 ### only take the times we need

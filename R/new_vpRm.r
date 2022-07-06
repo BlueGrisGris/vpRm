@@ -45,6 +45,7 @@ plate_dir <- file.path(proc_dir, "plate.nc")
 temp_proc_dir <- file.path(proc_dir, "temp.nc")
 par_proc_dir <- file.path(proc_dir, "par.nc")
 evi_proc_dir <- file.path(proc_dir, "evi.nc")
+evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema.nc")
 greenup_proc_dir <- file.path(proc_dir, "greenup.nc")
 
 gee_dir <- file.path(out_dir, "gee.nc")
@@ -67,7 +68,6 @@ params <- vpRm::vprm_params
 ### Save S3 class 
 #########################
 ### TODO: save as a plaintext? or a rda?
-
 vpRm <- list(
 	dirs = list(
 	vpRm_dir = vpRm_dir
@@ -90,6 +90,7 @@ vpRm <- list(
 	, temp_proc_dir = temp_proc_dir
 	, par_proc_dir = par_proc_dir
 	, evi_proc_dir = evi_proc_dir
+	, evi_extrema_proc_dir = evi_extrema_proc_dir
 	, green_proc_dir = greenup_proc_dir
 
 	, out_dir = out_dir

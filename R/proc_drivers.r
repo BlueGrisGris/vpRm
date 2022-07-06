@@ -32,8 +32,13 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process evi
 	### TODO: test that evi \in {-1,1}
 	evi <- terra::rast(vpRm$dirs$evi_dir)
-	evi_proc <- proc_simple_3d(evi,plate)
+	evi_proc <- proc_simple_3d(evi,plate, strict_times = F)
 	Save_Rast(evi_proc, vpRm$dirs$evi_proc_dir)
+
+	####### process evi extrema
+	evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_dir)
+	evi_extrema_proc <- proc_simple_2d(evi_extrema,plate)
+	Save_Rast(evi_extrema_proc, vpRm$dirs$evi_extrema_proc_dir)
 
 	####### process green
 	### TODO: not done
