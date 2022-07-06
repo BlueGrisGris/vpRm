@@ -19,7 +19,10 @@ doy[1] <- -4
 doy <- doy - 1
 
 yr <- 2020 
-evi_times <- as.POSIXct(paste0(yr, "-01-01")) + doy
+evi_times <- as.Date(paste0(yr, "-01-01")) + doy
+evi_times <- as.POSIXct(evi_times)
+
+time(evi) <- evi_times
 ### first one is 2019
 
 
@@ -87,59 +90,14 @@ ggplot(evi_sample, aes(y = evi, x = doy)) +
 	theme_classic()
 )#end pring
 
-time(evi) <- evi_times
-
 greenup <- ((evi>.85*max(evi))*doy)
-greenup[greenup == 0] <- NA
+greenup[greenup <= 0] <- NA
 greenup <- min(greenup, na.rm = T)
 
 plot(greenup)
 
+greendown <- ((evi<.25*max(evi))*doy)
+greendown[greendown <= 0] <- NA
+greendown <- max(greendown, na.rm = T)
 
-lapp(up_cutoff, fun = function(uc){mink
-min((up_cutoff>0)*(up_cutoff))
-
-### starting thing we will replace zeros with the doy where it exceeds some cutoff
-greenup <- evi[[1]]
-values(greenup) <- 0
-plot(greenup)
-
-for(dd in nlyr(up_cutoff)){
-	if(pixel == 0){
-		lapp
-		pixel <- up_cutoff[[dd]]
-	}#end if(pixel == 0){
-}#end for dd
-
-
-ff <- function(up_cutoff){
-	if(greenup == 0 & up_cutoff != 0){greenup <- up_cutoff}
-}#end ff
-
-for(uc in up_cutoff){
-	print(uc)
-}#end for uc
-
-ll <- lapply(up_cutoff, function(uc){
-	replace_greenup <- (greenup == 0 & uc != 0)
-	greenup <- replace_greenup*max(uc)
-	greenup
-})#end lapply
-
-### TODO: mask where na
-for(uc in up_cutoff){
-	print(uc)
-}#end for
-
-zz <- sds(greenup, up_cutoff)
-ff <- function(gg,uc){
-	#         browser()
-	for(uc_lyr in uc){
-		if(gg == 0 & uc_lyr != 0){
-			gg <- uc 
-		}#end if 
-	}
-	return(gg)
-}# end fucn
-
-lapp(zz,ff) 
+plot(greendown)
