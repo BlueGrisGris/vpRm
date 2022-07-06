@@ -9,6 +9,7 @@ isa_dir <- file.path(data_dir, "isa_test.nc")
 temp_dir <- file.path(data_dir, "hrrr_temp_test.nc") 
 par_dir <- file.path(data_dir, "goes_test.nc") 
 evi_dir <- file.path(data_dir, "evi_test.nc") 
+evi_extrema_dir <- file.path(data_dir, "evi_extrema_test.nc") 
 green_dir <- file.path(data_dir, "greenup_test.nc") 
 plate_dir <- file.path(data_dir, "plate.nc") 
 
