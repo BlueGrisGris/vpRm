@@ -37,6 +37,9 @@ evi_test <- terra::crop(evi,ext(proj_domain)*1.7)
 evi_aggr <- aggregate(evi_test,fact = 130, fun="mean")
 time(evi_aggr) <- evi_times
 
+evi_max <- max(evi_aggr, na.rm = T)
+evi_min <- min(evi_aggr, na.rm = T)
+
 idx <- findInterval( yday(time(domain)) , vec = doy)
 evi_aggr <- evi_aggr[[idx]]
 
@@ -49,8 +52,6 @@ writeCDF(evi_aggr, file.path("~/Downloads", "evi_test.nc"), overwrite=T)
 ### Create evi max 
 ##################################
 
-evi_max <- max(evi_aggr, na.rm = T)
-evi_min <- min(evi_aggr, na.rm = T)
 
 evi_extrema <- c(evi_max, evi_min)
 
@@ -68,7 +69,7 @@ vals <- values(evi)
 # hist(evi)
 
 list.files(data_dir)
-rast(file.path(data_dir,"evi_test.nc" ))
+rast(file.path(data_dir,"evi_extrema_test.nc" ))
 xx <- rast("~/Downloads/evi_test.nc")
 print(class(time(xx)))
 print(xx)
