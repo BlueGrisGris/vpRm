@@ -19,7 +19,7 @@ doy[1] <- -4
 doy <- doy - 1
 
 yr <- 2020 
-evi_times <- as.Date(paste0(yr, "-01-01")) + doy
+evi_times <- as.POSIXct(paste0(yr, "-01-01")) + doy
 ### first one is 2019
 
 
@@ -70,4 +70,5 @@ vals <- values(evi)
 list.files(data_dir)
 rast(file.path(data_dir,"evi_test.nc" ))
 xx <- rast("~/Downloads/evi_test.nc")
-class(time(xx))
+print(class(time(xx)))
+print(xx)
