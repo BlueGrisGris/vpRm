@@ -19,13 +19,8 @@ new_vpRm <- function(
 	#         , params = NULL
 	){
 
-#########################
-### TODO: nicer error
-	#         ---> also we are not following the principles about args on pg 304 Advanced R
-#########################
-if(length(which(is.null(c(lc_dir, isa_dir, temp_dir, par_dir, evi_dir, evi_extrema_dir, greenup_dir))))){
-       stop("all driver data directories must be provided")
-}#end if length which
+#       TODO:  ---> also we are not following the principles about args on pg 304 Advanced R
+
 
 #########################
 ### Create Directories 
@@ -80,7 +75,6 @@ vpRm <- list(
 	, evi_dir = evi_dir
 	, evi_extrema_dir = evi_extrema_dir
 	, green_dir = greenup_dir
-
 
 	, proc_dir = proc_dir
 	, plate_dir = plate_dir

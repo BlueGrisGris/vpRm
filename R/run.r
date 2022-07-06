@@ -1,7 +1,14 @@
 #' Run a VPRM model defined by a vpRm object
-#' @param vpRm (vpRm) a vpRm object 
+#' 
+#' Execute the models calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers(). 
+#' 
+#' 
+#' @param vpRm (vpRm): a vpRm S3 object with attached driver data 
+#' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
 #' @export
 run.vpRm <- function(vpRm){
+
+### TODO: an option to update the output location
 
 #############################################
 ### point to processed drivers
@@ -33,18 +40,6 @@ PAR0 <-  sum( (lc == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
 
 alpha <- sum( (lc == vprm_params[,"lc"])*vprm_params[,"alpha"] )
 beta <-  sum( (lc == vprm_params[,"lc"])*vprm_params[,"beta"] )
-
-if(F){
-terra::plot(Pscalar)
-terra::plot(plate)
-terra::plot(EVI)
-terra::plot(Tmin)
-terra::plot(Tmax)
-terra::plot(pw_idx)
-terra::plot(lc)
-terra::plot(alpha)
-terra::plot(yy)
-}#end if F
 
 #############################################
 ### calculate scalars
@@ -94,13 +89,17 @@ respir <- respir(
 	, beta
 	, lc
 	, isa
-	, evi
+	, EVI
 )#end respir
+
+respir <- respir * (lc!=11)
 
 Save_Rast(respir, vpRm$dirs$respir)
 
-# nee <- respir - gee
+nee <- respir - gee
 
-# Save_Rast(nee, vpRm$dirs$nee)
+Save_Rast(nee, vpRm$dirs$nee)
+
+return(vpRm)
 
 }#end func run.vpRm

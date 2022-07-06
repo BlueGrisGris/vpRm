@@ -18,7 +18,7 @@ mod_Tscalar <- function(Tair, Tmin, Tmax){
 	### piecewise function from Winbourne et al 2021
 	#         pw_idx <- findInterval(Tair , c(-Inf, 20, 30, Inf))
 	Tscalar <- terra::app(Tair,fun = pw_func)   
-	#         ones <- Tair 
+	ones <- Tair 
 	#         terra::values(ones) <- rep(1, terra::ncell(Tair))
 	#         browser()
 	Tscalar <- terra::sds( 

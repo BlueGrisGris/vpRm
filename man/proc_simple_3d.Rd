@@ -5,12 +5,16 @@
 \title{proc_simple_3d
 Convert 3d data to match crs and extent to template}
 \usage{
-proc_simple_3d(driver, plate)
+proc_simple_3d(driver, plate, strict_times = T, times_driver = NULL)
 }
 \arguments{
-\item{driver}{(Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for  land cover data file to be processed}
+\item{driver}{(Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for data file to be processed}
 
 \item{plate}{(Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for vpRm template}
+
+\item{strict_times}{(bool): Must every time in the vpRm template exist in the driver data?}
+
+\item{times_driver}{(Date, chr): dates of driver if not parsable by terra::rast}
 }
 \description{
 proc_simple_3d

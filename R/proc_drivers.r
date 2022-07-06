@@ -7,6 +7,20 @@
 #' @param vpRm (vpRm) a vpRm object 
 #' @export
 proc_drivers.vpRm <- function(vpRm){
+
+	### TODO: nicer error
+	if(length(which(is.null(c(
+				    vpRm$dirs$lc_dir
+				  , vpRm$dirs$isa_dir
+				  , vpRm$dirs$temp_dir
+				  , vpRm$dirs$par_dir
+				  , vpRm$dirs$evi_dir
+				  , vpRm$dirs$evi_extrema_dir
+				  , vpRm$dirs$greenup_dir
+				  ))))){
+	       stop("all driver data directories must be provided")
+	}#end if length which
+
 	plate <- terra::rast(vpRm$dirs$plate)
 
 	####### process landcover

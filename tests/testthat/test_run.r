@@ -1,4 +1,4 @@
-# test_that("does run.vpRm produce the correct results?",{
+test_that("does run.vpRm produce the correct results?",{
 	vpRm <- new_vpRm(
 		vpRm_dir
 		, lc_dir
@@ -13,4 +13,6 @@
 	plate <- gen_plate(matchdomain, vpRm$dirs$lc_dir)
 	Save_Rast(plate, vpRm$dirs$plate_dir)
 	vpRm <- proc_drivers.vpRm(vpRm)
-	# }) #end test_that("does run.vpRm produce the correct results?"{
+	vpRm <- run.vpRm(vpRm)
+	expect_equal( dim(terra::rast(vpRm$dirs$nee_dir)) , dim(plate))
+}) #end test_that("does run.vpRm produce the correct results?"{
