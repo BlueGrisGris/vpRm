@@ -29,8 +29,6 @@ gud  <- green(evi)
 # plot(gud[[2]] - gud[[1]])
 hist(gud[[2]] - gud[[1]])
 
-terra::plot(greenup)
-
 if(F){
 plot(evi)
 }#end if F

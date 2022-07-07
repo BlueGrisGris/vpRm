@@ -8,7 +8,7 @@
 #' 
 #' @export
 proc_3d <- function(driver, plate, strict_times = T, times_driver = NULL){
-	### TODO: just make this piece proc_2d()
+### TODO: just make this piece proc_2d()
 ### touch driver data 
 driver <- sanitize_raster(driver)
 ### touch plate
@@ -21,6 +21,7 @@ processed <- terra::project(driver, plate, method = "cubicspline")
 
 ### check that the driver covers the times we need
 ### TODO: test strict times behavior
+### TODO: it is broken and zeroing drivers w missing times.
 if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 	### but only if when we want to check
 	if(strict_times){

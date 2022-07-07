@@ -13,3 +13,6 @@ test_that("does process_vpRm() make result in correct dims?",{
 # unlink("/temp/vpRm")
 
 ### TODO: test error when there is times/ spaces in driver not in the plate
+terra::plot(driver)
+terra::time(driver)
+terra::time(plate)
