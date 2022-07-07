@@ -1,3 +1,4 @@
+load_all()
 library(terra)
 data_dir <- system.file("test_data",package="vpRm",mustWork = T)
 stilt_dir <- file.path(data_dir, "stilt_test")
