@@ -14,6 +14,7 @@ run.vpRm <- function(vpRm){
 ### point to processed drivers
 #############################################
 
+plate <- terra::rast(vpRm$dirs$plate_dir)
 lc <- terra::rast(vpRm$dirs$lc_proc_dir)
 isa <- terra::rast(vpRm$dirs$isa_proc_dir)
 temp <- terra::rast(vpRm$dirs$temp_proc_dir)
@@ -72,10 +73,15 @@ gee <- gee(
 	   , PAR0
 )#end gee
 
-### Set gee to zero outside of growing season
-### but not for evergreen?
+terra::time(gee) <- terra::time(plate)
 
-green
+### Set gee to zero outside of growing season
+doy <- lubridate::yday(terra::time(gee)) 
+green_mask <- (green[[1]] < doy) & (green[[2]] > doy)
+### but not for evergreen?
+### TODO: our test set doesn't have evergreen, so untested
+green_mask[lc == 42] <- 1
+gee <- gee*green_mask 
 
 ### gee = zero where there is water
 gee <- gee * (lc!=11)

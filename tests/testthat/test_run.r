@@ -1,3 +1,4 @@
+# load_all()
 test_that("does run.vpRm produce the correct results?",{
 	vpRm <- new_vpRm(
 		vpRm_dir
