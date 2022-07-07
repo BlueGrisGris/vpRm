@@ -17,8 +17,8 @@ goes <- get_test_data("goes_test.nc")
 ### TODO: the edge of test data is NaN 
 which(is.nan(terra::values(goes[[15]])))
 
-test_that("does proc_simple_3d work on test goes data?", {
-	proc_par <- proc_simple_3d(goes,plate)
+test_that("does proc_3d work on test goes data?", {
+	proc_par <- proc_3d(goes,plate)
 	### dimensions of processed should match template
 	expect_equal( dim(proc_par), dim(plate) ) 
 	### every cell should have a value 
@@ -31,8 +31,8 @@ terra::units(hrrr_temp)
 ### TODO: the edge of test data is NaN 
 plate <- plate_full[[terra::time(plate_full) %in% terra::time(hrrr_temp)]]
 
-test_that("does proc_simple_3d work on test rap?", {
-	proc_temp <- proc_simple_3d(hrrr_temp,plate)
+test_that("does proc_3d work on test rap?", {
+	proc_temp <- proc_3d(hrrr_temp,plate)
 	### dimensions of processed should match template
 	expect_equal( dim(proc_temp), dim(plate) ) 
 	### every cell should have a value 
@@ -43,6 +43,6 @@ test_that("does proc_simple_3d work on test rap?", {
 ### TODO: test error behavior
 
 skip("something about testthat environment is causing this to fail on test(), but be ok if sent to terminal")
-test_that("does proc_simple_3d throw the correct errors", {
-	expect_error(proc_simple_3d(goes,plate_full), "There are times in plate that are not in driver")
+test_that("does proc_3d throw the correct errors", {
+	expect_error(proc_3d(goes,plate_full), "There are times in plate that are not in driver")
 }) #end test_that()

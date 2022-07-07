@@ -1,4 +1,4 @@
-#' proc_simple_3d 
+#' proc_3d 
 #' Convert 3d data to match crs and extent to template
 #'
 #' @param driver (Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for data file to be processed
@@ -7,8 +7,8 @@
 #' @param times_driver (Date, chr): dates of driver if not parsable by terra::rast
 #' 
 #' @export
-proc_simple_3d <- function(driver, plate, strict_times = T, times_driver = NULL){
-	### TODO: just make this piece proc_simple_2d()
+proc_3d <- function(driver, plate, strict_times = T, times_driver = NULL){
+	### TODO: just make this piece proc_2d()
 ### touch driver data 
 driver <- sanitize_raster(driver)
 ### touch plate
