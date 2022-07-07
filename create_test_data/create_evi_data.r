@@ -25,7 +25,11 @@ evi_times <- as.POSIXct(evi_times)
 
 time(evi) <- evi_times
 ### first one is 2019
+gud  <- green(evi)
+# plot(gud[[2]] - gud[[1]])
+hist(gud[[2]] - gud[[1]])
 
+terra::plot(greenup)
 
 if(F){
 plot(evi)
@@ -68,6 +72,7 @@ writeCDF(evi_extrema, file.path("~/Downloads", "evi_extrema_test.nc"), overwrite
 ##################################
 ### Create green
 ##################################
+### see r/green.r for what we came up with 
 
 ### sample pixels
 sample_size <- 1000

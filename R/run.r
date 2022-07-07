@@ -72,8 +72,10 @@ gee <- gee(
 	   , PAR0
 )#end gee
 
-### TODO: Set gee to zero outside of growing season
+### Set gee to zero outside of growing season
 ### but not for evergreen?
+
+green
 
 ### gee = zero where there is water
 gee <- gee * (lc!=11)

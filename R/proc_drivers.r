@@ -55,8 +55,8 @@ proc_drivers.vpRm <- function(vpRm){
 	Save_Rast(evi_extrema_proc, vpRm$dirs$evi_extrema_proc_dir)
 
 	####### process green
-	### TODO: not done
-	green <- terra::rast(vpRm$dirs$green_dir)
+	#         green <- terra::rast(vpRm$dirs$green_dir)
+	green <- green(evi)
 	green_proc <- proc_simple_2d(green,plate)
 	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)
 
