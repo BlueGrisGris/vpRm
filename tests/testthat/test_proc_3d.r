@@ -1,23 +1,11 @@
-data_dir <- system.file("test_data",package="vpRm",mustWork = T)
-list.files(data_dir)
-### for testing
-get_test_data <- function(filename){
-	test_data_filename <- file.path(data_dir, filename)
-	#         print(paste(test_data_filename, "exists", file.exists(test_data_filename)))
-	test_data <- terra::rast(test_data_filename)
-	return(test_data)
-}#end func get_test_data.r
 
-
-plate_full <- get_test_data("plate.nc")
-### TODO: do we want lubridate as dependency?
-plate <- plate_full[[ lubridate::day( terra::time(plate_full))!=30 ]]
-
-goes <- get_test_data("goes_test.nc")
+goes <- terra::rast(par_dir)
 ### TODO: the edge of test data is NaN 
 which(is.nan(terra::values(goes[[15]])))
 
 test_that("does proc_3d work on test goes data?", {
+	goes <- terra::rast(par_dir)
+	plate <- terra::rast(plate_dir)
 	proc_par <- proc_3d(goes,plate)
 	### dimensions of processed should match template
 	expect_equal( dim(proc_par), dim(plate) ) 
@@ -25,13 +13,10 @@ test_that("does proc_3d work on test goes data?", {
 	expect_equal( length(which(!is.nan(terra::values(proc_par)))) , length(terra::values(plate)) )
 }) #end test_that()
 
-hrrr_temp <- get_test_data("hrrr_temp_test.nc")
-### TODO: units aren't working???
-terra::units(hrrr_temp)
-### TODO: the edge of test data is NaN 
-plate <- plate_full[[terra::time(plate_full) %in% terra::time(hrrr_temp)]]
-
 test_that("does proc_3d work on test rap?", {
+	goes <- terra::rast(par_dir)
+	plate <- terra::rast(plate_dir)
+	hrrr_temp <- terra::rast(temp_dir)
 	proc_temp <- proc_3d(hrrr_temp,plate)
 	### dimensions of processed should match template
 	expect_equal( dim(proc_temp), dim(plate) ) 
@@ -46,3 +31,15 @@ skip("something about testthat environment is causing this to fail on test(), bu
 test_that("does proc_3d throw the correct errors", {
 	expect_error(proc_3d(goes,plate_full), "There are times in plate that are not in driver")
 }) #end test_that()
+
+if(F){
+terra::values(processed)
+terra:: time(plate)
+yy <- which(terra::time(driver) %in% terra::time(plate))
+xx <- processed[[yy]]
+zz <- processed[[1]] 
+ww <- terra::subset(processed, 1)
+terra::values(xx)
+terra::values(zz)
+terra::values(ww)
+}#end if F

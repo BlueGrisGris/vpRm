@@ -14,10 +14,7 @@ driver <- sanitize_raster(driver)
 ### touch plate
 plate <- sanitize_raster(plate)
 
-### TODO: this one is less likely to be always bigger than our domain
-### TODO: when we think about performance, these new SpatRaster that we make are stored in memory.....
-### reproject
-processed <- terra::project(driver, plate, method = "cubicspline")
+processed <- driver
 
 ### check that the driver covers the times we need
 ### TODO: test strict times behavior
@@ -46,8 +43,14 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 
 }#end if(length(which( terra::time(plate) %in% terra::time(driver))) != 0){
 
+# browser()
 ### only take the times we need
 processed <- processed[[terra::time(driver) %in% terra::time(plate)]]
+
+
+### TODO: this one is less likely to be always bigger than our domain
+### reproject
+processed <- terra::project(processed, plate, method = "cubicspline")
 	
 ### TODO: for GOES, nan is hopefully only at night.  hopefully RAP/hrrr has no nans? 
 terra::values(processed)[ is.nan(terra::values(processed)) ] <- 0

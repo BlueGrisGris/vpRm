@@ -62,7 +62,6 @@ Wscalar <- Wscalar(LSWI, LSWImax)
 #############################################
 ### calculate gee
 #############################################
-browser()
 gee <- gee(
 	   lambda
 	   , Tscalar
