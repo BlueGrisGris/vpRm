@@ -24,7 +24,7 @@ do
 
 #	echo $url
 
-	prefix=`echo ~/Downloads/hrrr_grb2/`
+	prefix=`echo /n/wofsy_lab2/Users/emanninen/vprm/driver_data/hrrr_temperature`
 	### fetch from Utah University hrrr archive.  Someday should transition to the GCP archive
 	url=`echo https://pando-rgw01.chpc.utah.edu/hrrr/sfc/$date/hrrr.t$hh\z.wrfsfcf00.grib2`
 	wget --no-check-certificate --directory-prefix=$prefix $url
