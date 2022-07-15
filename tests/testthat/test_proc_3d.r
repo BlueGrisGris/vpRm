@@ -3,6 +3,7 @@ goes <- terra::rast(par_dir)
 ### TODO: the edge of test data is NaN 
 which(is.nan(terra::values(goes[[15]])))
 
+skip("going to switch to hrrr par")
 test_that("does proc_3d work on test goes data?", {
 	goes <- terra::rast(par_dir)
 	plate <- terra::rast(plate_dir)
@@ -13,6 +14,7 @@ test_that("does proc_3d work on test goes data?", {
 	expect_equal( length(which(!is.nan(terra::values(proc_par)))) , length(terra::values(plate)) )
 }) #end test_that()
 
+skip("going to switch to hrrr temp, tho should work on rap too..")
 test_that("does proc_3d work on test rap?", {
 	goes <- terra::rast(par_dir)
 	plate <- terra::rast(plate_dir)

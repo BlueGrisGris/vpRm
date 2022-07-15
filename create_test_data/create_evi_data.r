@@ -58,7 +58,6 @@ writeCDF(evi_aggr, file.path("~/Downloads", "evi_test.nc"), overwrite=T)
 ### Create evi max 
 ##################################
 
-
 evi_extrema <- c(evi_max, evi_min)
 
 if(F){
