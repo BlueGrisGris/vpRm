@@ -11,7 +11,6 @@ new_vpRm <- function(
 	, temp_dir = NULL
 	, par_dir = NULL
 	, evi_dir = NULL
-	, evi_extrema_dir = NULL
 	, greenup_dir = NULL
 
 	, verbose = F 
@@ -26,6 +25,7 @@ new_vpRm <- function(
 ### Create Directories 
 #########################
 ### TODO: right now drivers are pre downloaded
+### TODO: ability to override dirs
 # driver_dir <- file.path(vpRm_dir, "driver")
 proc_dir <- file.path(vpRm_dir, "processed")
 out_dir <- file.path(vpRm_dir, "out")
@@ -73,7 +73,6 @@ vpRm <- list(
 	, temp_dir = temp_dir
 	, par_dir = par_dir
 	, evi_dir = evi_dir
-	, evi_extrema_dir = evi_extrema_dir
 	, green_dir = greenup_dir
 
 	, proc_dir = proc_dir
