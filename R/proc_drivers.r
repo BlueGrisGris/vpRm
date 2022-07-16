@@ -15,7 +15,6 @@ proc_drivers.vpRm <- function(vpRm){
 				  , vpRm$dirs$temp_dir
 				  , vpRm$dirs$par_dir
 				  , vpRm$dirs$evi_dir
-				  , vpRm$dirs$greenup_dir
 				  ))))){
 	       stop("all driver data directories must be provided")
 	}#end if length which
@@ -55,7 +54,6 @@ proc_drivers.vpRm <- function(vpRm){
 	Save_Rast(evi_extrema_proc, vpRm$dirs$evi_extrema_proc_dir)
 
 	####### process green
-	#         green <- terra::rast(vpRm$dirs$green_dir)
 	green <- green(evi)
 	green_proc <- proc_2d(green,plate)
 	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)

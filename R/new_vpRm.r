@@ -11,7 +11,6 @@ new_vpRm <- function(
 	, temp_dir = NULL
 	, par_dir = NULL
 	, evi_dir = NULL
-	, greenup_dir = NULL
 
 	, verbose = F 
 		     
@@ -73,7 +72,6 @@ vpRm <- list(
 	, temp_dir = temp_dir
 	, par_dir = par_dir
 	, evi_dir = evi_dir
-	, green_dir = greenup_dir
 
 	, proc_dir = proc_dir
 	, plate_dir = plate_dir
