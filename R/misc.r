@@ -29,6 +29,13 @@ if(class(raster)[[1]] != "SpatRaster"){
 return(raster)
 }#end func sanitize_driver
 
+#' Save_Rast
+#' Save a SpatRaster as a netcdf
+#'
+#' @param rast (SpatRaster): SpatRaster to be saved
+#' @param filename (chr): filename to save to 
+#'
+#' @export 
 Save_Rast <- function(rast, filename){
 	### TODO: add checks if the files exist properly bc the terra errors suck
 	suppressWarnings( ### warning when saving an empty netcdf
