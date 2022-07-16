@@ -15,7 +15,6 @@ proc_drivers.vpRm <- function(vpRm){
 				  , vpRm$dirs$temp_dir
 				  , vpRm$dirs$par_dir
 				  , vpRm$dirs$evi_dir
-				  , vpRm$dirs$evi_extrema_dir
 				  , vpRm$dirs$greenup_dir
 				  ))))){
 	       stop("all driver data directories must be provided")
@@ -51,9 +50,8 @@ proc_drivers.vpRm <- function(vpRm){
 	Save_Rast(evi_proc, vpRm$dirs$evi_proc_dir)
 
 	####### process evi extrema
-	evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_dir)
-	evi_extrema_proc <- proc_2d(evi_extrema,plate)
-	evi_extrema_proc <- evi_extrema_proc*1e-4
+	### TODO: if it alrdy exists dont rerun?
+	evi_extrema_proc <- c(max(evi_proc, na.rm = T), min(evi_proc, na.rm = T))
 	Save_Rast(evi_extrema_proc, vpRm$dirs$evi_extrema_proc_dir)
 
 	####### process green
