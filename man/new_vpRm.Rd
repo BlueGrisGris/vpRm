@@ -27,6 +27,8 @@ new_vpRm(
 \item{par_dir}{(chr): path to initialize photosynthetically available radiation data}
 
 \item{evi_dir}{(chr): path to vegetation index data}
+
+\item{verbose}{(bool): print intermediary updates?}
 }
 \description{
 new_vpRm
