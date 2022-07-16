@@ -1,3 +1,15 @@
+#' new_vpRm
+#' Initialize an object of class vpRm
+#'
+#' @param vpRm_dir (chr): path to initialize vpRm into; where to store processed drivers and outputs
+#' @param lc_dir (chr): path to land cover data 
+#' @param isa_dir (chr): path to impermeable surface data 
+#' @param temp_dir (chr): path to temperature data
+#' @param par_dir (chr): path to initialize photosynthetically available radiation data
+#' @param evi_dir (chr): path to vegetation index data
+#' @param verbose (bool): print intermediary updates?
+#'
+#' @export
 new_vpRm <- function(
 		     ### TODO: control flow for creating /not creating directories
 	vpRm_dir = "."
