@@ -1,7 +1,7 @@
 #' gen_plate()
 #' Creates an empty terra rast template to match other processed driver data to.  
 #' Extent of the input match domain with the projection of the landcover driver data
-#' @param matchdomain (chr) filepath(s) of geospatial data files readable by terra::rast to run vpRm over. 
+#' @param matchdomain (chr or SpatRaster) filepath(s) or SpatRaster of geospatial data readable by terra::rast to run vpRm over. 
 #' @param lc_dir (chr) landcover data filepath
 #' @param verbose (bool) Print messages?
 
@@ -40,6 +40,8 @@ if(is.null(matchdomain)){
 
 if(!is.null(matchdomain)){
 
+### can accept rasters not saved to storage
+if(class(matchdomain) != "SpatRaster"){
 if(verbose){
 print(paste("Attempting to parse",matchdomain,"and create plate"))
 ### TODO: add to vpRm.log
@@ -52,6 +54,7 @@ matchdomain<- list.files(matchdomain)
 }#end if(length(list.files(matchdomain)!=0)){
 ### read in data to match domain to using terra
 domain <- terra::rast(matchdomain)
+}else{domain <- matchdomain}
 ### Take projection from landcover bc Steve said to.
 lc <- terra::rast(lc_dir)
 lc_crs <- terra::crs(lc)

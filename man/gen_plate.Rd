@@ -9,7 +9,7 @@ Extent of the input match domain with the projection of the landcover driver dat
 gen_plate(matchdomain = NULL, lc_dir, verbose = F)
 }
 \arguments{
-\item{matchdomain}{(chr) filepath(s) of geospatial data files readable by terra::rast to run vpRm over.}
+\item{matchdomain}{(chr or SpatRaster) filepath(s) or SpatRaster of geospatial data readable by terra::rast to run vpRm over.}
 
 \item{lc_dir}{(chr) landcover data filepath}
 
