@@ -14,7 +14,7 @@ pw_func <- function(Tair){
 }#end if F
 
 ### Modified Tscalar form Winbourne et al 2021
-mod_Tscalar <- function(Tair, Tmin, Tmax){
+win_Tscalar <- function(Tair, Tmin, Tmax){
 	### piecewise function from Winbourne et al 2021
 	#         pw_idx <- findInterval(Tair , c(-Inf, 20, 30, Inf))
 	Tscalar <- terra::app(Tair,fun = pw_func)   
@@ -42,6 +42,7 @@ Tscalar <- function(Tair, Tmin, Tmax){
 	)#end return
 }#end func Tscalar
 
+
 ### Modified Pscalar from Winbourne et al 2021
 Pscalar <- function(EVI, EVImax, EVImin){
 	return(
@@ -49,9 +50,19 @@ Pscalar <- function(EVI, EVImax, EVImin){
 	)#end return
 }#end func Pscalar
 
+### simplified Tscalar for forests.  avg value from mahadevan 2008
+Tscalar <- function(Tair, Tmin, Tmax){
+	return(.7)
+}#end func Tscalar 
+
 ### From Mahadevan 2008
-Wscalar <- function(LSWI,LSWImax){
+mah_Wscalar <- function(LSWI,LSWImax){
 	return(
 		(1+LSWI)/(1+LSWImax)
 	)#end return
 }#end func Wscalar
+
+### simplified Wscalar for forests.  avg value from mahadevan 2008
+Wscalar <- function(LSWI,LSWImax){
+	return(.9)
+}#end function Wscalar

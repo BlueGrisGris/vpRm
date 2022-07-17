@@ -51,12 +51,8 @@ Tscalar <- Tscalar(temp, Tmin, Tmax)
 EVImax <- EVIextrema[[1]]
 EVImin <- EVIextrema[[2]]
 Pscalar <- Pscalar(EVI, EVImin, EVImax) 
-
-### TODO: resolve LSWI conundrum
-### option: actually calculate the linear dependence betw/ evi lswi
-LSWI <- EVI/2.5
-LSWImax <- EVImax/2.5
-Wscalar <- Wscalar(LSWI, LSWImax)  
+### simplified Wscalar
+Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
 
 #############################################
 ### calculate gee
