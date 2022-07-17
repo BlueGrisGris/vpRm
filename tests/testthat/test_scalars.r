@@ -9,5 +9,5 @@ test_that("does Pscalar() return correct values?", {
 })#end test_that("does Tscalar() return correct values?", {
 
 test_that("does Wscalar() return correct values?", {
-	expect_equal(Wscalar(1,3) ,0.5)
+	expect_equal(Wscalar(1,3) ,0.9)
 })#end test_that("does Tscalar() return correct values?", {
