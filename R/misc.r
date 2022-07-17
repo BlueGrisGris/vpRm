@@ -37,7 +37,6 @@ return(raster)
 #'
 #' @export 
 Save_Rast <- function(rast, filename){
-	### TODO: add checks if the files exist properly bc the terra errors suck
 	suppressWarnings( ### warning when saving an empty netcdf
 	terra::writeCDF( rast , filename = filename , overwrite = T )#end terra::writeCDF
 	)#end suppressWarnings
