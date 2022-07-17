@@ -24,6 +24,8 @@ EVIextrema <- terra::rast(vpRm$dirs$evi_extrema_proc_dir)
 green <- terra::rast(vpRm$dirs$green_proc_dir)
 vprm_params <- vpRm$params
 
+if(vpRm$verbose){print("read in proc'd data");print(terra::free_RAM())}
+
 #############################################
 ### collate vprm paramters
 #############################################

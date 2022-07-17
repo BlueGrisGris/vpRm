@@ -42,3 +42,9 @@ Save_Rast <- function(rast, filename){
 	)#end suppressWarnings
 	return(rast)
 }#end Save_Rast <- function(rast, filename){
+
+Print_Info <- function(rast){
+	print(rast)
+	print(terra::mem_info(rast))
+	print(paste(terra::free_RAM()/1e6, "GB free"))
+}#end func print info
