@@ -15,7 +15,7 @@ proc_drivers.vpRm <- function(vpRm){
 				  , vpRm$dirs$temp_dir
 				  , vpRm$dirs$par_dir
 				  , vpRm$dirs$evi_dir
-				  ))))){
+				  )))) != 0 ){
 	       stop("all driver data directories must be provided")
 	}#end if length which
 

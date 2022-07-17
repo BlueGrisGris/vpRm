@@ -38,7 +38,6 @@ if(is.null(matchdomain)){
 ### create plate to match a given domain from a file, ie a stilt footprint.  
 #########################
 
-if(!is.null(matchdomain)){
 
 ### can accept rasters not saved to storage
 if(class(matchdomain) != "SpatRaster"){
@@ -71,7 +70,7 @@ plate <- terra::rast(
 		     , extent = terra::ext(proj_domain) 
 		     , crs = lc_crs
 	)#end terra::rast
-}#if(!is.null(matchdomain)){
+
 ### it seems that populating with dummy data is need for terra::project not to populate return w NaNs?
 suppressWarnings( ### warning repeat by terra::values
 terra::values(plate) <- 1:(terra::ncell(plate))

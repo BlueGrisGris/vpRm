@@ -9,8 +9,8 @@ test_that("does run.vpRm produce the correct results?",{
 		, plate_dir
 		)#end new_vpRm 
 	plate <- gen_plate(matchdomain, vpRm$dirs$lc_dir)
-	### TODO: par is missing times, and the proc_3d isn't catching right
-	plate <- plate[[4:19]] 
+k### TODO: par is missing times, and the proc_3d isn't catching right
+	#         plate <- plate[[4:19]] 
 	Save_Rast(plate, vpRm$dirs$plate_dir)
 	vpRm <- proc_drivers.vpRm(vpRm)
 	vpRm <- run.vpRm(vpRm)
