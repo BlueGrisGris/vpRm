@@ -32,6 +32,7 @@ proc_drivers.vpRm <- function(vpRm){
 	lc_proc <- proc_2d(lc,plate)
 	if(vpRm$verbose){Print_Info(lc_proc)}
 	Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
+	rm(lc, lc_proc)
 
 	####### process isa
 	if(vpRm$verbose){print("start process impermeability")}
@@ -40,6 +41,7 @@ proc_drivers.vpRm <- function(vpRm){
 	isa_proc <- proc_2d(isa,plate)
 	if(vpRm$verbose){Print_Info(isa_proc)}
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
+	rm(isa, isa_proc)
 
 	####### process temp
 	if(vpRm$verbose){print("start process temperature")}
@@ -48,6 +50,7 @@ proc_drivers.vpRm <- function(vpRm){
 	temp_proc <- proc_3d(temp,plate)
 	if(vpRm$verbose){Print_Info(temp_proc)}
 	Save_Rast(temp_proc, vpRm$dirs$temp_proc_dir)
+	rm(temp, temp_proc)
 
 	####### process par
 	if(vpRm$verbose){print("start process PAR")}
@@ -56,6 +59,7 @@ proc_drivers.vpRm <- function(vpRm){
 	par_proc <- proc_3d(par,plate)
 	if(vpRm$verbose){Print_Info(par_proc)}
 	Save_Rast(par_proc, vpRm$dirs$par_proc_dir)
+	rm(par, par_proc)
 
 	####### process evi
 	### TODO: test that evi \in {-1,1}
@@ -73,12 +77,16 @@ proc_drivers.vpRm <- function(vpRm){
 	evi_extrema_proc <- c(max(evi_proc, na.rm = T), min(evi_proc, na.rm = T))
 	if(vpRm$verbose){Print_Info(evi_extrema_proc)}
 	Save_Rast(evi_extrema_proc, vpRm$dirs$evi_extrema_proc_dir)
+	rm(evi_extrema_proc)
 
 	####### process green
 	if(vpRm$verbose){print("start process green")}
 	green_proc <- green(evi_proc)
 	if(vpRm$verbose){Print_Info(green_proc)}
 	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)
+	rm(green_proc)
+
+	rm(evi, evi_proc)
 
 	return(vpRm)
 }#end func process.vpRm
