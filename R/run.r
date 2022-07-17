@@ -27,10 +27,8 @@ vprm_params <- vpRm$params
 #############################################
 ### collate vprm paramters
 #############################################
+if(vpRm$verbose){print("start collate VPRM params")}
 
-### TODO: i think it is ok that these are in memory, bc if they get big
-### terra will spit them to temp storage
-### however, this might cause issues when run thru slurm
 ### TODO: check that we dont need an addtl mask
 lambda <- sum( (lc == vprm_params[,"lc"])*vprm_params[,"lambda"] )
 
@@ -45,6 +43,7 @@ beta <-  sum( (lc == vprm_params[,"lc"])*vprm_params[,"beta"] )
 #############################################
 ### calculate scalars
 #############################################
+if(vpRm$verbose){print("start calculate scalars")}
 
 Tscalar <- Tscalar(temp, Tmin, Tmax)
 
@@ -62,6 +61,8 @@ Wscalar <- Wscalar(LSWI, LSWImax)
 #############################################
 ### calculate gee
 #############################################
+if(vpRm$verbose){print("start calculate gee")}
+
 gee <- gee(
 	   lambda
 	   , Tscalar
@@ -74,6 +75,7 @@ gee <- gee(
 
 terra::time(gee) <- terra::time(plate)
 
+if(vpRm$verbose){print("start apply growing system boundary")}
 ### Set gee to zero outside of growing season
 doy <- lubridate::yday(terra::time(gee)) 
 green_mask <- (green[[1]] < doy) & (green[[2]] > doy)
@@ -90,7 +92,7 @@ Save_Rast(gee, vpRm$dirs$gee)
 #############################################
 ### calculate respiration
 #############################################
-
+if(vpRm$verbose){print("start calculate respiration")}
 
 respir <- respir(
 	temp
@@ -106,10 +108,12 @@ respir <- respir * (lc!=11)
 
 Save_Rast(respir, vpRm$dirs$respir)
 
+if(vpRm$verbose){print("start calculate nee")}
 nee <- respir - gee
 
 Save_Rast(nee, vpRm$dirs$nee)
 
+if(vpRm$verbose){print("finished!")}
 return(vpRm)
 
 }#end func run.vpRm

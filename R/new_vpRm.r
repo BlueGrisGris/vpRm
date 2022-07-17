@@ -25,7 +25,6 @@ new_vpRm <- function(
 	, evi_dir = NULL
 
 	, verbose = F 
-		     
 	#         , params = NULL
 	){
 
@@ -103,6 +102,7 @@ vpRm <- list(
 	)#end list dirs
 
 	, params = params
+	, verbose = verbose
 )#end list vpRm
 
 class(vpRm) <- "vpRm"
