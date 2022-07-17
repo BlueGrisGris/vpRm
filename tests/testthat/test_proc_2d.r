@@ -9,9 +9,9 @@ plate_filename <- file.path(data_dir, "plate.nc")
 file.exists(plate_filename)
 plate <- terra::rast(plate_filename)
 
-test_that("does proc_simple_2d work on lc?", {
+test_that("does proc_2d work on lc?", {
 
-proc_lc <- proc_simple_2d(lc,plate)
+proc_lc <- proc_2d(lc,plate)
 
 ### nrows and ncols should match, but only 1 layer for land cover and 19 time layers for template
 expect_equal( c(dim(proc_lc)[c(1,2)],1), c(dim(plate)[c(1,2)],1) )
@@ -20,5 +20,5 @@ expect_equal( c(dim(proc_lc)[c(1,2)],1), c(dim(plate)[c(1,2)],1) )
 expect_equal( length(which(!is.nan(terra::values(proc_lc)))) , length(terra::values(plate[[1]])) )
 }) #end test_that()
 
-### TODO: test proc_simple_2d on isa data
+### TODO: test proc_2d on isa data
 ### TODO: test error behavior
