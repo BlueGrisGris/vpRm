@@ -51,9 +51,14 @@ if(length(list.files(matchdomain)!=0)){
 	### TODO: further sanitize inputs from dir
 matchdomain<- list.files(matchdomain)
 }#end if(length(list.files(matchdomain)!=0)){
+
 ### read in data to match domain to using terra
+print(terra::free_RAM())
 domain <- terra::rast(matchdomain)
+Print_Info(domain)
+
 }else{domain <- matchdomain}
+
 ### Take projection from landcover bc Steve said to.
 lc <- terra::rast(lc_dir)
 lc_crs <- terra::crs(lc)
