@@ -44,6 +44,7 @@ Save_Rast <- function(rast, filename){
 }#end Save_Rast <- function(rast, filename){
 
 Print_Info <- function(rast){
+	print(deparse(substitute(rast)))
 	print(rast)
 	print(terra::mem_info(rast))
 	print(paste(terra::free_RAM()/1e6, "GB free"))
