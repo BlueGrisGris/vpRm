@@ -53,9 +53,7 @@ matchdomain<- list.files(matchdomain)
 }#end if(length(list.files(matchdomain)!=0)){
 
 ### read in data to match domain to using terra
-print(terra::free_RAM())
 domain <- terra::rast(matchdomain)
-Print_Info(domain)
 
 }else{domain <- matchdomain}
 
