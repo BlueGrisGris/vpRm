@@ -15,6 +15,8 @@ proc_drivers.vpRm <- function(vpRm){
 				  , vpRm$dirs$temp_dir
 				  , vpRm$dirs$par_dir
 				  , vpRm$dirs$evi_dir
+				  , vpRm$dirs$evi_extrendir
+				  , vpRm$dirs$evi_dir
 				  )))) != 0 ){
 	       stop("all driver data directories must be provided")
 	}#end if length which
@@ -74,14 +76,32 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process evi extrema
 	### TODO: if it alrdy exists dont rerun?
 	if(vpRm$verbose){print("start process evi extrema")}
-	evi_extrema_proc <- c(max(evi_proc, na.rm = T), min(evi_proc, na.rm = T))
+	if(is.null(vpRm$dirs$evi_extrema_dir)){
+		### TODO: if there are times in plate in any year, that whole year must be present or error
+		#                 if{
+		#                 }#end 
+		evi_extrema_proc <- c(max(evi_proc, na.rm = T), min(evi_proc, na.rm = T))
+	}else{
+		evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_dir)
+		evi_extrema_proc <- proc_2d(evi_extrema,plate)
+		evi_extrema_proc <- evi_extrema_proc*1e-4
+	} #end else
 	if(vpRm$verbose){Print_Info(evi_extrema_proc)}
 	Save_Rast(evi_extrema_proc, vpRm$dirs$evi_extrema_proc_dir)
 	rm(evi_extrema_proc)
 
 	####### process green
 	if(vpRm$verbose){print("start process green")}
-	green_proc <- green(evi_proc)
+	if(is.null(vpRm$dirs$green_dir)){
+		### TODO: if there are times in plate in any year, that whole year evi must be present or error
+		#                 if{
+		#                 }#end 
+		green_proc <- green(evi_proc)
+	}else{
+		green <- terra::rast(vpRm$dirs$green_dir)
+		green_proc <- proc_2d(green,plate)
+	} #end else
+
 	if(vpRm$verbose){Print_Info(green_proc)}
 	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)
 	rm(green_proc)

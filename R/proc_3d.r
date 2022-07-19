@@ -32,7 +32,7 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 			stop("driver must have terra::rast parseable times, or times must be supplied")
 		}#end if(is.null(times_driver)){
 	}else{#end if(is.null(time(driver)) 
-		terra::time(driver) <- times_driver
+		times_driver <- terra::time(driver)
 	}#end else
 
 	### stepwise time interpolation

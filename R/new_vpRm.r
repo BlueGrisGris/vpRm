@@ -11,25 +11,20 @@
 #'
 #' @export
 new_vpRm <- function(
-		     ### TODO: control flow for creating /not creating directories
 	vpRm_dir = "."
-	#         , matchdomain = NULL
-
-	#         , driver_dir = NULL
-	#         , proc_dir = NULL
-	#         , out_dir = NULL
 	, lc_dir = NULL
 	, isa_dir = NULL
 	, temp_dir = NULL
 	, par_dir = NULL
 	, evi_dir = NULL
+	, evi_extrema_dir = NULL
+	, green_dir = NULL
 
 	, verbose = F 
 	#         , params = NULL
 	){
 
 #       TODO:  ---> also we are not following the principles about args on pg 304 Advanced R
-
 
 #########################
 ### Create Directories 
@@ -51,7 +46,7 @@ temp_proc_dir <- file.path(proc_dir, "temp.nc")
 par_proc_dir <- file.path(proc_dir, "par.nc")
 evi_proc_dir <- file.path(proc_dir, "evi.nc")
 evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema.nc")
-greenup_proc_dir <- file.path(proc_dir, "greenup.nc")
+green_proc_dir <- file.path(proc_dir, "green.nc")
 
 gee_dir <- file.path(out_dir, "gee.nc")
 respir_dir <- file.path(out_dir, "respir.nc")
@@ -83,6 +78,8 @@ vpRm <- list(
 	, temp_dir = temp_dir
 	, par_dir = par_dir
 	, evi_dir = evi_dir
+	, evi_extrema_dir = evi_dir
+	, green_dir = green_dir
 
 	, proc_dir = proc_dir
 	, plate_dir = plate_dir
@@ -93,7 +90,7 @@ vpRm <- list(
 	, par_proc_dir = par_proc_dir
 	, evi_proc_dir = evi_proc_dir
 	, evi_extrema_proc_dir = evi_extrema_proc_dir
-	, green_proc_dir = greenup_proc_dir
+	, green_proc_dir = green_proc_dir
 
 	, out_dir = out_dir
 	, gee_dir = gee_dir
