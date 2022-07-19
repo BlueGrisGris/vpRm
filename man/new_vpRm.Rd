@@ -12,6 +12,8 @@ new_vpRm(
   temp_dir = NULL,
   par_dir = NULL,
   evi_dir = NULL,
+  evi_extrema_dir = NULL,
+  green_dir = NULL,
   verbose = F
 )
 }
@@ -27,6 +29,10 @@ new_vpRm(
 \item{par_dir}{(chr): path to initialize photosynthetically available radiation data}
 
 \item{evi_dir}{(chr): path to vegetation index data}
+
+\item{evi_extrema_dir}{(chr): path to evi_extrema 2d data}
+
+\item{green_dir}{(chr): path to greenup/down data}
 
 \item{verbose}{(bool): print intermediary updates?}
 }

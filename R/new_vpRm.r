@@ -7,6 +7,8 @@
 #' @param temp_dir (chr): path to temperature data
 #' @param par_dir (chr): path to initialize photosynthetically available radiation data
 #' @param evi_dir (chr): path to vegetation index data
+#' @param evi_extrema_dir (chr): path to evi_extrema 2d data
+#' @param green_dir (chr): path to greenup/down data
 #' @param verbose (bool): print intermediary updates?
 #'
 #' @export
