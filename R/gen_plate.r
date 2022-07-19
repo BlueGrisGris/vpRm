@@ -64,17 +64,22 @@ lc <- terra::rast(lc_dir)
 lc_crs <- terra::crs(lc)
 ### project domain into lc_crs so that the extent etc have meaning
 proj_domain <- terra::project(domain, lc_crs)
+
+if(length(which(is.na(terra::time(proj_domain)))) != 0){
+	stop("all of the match domain must have times")
+}#end if(length(which(is.na(terra::time(prof_domain)))) != 0){
+
 ### init the plate.  
 ### crs to match landcover crs
 ### spatio temporal domain to match domain projected into lc_crs 
 plate <- terra::rast(
-		     nrows = dim(proj_domain)[1]	
-		     , ncols = dim(proj_domain)[2]	
-		     , nlyr = dim(proj_domain)[3]	
-		     , time = terra::time(proj_domain)
-		     , extent = terra::ext(proj_domain) 
-		     , crs = lc_crs
-	)#end terra::rast
+	nrows = dim(proj_domain)[1]	
+	, ncols = dim(proj_domain)[2]	
+	, nlyr = dim(proj_domain)[3]	
+	, time = terra::time(proj_domain)
+	, extent = terra::ext(proj_domain) 
+	, crs = lc_crs
+)#end terra::rast
 
 ### it seems that populating with dummy data is need for terra::project not to populate return w NaNs?
 suppressWarnings( ### warning repeat by terra::values

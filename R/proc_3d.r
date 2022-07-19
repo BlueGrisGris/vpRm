@@ -7,8 +7,7 @@
 #' @param times_driver (Date, chr): dates of driver if not parsable by terra::rast
 #' 
 #' @export
-proc_3d <- function(driver, plate, strict_times = T, times_driver = NULL){
-### TODO: just make this piece proc_2d()
+proc_3d <- function(driver, plate, strict_times = F, times_driver = NULL){
 ### touch driver data 
 driver <- sanitize_raster(driver)
 ### touch plate
@@ -33,7 +32,7 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 			stop("driver must have terra::rast parseable times, or times must be supplied")
 		}#end if(is.null(times_driver)){
 	}else{#end if(is.null(time(driver)) 
-		times_driver <- terra::time(driver)
+		terra::time(driver) <- times_driver
 	}#end else
 
 	### stepwise time interpolation
