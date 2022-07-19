@@ -1,3 +1,8 @@
+#' parse_modis_evi_times  
+#'  
+#' @param evi_filenames (chr): evi modis filenames to extract date times from 
+#' 
+#' @export
 parse_modis_evi_times <- function(evi_filenames){
 
 ### someday maybe replace str_split w strsplit
