@@ -108,7 +108,7 @@ Save_Rast(respir, vpRm$dirs$respir)
 
 if(vpRm$verbose){print("start calculate nee")}
 nee <- respir - gee
-
+browser()
 Save_Rast(nee, vpRm$dirs$nee)
 
 if(vpRm$verbose){print("finished!")}

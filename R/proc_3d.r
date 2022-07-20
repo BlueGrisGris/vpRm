@@ -7,7 +7,7 @@
 #' @param times_driver (Date, chr): dates of driver if not parsable by terra::rast
 #' 
 #' @export
-proc_3d <- function(driver, plate, strict_times = F, times_driver = NULL){
+proc_3d <- function(driver, plate, strict_times = F){
 ### touch driver data 
 driver <- sanitize_raster(driver)
 ### touch plate
@@ -28,15 +28,15 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 	### otherwise, match to closest
 
 	if(is.null(terra::time(driver))){
-		if(is.null(times_driver)){
-			stop("driver must have terra::rast parseable times, or times must be supplied")
-		}#end if(is.null(times_driver)){
+		stop("driver must have times")
 	}else{#end if(is.null(time(driver)) 
 		times_driver <- terra::time(driver)
 	}#end else
 
 	### stepwise time interpolation
 	idx <- findInterval(lubridate::yday(terra::time(plate)),vec = lubridate::yday(times_driver))
+	### i think this is right? because otherwise you can get 0 which is no good
+	idx <- idx + 1
 	driver <- driver[[idx]]	
 	terra::time(driver) <- terra::time(plate)
 
