@@ -5,7 +5,7 @@
 \title{proc_3d
 Convert 3d data to match crs and extent to template}
 \usage{
-proc_3d(driver, plate, strict_times = F, times_driver = NULL)
+proc_3d(driver, plate, strict_times = F)
 }
 \arguments{
 \item{driver}{(Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for data file to be processed}
