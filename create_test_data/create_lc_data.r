@@ -14,13 +14,13 @@ matchdomain1 <- file.path(stilt_dir,"by-id","202001310500_-72.1898_42.5331_364",
 domain <- rast(matchdomain1)
 proj_domain <- project(domain, crs(lc))
 
-
 test_match_crs <- rast(crs = crs(lc), res = 80, ext = .1*ext(lc)) 
 values(test_match_crs) <- 1:ncell(test_match_crs)
 plot(test_match_crs)
 
-xx <- resample(lc, test_match_crs, "near")
-plot(xx)
+resample_lc <- resample(lc, test_match_crs, "near")
+sessionInfo()
+plot(resample_lc)
 
 ### hmmm
 plot(lc, type = "classes")
