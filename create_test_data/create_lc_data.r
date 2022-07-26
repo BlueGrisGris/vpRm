@@ -21,6 +21,7 @@ plot(test_match_crs)
 resample_lc <- resample(lc, test_match_crs, "near")
 sessionInfo()
 plot(resample_lc)
+plot(lc)
 
 ### hmmm
 plot(lc, type = "classes")

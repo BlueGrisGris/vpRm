@@ -85,7 +85,11 @@ gee <- gee*green_mask
 ### gee = zero where there is water
 gee <- gee * (lc!=11)
 
-Save_Rast(gee, vpRm$dirs$gee)
+browser()
+
+terra::writeCDF(gee, vpRm$dirs$gee, missval = 99999, overwrite = T, prec = "double")
+
+# Save_Rast(gee, vpRm$dirs$gee)
 
 #############################################
 ### calculate respiration
@@ -108,7 +112,6 @@ Save_Rast(respir, vpRm$dirs$respir)
 
 if(vpRm$verbose){print("start calculate nee")}
 nee <- respir - gee
-browser()
 Save_Rast(nee, vpRm$dirs$nee)
 
 if(vpRm$verbose){print("finished!")}
