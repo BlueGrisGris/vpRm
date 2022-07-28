@@ -1,7 +1,7 @@
 ### Mahadevan et 2008
 gee <- function(lambda, Tscalar, Pscalar, Wscalar, EVI, PAR, PAR0){
 
-	GEE <- (lambda * Tscalar * Pscalar * Wscalar * EVI * PAR )/( (1+PAR)/PAR0 )
+	GEE <- (lambda * Tscalar * Pscalar * Wscalar * EVI * PAR )/ ( (1+PAR)/PAR0 )
 
 	return(GEE)
 }#end func gee
