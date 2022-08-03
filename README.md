@@ -41,7 +41,7 @@ This will install the `vpRm` package.  Now, to begin running VPRM models, the fo
 - Greenup and Green down days for each pixel 
 - Minimum and Maximum EVI data for the year (Or a full year's worth of EVI data)
 
-To initialize an object of class `vpRm` in R, supply the filenames of your driver data to the new_vpRm function:
+To initialize an object of class `vpRm` in R, supply the filenames of your driver data to the `new_vpRm()` function:
 
 ```R
 my_vpRm <- new_vpRm(
@@ -57,11 +57,11 @@ my_vpRm <- new_vpRm(
 ```
 Next, process the driver data:
 ```R
-process_drivers(vpRm)
+process_drivers(my_vpRm)
 ```
 Finally, run the model:
 ```R
-run(vpRm)
+run(my_vpRm)
 ```
 
 # Version Information 
