@@ -1,6 +1,10 @@
 # vpRm
 ## Version 0.0.0.9000 "Picea Pungens"
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/BlueGrisGris/vpRm/workflows/R-CMD-check/badge.svg)](https://github.com/BlueGrisGris/vpRm/actions)
+<!-- badges: end -->
+
 # Introduction
 
 VPRM (Vegetation Photosynthesis Respiration Model) is a model of NEE (Net Ecosystem Exchange) (Mahadevan et al 2008).  This R package handles the driver data and calculations to run a VPRM model
@@ -15,6 +19,3 @@ This package should:
 ## Version 0.0.0.9000 "Picea Pungens"
 - No minimum viable soluton
 
-<!-- badges: start -->
-[![R-CMD-check](https://github.com/BlueGrisGris/vpRm/workflows/R-CMD-check/badge.svg)](https://github.com/BlueGrisGris/vpRm/actions)
-<!-- badges: end -->
