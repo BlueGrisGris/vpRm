@@ -19,8 +19,8 @@ values(test_match_crs) <- 1:ncell(test_match_crs)
 plot(test_match_crs)
 
 resample_lc <- resample(lc, test_match_crs, "near")
-sessionInfo()
 plot(resample_lc)
+sessionInfo()
 
 ### hmmm
 plot(lc, type = "classes")
