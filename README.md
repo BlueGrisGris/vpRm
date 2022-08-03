@@ -33,12 +33,12 @@ Then, navigate into the vpRm directory, and call `install()` from devtools to in
 cd vpRm
 Rscript -e 'devtools::install()'
 ```
-This will install the `vpRm` package.  Now, to begin running VPRM models, the folowing driver data are required, and can be downloaded from a variety of sources:
+This will install the `vpRm` package.  Now, to begin running VPRM models, the following driver data are required, and can be downloaded from a variety of sources:
 - Photosynthetically Available Radiation (PAR) or Downwelling Shortwave Radiation (SDR)
 - Temperature at 2 meters above the surface
 - Enhanced Vegetation Index (EVI)
 - Landcover type
-- Greenup and Green down days for each pixel 
+- Greenup and Greendown days for each pixel 
 - Minimum and Maximum EVI data for the year (Or a full year's worth of EVI data)
 
 To initialize an object of class `vpRm` in R, supply the filenames of your driver data to the `new_vpRm()` function:
@@ -57,7 +57,7 @@ my_vpRm <- new_vpRm(
 ```
 Next, process the driver data:
 ```R
-process_drivers(my_vpRm)
+proc_drivers(my_vpRm)
 ```
 Finally, run the model:
 ```R
