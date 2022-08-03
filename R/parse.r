@@ -49,7 +49,7 @@ return(hrrr_times)
 #' 
 #' @export
 parse_stilt_times <- function(stilt_filenames){
-yy <- (stringr::str_extract_all(stilt_filenames,"\\(?[0-9,]+\\)?", simplify = T)[,2]) 
+yy <- (stringr::str_extract_all(stilt_filenames,"[0-9]{12}", simplify = T)) 
 ### wtf cant lubridate parse 
 stilt_times <- lubridate::ymd_hm(
 	paste(

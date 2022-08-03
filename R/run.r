@@ -49,10 +49,11 @@ if(vpRm$verbose){print("start calculate scalars")}
 
 Tscalar <- Tscalar(temp, Tmin, Tmax)
 
-### TODO: dates look wrong
 EVImax <- EVIextrema[[1]]
 EVImin <- EVIextrema[[2]]
-Pscalar <- Pscalar(EVI, EVImin, EVImax) 
+Pscalar <- Pscalar(EVI, EVImax, EVImin) 
+### TODO: hmmm sometimes EVImax and min are super close..
+Pscalar <- terra::mask(Pscalar, (Pscalar > 1) | (Pscalar < 0)  , maskvalues = 1)
 ### simplified Wscalar
 Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
 
@@ -84,8 +85,13 @@ gee <- gee*green_mask
 
 ### gee = zero where there is water
 gee <- gee * (lc!=11)
+### just a few pixels come out negative
+### TODO: send a warning if more than 1%
+gee <- mask(gee, gee<0, maskvalues = 1)
 
-Save_Rast(gee, vpRm$dirs$gee)
+terra::writeCDF(gee, vpRm$dirs$gee, overwrite = T, prec = "double")
+
+# Save_Rast(gee, vpRm$dirs$gee)
 
 #############################################
 ### calculate respiration
@@ -104,12 +110,13 @@ respir <- respir(
 ### respir = zero where there is water
 respir <- respir * (lc!=11)
 
-Save_Rast(respir, vpRm$dirs$respir)
+terra::writeCDF(respir, vpRm$dirs$respir, overwrite = T, prec = "double")
+# Save_Rast(respir, vpRm$dirs$respir)
 
 if(vpRm$verbose){print("start calculate nee")}
 nee <- respir - gee
-browser()
-Save_Rast(nee, vpRm$dirs$nee)
+terra::writeCDF(nee, vpRm$dirs$nee, overwrite = T, prec = "double")
+# Save_Rast(nee, vpRm$dirs$nee)
 
 if(vpRm$verbose){print("finished!")}
 return(vpRm)

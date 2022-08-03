@@ -20,6 +20,7 @@ plot(test_match_crs)
 
 resample_lc <- resample(lc, test_match_crs, "near")
 plot(resample_lc)
+plot(lc)
 sessionInfo()
 
 ### hmmm
