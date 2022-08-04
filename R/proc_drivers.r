@@ -43,9 +43,7 @@ proc_drivers.vpRm <- function(vpRm){
 	if(vpRm$verbose){Print_Info(isa_proc)}
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(isa, isa_proc)
-
 	####### process temp
-	#         browser()
 	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
 	terra::time(temp) <- parse_herbie_hrrr_times(vpRm$dirs$temp_dir)
@@ -73,7 +71,7 @@ proc_drivers.vpRm <- function(vpRm){
 	if(vpRm$verbose){print("start process evi")}
 	evi <- terra::rast(vpRm$dirs$evi_dir)
 	terra::time(evi) <- parse_modis_evi_times(vpRm$dirs$evi_dir)
-	if(vpRm$verbose){Print_Info(temp)}
+	if(vpRm$verbose){Print_Info(evi)}
 	evi_proc <- proc_3d(evi,plate, strict_times = F)
 	evi_proc <- evi_proc*evi_scale_factor
 	### mask out water which would ruin extrema
