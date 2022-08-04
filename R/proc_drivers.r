@@ -9,6 +9,7 @@
 proc_drivers.vpRm <- function(vpRm){
 
 	### TODO: nicer error
+	### TODO: stopif
 	if(length(which(is.null(c(
 				    vpRm$dirs$lc_dir
 				  , vpRm$dirs$isa_dir
@@ -24,6 +25,7 @@ proc_drivers.vpRm <- function(vpRm){
 	if(!file.exists(vpRm$dirs$plate)){
 	stop(paste(deparse(substitute(vpRM)), "does not have an associated template. use gen_plate()"))
 	}#end if(!file.exists(vpRm$dirs$plate)){
+
 	plate <- terra::rast(vpRm$dirs$plate)
 	if(vpRm$verbose){Print_Info(plate)}
 

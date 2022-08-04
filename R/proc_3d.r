@@ -34,6 +34,9 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 	idx <- findInterval(lubridate::yday(terra::time(plate)),vec = lubridate::yday(terra::time(processed)))
 	### i think this is right? because otherwise you can get 0 which is no good
 	idx <- idx + 1
+	### a terra update to 1.6.3  made indexing with the class num idx ^^^ produce an esoteric 
+	### GDAL error 5 and be slooooow.  The fix is to convert to class int
+	idx <- as.integer(idx)
 	### changes the nlyr(driver) to match nlyr(plate), taking the correct index
 	processed <- processed[[idx]]	
 	### driver the same times as the plate, now that its "interpolate" 
