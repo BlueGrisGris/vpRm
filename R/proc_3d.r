@@ -14,8 +14,8 @@ plate <- sanitize_raster(plate)
 
 ### check that the driver covers the times we need
 ### TODO: test strict times behavior
-### TODO: it is broken and zeroing drivers w missing times.
 if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
+
 	### but only if when we want to check
 	if(strict_times){
 		### TODO: error should spec which driver
@@ -28,6 +28,11 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 		stop("driver must have times")
 	}#end if
 
+	processed <- rast(lapply(processed, function(pp){
+		return( terra::project(pp, plate, method = "cubicspline") )
+	})#end lapply
+	)#end rast
+
 	### stepwise time interpolation
 	### get the index to the driver day of year closest to each plate doy  
 	### TODO: w yday, only works for missing data w less granularity the 24h switch to hour_year or smth
@@ -39,8 +44,15 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 	idx <- as.integer(idx)
 	### changes the nlyr(driver) to match nlyr(plate), taking the correct index
 	processed <- processed[[idx]]	
+	#         idx <-sapply(1:terra::nlyr(processed), function(ii){return(length(idx[idx==pp]))})
 	### driver the same times as the plate, now that its "interpolate" 
 	terra::time(processed) <- terra::time(plate)
+
+
+	### TODO: for GOES, nan is hopefully only at night.  hopefully RAP/hrrr has no nans? 
+	terra::values(processed)[ is.nan(terra::values(processed)) ] <- 0
+
+	return(processed)
 
 }#end if(length(which( terra::time(plate) %in% terra::time(driver))) != 0){
 
