@@ -50,12 +50,14 @@ processed <- processed[[terra::time(processed) %in% terra::time(plate)]]
 
 ### reproject
 ### TODO: for some reason this ___ w evi gives:
-processed <- terra::project(processed, plate, method = "cubicspline")
+# processed <- terra::project(processed, plate, method = "cubicspline")
 ### AdviseRead(): nBandCount cannot be greater than 1 (GDAL error 5)
-### the change that caused this was swapping out "processed" for "driver" (used to have processed <- driver)
-### this does not happen with 
-# processed <- terra::project(processed, crs(plate), method = "cubicspline")
-# processed <- terra::crop(processed, plate)
+### it wasn't the class of the index either? any project() of multi layer? but only EVI?
+### is it the driver data? or is it the "interpolation"? Who knows?
+processed <- rast(lapply(processed, function(pp){
+	return( terra::project(pp, plate, method = "cubicspline") )
+})#end lapply
+)#end rast
 	
 ### TODO: for GOES, nan is hopefully only at night.  hopefully RAP/hrrr has no nans? 
 terra::values(processed)[ is.nan(terra::values(processed)) ] <- 0
