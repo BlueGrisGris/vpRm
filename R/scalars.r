@@ -20,7 +20,6 @@ win_Tscalar <- function(Tair, Tmin, Tmax){
 	Tscalar <- terra::app(Tair,fun = pw_func)   
 	ones <- Tair 
 	#         terra::values(ones) <- rep(1, terra::ncell(Tair))
-	#         browser()
 	Tscalar <- terra::sds( 
 		((Tair-Tmin)*(Tair-Tmax))/((Tair-Tmin)*(Tair-Tmax) - (Tair-20)^2)
 		, ones

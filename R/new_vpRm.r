@@ -80,7 +80,7 @@ vpRm <- list(
 	, temp_dir = temp_dir
 	, par_dir = par_dir
 	, evi_dir = evi_dir
-	, evi_extrema_dir = evi_dir
+	, evi_extrema_dir = evi_extrema_dir
 	, green_dir = green_dir
 
 	, proc_dir = proc_dir

@@ -29,7 +29,6 @@ library(raster)
 lc_raster <- raster(lc_filename)
 
 resample_lc <- resample(lc, test_match_crs, "near")
-sessionInfo()
 plot(resample_lc)
 plot(lc)
 

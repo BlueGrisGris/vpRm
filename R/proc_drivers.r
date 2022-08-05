@@ -9,14 +9,15 @@
 proc_drivers.vpRm <- function(vpRm){
 
 	### TODO: nicer error
+	### TODO: stopif
 	if(length(which(is.null(c(
 				    vpRm$dirs$lc_dir
 				  , vpRm$dirs$isa_dir
 				  , vpRm$dirs$temp_dir
 				  , vpRm$dirs$par_dir
 				  , vpRm$dirs$evi_dir
-				  , vpRm$dirs$evi_extrendir
-				  , vpRm$dirs$evi_dir
+				  , vpRm$dirs$evi_extrema_dir
+				  , vpRm$dirs$green_dir
 				  )))) != 0 ){
 	       stop("all driver data directories must be provided")
 	}#end if length which
@@ -24,6 +25,7 @@ proc_drivers.vpRm <- function(vpRm){
 	if(!file.exists(vpRm$dirs$plate)){
 	stop(paste(deparse(substitute(vpRM)), "does not have an associated template. use gen_plate()"))
 	}#end if(!file.exists(vpRm$dirs$plate)){
+
 	plate <- terra::rast(vpRm$dirs$plate)
 	if(vpRm$verbose){Print_Info(plate)}
 
@@ -43,7 +45,6 @@ proc_drivers.vpRm <- function(vpRm){
 	if(vpRm$verbose){Print_Info(isa_proc)}
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(isa, isa_proc)
-
 	####### process temp
 	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
@@ -68,11 +69,11 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process evi
 	evi_scale_factor <- 1e-5
 
-	### TODO: test that evi \in {-1,1}
+	### TODO: check that evi \in {-1,1}
 	if(vpRm$verbose){print("start process evi")}
 	evi <- terra::rast(vpRm$dirs$evi_dir)
 	terra::time(evi) <- parse_modis_evi_times(vpRm$dirs$evi_dir)
-	if(vpRm$verbose){Print_Info(temp)}
+	if(vpRm$verbose){Print_Info(evi)}
 	evi_proc <- proc_3d(evi,plate, strict_times = F)
 	evi_proc <- evi_proc*evi_scale_factor
 	### mask out water which would ruin extrema
@@ -88,6 +89,7 @@ proc_drivers.vpRm <- function(vpRm){
 	if(vpRm$verbose){print("start process evi extrema")}
 	if(is.null(vpRm$dirs$evi_extrema_dir)){
 		### TODO: if there are times in plate in any year, that whole year must be present or error
+		### TODO: TODO: NOT HAVING THIS STOP() IMPLEMENTED RESULTED IN US HUNTING A BUG FOR HOURS>>>>
 		#                 if{
 		#                 }#end 
 		evi_extrema_proc <- c(max(evi_proc, na.rm = T), min(evi_proc, na.rm = T))
@@ -104,6 +106,7 @@ proc_drivers.vpRm <- function(vpRm){
 	if(vpRm$verbose){print("start process green")}
 	if(is.null(vpRm$dirs$green_dir)){
 		### TODO: if there are times in plate in any year, that whole year evi must be present or error
+		### TODO: TODO: NOT HAVING THIS STOP() IMPLEMENTED RESULTED IN US HUNTING A BUG FOR HOURS>>>>
 		#                 if{
 		#                 }#end 
 		green_proc <- green(evi_proc)
