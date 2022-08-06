@@ -80,7 +80,7 @@ proc_drivers.vpRm <- function(vpRm){
 	### mask out water which would ruin extrema
 	evi_proc <- terra::mask(evi_proc, lc_proc, maskvalues = 11)
 	### TODO: better (real) ocean mask
-	ocean_cutoff <- .35
+	ocean_cutoff <- .33
 	evi_proc <- terra::mask(evi_proc, evi_proc<ocean_cutoff, maskvalues = 0)
 	if(vpRm$verbose){Print_Info(evi)}
 	Save_Rast(evi_proc, vpRm$dirs$evi_proc_dir)

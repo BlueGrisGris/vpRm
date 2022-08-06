@@ -13,10 +13,11 @@ plate <- sanitize_raster(plate)
 
 ### TODO: right now domain will always be encompassed by LC, bc LC is CONUS.  This will not be the case forever.
 
-### TODO: think about the performance of this processing as an excercise
 ### reproject then crop
 ### TODO: method = near is for land cover data. maybe make method an arg to proc_2d?
-processed <- terra::project(driver, plate, method = "near") 
+browser()
+
+processed <- terra::project(driver, plate[[1]], method = "near") 
 ### it seems that reproject makes cropping uneccesary
 # processed <- terra::crop(driver_proj,terra::ext(plate))
 

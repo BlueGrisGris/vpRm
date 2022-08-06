@@ -116,6 +116,7 @@ terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
 # Save_Rast(respir, vpRm$dirs$respir)
 
 if(vpRm$verbose){print("start calculate nee")}
+
 NEE <- RESPIR - GEE
 terra::writeCDF(NEE, vpRm$dirs$nee, overwrite = T, prec = "double")
 # Save_Rast(nee, vpRm$dirs$nee)

@@ -1,10 +1,11 @@
 library(terra)
 ### LC data retrieved from https://www.mrlc.gov/data
+### LC data retrieved from https://www.mrlc.gov/data
 
 data_dir <- system.file("test_data",package="vpRm")
 
 # lc_filename <- file.path("~/Desktop/research/phd/em27_carbfor/vprm/NLCD/LC/nlcd_2019_land_cover_l48_20210604.img")
-lc_filename <- file.path("~/Downloads/nlcd_2019_land_cover_l48_20210604/nlcd_2019_land_cover_l48_20210604.img")
+lc_filename <- file.path("/n/wofsy_lab2/Users/emanninen/vprm/driver_data/nlcd/lc/nlcd_2019_land_cover_l48_20210604.img")
 file.exists(lc_filename)
 lc <- rast(lc_filename)
 
@@ -18,17 +19,28 @@ test_match_crs <- rast(crs = crs(lc), res = 80, ext = .1*ext(lc))
 values(test_match_crs) <- 1:ncell(test_match_crs)
 plot(test_match_crs)
 
+ext(lc)
+test_extent <- .1*ext(lc)
+
+crop_lc <- terra::crop(lc , test_extent)
+plot(crop_lc)
+library(raster)
+
+lc_raster <- raster(lc_filename)
+
 resample_lc <- resample(lc, test_match_crs, "near")
 plot(resample_lc)
 plot(lc)
-sessionInfo()
 
 ### hmmm
 plot(lc, type = "classes")
+
 raster_lc <- raster::raster(lc_filename)
+terra::rast(lc_filename)
+
 raster::plot(raster_lc)
 
-lc_test <- terra::crop(lc,ext(proj_domain)*1.5)
+lc_test <- terra::crop(lc,ext(test_match_crs))
 
 plot(proj_domain)
 plot(lc_test,type= "classes")
