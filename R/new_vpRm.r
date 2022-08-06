@@ -22,6 +22,11 @@ new_vpRm <- function(
 	, evi_extrema_dir = NULL
 	, green_dir = NULL
 
+	, year
+	, temp_time = NULL
+	, par_time = NULL
+	, evi_time = NULL
+
 	, verbose = F 
 	#         , params = NULL
 	){
@@ -72,33 +77,41 @@ params <- vpRm::vprm_params
 ### TODO: save as a plaintext? or a rda?
 vpRm <- list(
 	dirs = list(
-	vpRm_dir = vpRm_dir
+		vpRm_dir = vpRm_dir
 
-	#         , driver_dir = driver_dir
-	, lc_dir = lc_dir 	
-	, isa_dir = isa_dir 	
-	, temp_dir = temp_dir
-	, par_dir = par_dir
-	, evi_dir = evi_dir
-	, evi_extrema_dir = evi_extrema_dir
-	, green_dir = green_dir
+		, lc_dir = lc_dir 	
+		, isa_dir = isa_dir 	
+		, temp_dir = temp_dir
+		, par_dir = par_dir
+		, evi_dir = evi_dir
+		, evi_extrema_dir = evi_extrema_dir
+		, green_dir = green_dir
 
-	, proc_dir = proc_dir
-	, plate_dir = plate_dir
+		, proc_dir = proc_dir
+		, plate_dir = plate_dir
 
-	, lc_proc_dir = lc_proc_dir 	
-	, isa_proc_dir = isa_proc_dir 	
-	, temp_proc_dir = temp_proc_dir
-	, par_proc_dir = par_proc_dir
-	, evi_proc_dir = evi_proc_dir
-	, evi_extrema_proc_dir = evi_extrema_proc_dir
-	, green_proc_dir = green_proc_dir
+		, lc_proc_dir = lc_proc_dir 	
+		, isa_proc_dir = isa_proc_dir 	
+		, temp_proc_dir = temp_proc_dir
+		, par_proc_dir = par_proc_dir
+		, evi_proc_dir = evi_proc_dir
+		, evi_extrema_proc_dir = evi_extrema_proc_dir
+		, green_proc_dir = green_proc_dir
 
-	, out_dir = out_dir
-	, gee_dir = gee_dir
-	, respir_dir = respir_dir
-	, nee_dir = nee_dir
+		, out_dir = out_dir
+		, gee_dir = gee_dir
+		, respir_dir = respir_dir
+		, nee_dir = nee_dir
 	)#end list dirs
+
+	, times = list(
+		year = year 
+		, plate_time = NULL
+
+		, temp_time = temp_time
+		, par_time = par_time
+		, evi_time = evi_time
+	)#end list times
 
 	, params = params
 	, verbose = verbose

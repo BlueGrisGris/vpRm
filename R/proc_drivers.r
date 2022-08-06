@@ -49,7 +49,7 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process temp
 	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
-	terra::time(temp) <- parse_herbie_hrrr_times(vpRm$dirs$temp_dir)
+	terra::time(temp) <- vpRm$times$temp_time 
 	if(vpRm$verbose){Print_Info(temp)}
 	temp_proc <- proc_3d(temp,plate, temp_times)
 	if(vpRm$verbose){Print_Info(temp_proc)}
@@ -59,7 +59,7 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process par
 	if(vpRm$verbose){print("start process PAR")}
 	par <- terra::rast(vpRm$dirs$par_dir)
-	terra::time(par) <- parse_herbie_hrrr_times(vpRm$dirs$par_dir)
+	terra::time(par) <- vpRm$times$par_time
 	if(vpRm$verbose){Print_Info(temp)}
 	if(vpRm$verbose){Print_Info(par)}
 	par_proc <- proc_3d(par,plate)
@@ -73,7 +73,7 @@ proc_drivers.vpRm <- function(vpRm){
 	### TODO: check that evi \in {-1,1}
 	if(vpRm$verbose){print("start process evi")}
 	evi <- terra::rast(vpRm$dirs$evi_dir)
-	terra::time(evi) <- parse_modis_evi_times(vpRm$dirs$evi_dir)
+	terra::time(evi) <- vpRm$times$evi_time
 	if(vpRm$verbose){Print_Info(evi)}
 	evi_proc <- proc_3d(evi,plate, strict_times = F)
 	evi_proc <- evi_proc*evi_scale_factor
