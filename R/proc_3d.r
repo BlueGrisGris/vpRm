@@ -11,11 +11,10 @@ proc_3d <- function(driver, plate, strict_times = T){
 processed <- sanitize_raster(driver)
 ### touch plate
 plate <- sanitize_raster(plate)
-browser()
 ### check that the driver covers the times we need
-### "none of the plate times are in the driver"
+### "number of times in plate that arent in driver is not zero
 ### TODO: test strict times behavior
-if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
+if( length(which(!terra::time(plate) %in% terra::time(driver))) != 0 ){
 
 	### but only if when we want to check
 	if(strict_times){
@@ -28,6 +27,8 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 		stop("driver must have times")
 	}#end if
 
+	### for an inexplicable reason, upgrading to terra 1.6.3 makes this projecting multiple layers of evi   
+	### not work (sloooow and GDAL error about bands>1.  also even like this doesnt work if it has been indexed
 	processed <- rast(lapply(processed, function(pp){
 		return( terra::project(pp, plate, method = "cubicspline") )
 	})#end lapply
@@ -40,7 +41,6 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 	### i think this is right? because otherwise you can get 0 which is no good
 	idx <- idx + 1
 	### a terra update to 1.6.3  made indexing with the class num idx ^^^ produce an esoteric 
-	### GDAL error 5 and be slooooow.  The fix is to convert to class int
 	idx <- as.integer(idx)
 	### changes the nlyr(driver) to match nlyr(plate), taking the correct index
 	processed <- processed[[idx]]	
