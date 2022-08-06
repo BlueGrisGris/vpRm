@@ -6,13 +6,14 @@
 #' @param strict_times (bool): Must every time in the vpRm template exist in the driver data?
 #' 
 #' @export
-proc_3d <- function(driver, plate, strict_times = F){
+proc_3d <- function(driver, plate, strict_times = T){
 ### touch driver data 
 processed <- sanitize_raster(driver)
 ### touch plate
 plate <- sanitize_raster(plate)
-
+browser()
 ### check that the driver covers the times we need
+### "none of the plate times are in the driver"
 ### TODO: test strict times behavior
 if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 
@@ -23,7 +24,6 @@ if(length(which(terra::time(plate) %in% terra::time(driver))) == 0){
 	}#end if(strict_times){
 
 	### otherwise, match to closest
-
 	if(is.null(terra::time(processed))){
 		stop("driver must have times")
 	}#end if

@@ -72,7 +72,6 @@ GEE <- gee(
 	   , PAR0
 )#end gee
 
-
 terra::time(GEE) <- terra::time(plate)
 
 if(vpRm$verbose){print("start apply growing system boundary")}

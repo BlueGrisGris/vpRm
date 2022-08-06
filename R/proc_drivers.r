@@ -45,6 +45,7 @@ proc_drivers.vpRm <- function(vpRm){
 	if(vpRm$verbose){Print_Info(isa_proc)}
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(isa, isa_proc)
+
 	####### process temp
 	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
@@ -114,12 +115,13 @@ proc_drivers.vpRm <- function(vpRm){
 		green <- terra::rast(vpRm$dirs$green_dir)
 		green_proc <- proc_2d(green,plate)
 	} #end else
-
 	if(vpRm$verbose){Print_Info(green_proc)}
 	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)
 	rm(green_proc)
 
 	rm(evi, evi_proc)
+
+	### TODO: CHECK ALL DIMENSIONS
 
 	return(vpRm)
 }#end func process.vpRm
