@@ -22,6 +22,10 @@ new_vpRm <- function(
 	, evi_extrema_dir = NULL
 	, green_dir = NULL
 
+	, temp_time = NULL
+	, par_time = NULL
+	, evi_time = NULL
+
 	, verbose = F 
 	#         , params = NULL
 	){
@@ -99,6 +103,17 @@ vpRm <- list(
 	, respir_dir = respir_dir
 	, nee_dir = nee_dir
 	)#end list dirs
+
+	times = list(
+	year =  
+
+	, plate_time = NULL
+
+	, temp_time = temp_time
+	, par_time = par_time
+	, evi_time = evi_time
+
+	)#end list times
 
 	, params = params
 	, verbose = verbose
