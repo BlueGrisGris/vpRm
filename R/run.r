@@ -7,21 +7,34 @@
 #' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
 #' @export
 run.vpRm <- function(vpRm){
-
 ### TODO: an option to update the output location
+### TODO: run should check shape
 
 #############################################
 ### point to processed drivers
 #############################################
 
 plate <- terra::rast(vpRm$dirs$plate_dir)
+
 lc <- terra::rast(vpRm$dirs$lc_proc_dir)
 isa <- terra::rast(vpRm$dirs$isa_proc_dir)
+
+if( any(dim(lc) != c(dim(plate)[1:2], 1) )){stop(paste("dim lc_proc =", dim(lc), " does not align dim plate =", dim(plate)))}
+if( any(dim(isa) != c(dim(plate)[1:2], 1) )){stop(paste("dim isa_proc =", dim(isa), " does not align dim plate =", dim(plate)))}
+
+
 temp <- terra::rast(vpRm$dirs$temp_proc_dir)
 PAR <- terra::rast(vpRm$dirs$par_proc_dir)
 EVI <- terra::rast(vpRm$dirs$evi_proc_dir)
+if( any(dim(temp) != dim(plate)) ){stop(paste("dim temp_proc =", dim(temp), " does not match dim plate =", dim(plate)))}
+if( any(dim(par) != dim(plate)) ){stop(paste("dim par_proc =", dim(par), " does not match dim plate =", dim(plate)))}
+if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
+
 EVIextrema <- terra::rast(vpRm$dirs$evi_extrema_proc_dir)
 green <- terra::rast(vpRm$dirs$green_proc_dir)
+if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
+if( any(dim(green) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(green), " does not align dim plate =", dim(plate)))}
+
 vprm_params <- vpRm$params
 
 if(vpRm$verbose){print("read in proc'd data");print(terra::free_RAM())}
@@ -87,9 +100,13 @@ GEE <- GEE*green_mask
 GEE <- GEE * (lc!=11)
 ### just a few pixels come out negative
 ### TODO: send a warning if more than 1%
-GEE <- mask(GEE, GEE<0, maskvalues = 1)
+GEE <- GEE * (GEE>0)
+### for some reason this mask crashes R in terra 1.6.3. woo
+# GEE <- terra::mask(GEE, GEE<0, maskvalues = 1)
 
-terra::writeCDF(GEE, vpRm$dirs$gee, overwrite = T, prec = "double")
+### writeCDF breaks but writeRaster doesn't? terra plz fix your shit>>>
+# terra::writeCDF(GEE, vpRm$dirs$gee, overwrite = T, prec = "double")
+terra::writeRaster(GEE, vpRm$dirs$gee, overwrite = T)
 
 # Save_Rast(gee, vpRm$dirs$gee)
 
@@ -112,13 +129,15 @@ RESPIR <- RESPIR * (lc!=11)
 
 terra::time(RESPIR) <- terra::time(plate)
 
-terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
+# terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
+terra::writeRaster(RESPIR, vpRm$dirs$respir, overwrite = T)
 # Save_Rast(respir, vpRm$dirs$respir)
 
 if(vpRm$verbose){print("start calculate nee")}
 
 NEE <- RESPIR - GEE
-terra::writeCDF(NEE, vpRm$dirs$nee, overwrite = T, prec = "double")
+# terra::writeCDF(NEE, vpRm$dirs$nee, overwrite = T, prec = "double")
+terra::writeRaster(NEE, vpRm$dirs$nee, overwrite = T)
 # Save_Rast(nee, vpRm$dirs$nee)
 
 if(vpRm$verbose){print("run finished!")}

@@ -15,7 +15,6 @@ plate <- sanitize_raster(plate)
 
 ### reproject then crop
 ### TODO: method = near is for land cover data. maybe make method an arg to proc_2d?
-browser()
 
 processed <- terra::project(driver, plate[[1]], method = "near") 
 ### it seems that reproject makes cropping uneccesary

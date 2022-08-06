@@ -51,7 +51,8 @@ proc_drivers.vpRm <- function(vpRm){
 	temp <- terra::rast(vpRm$dirs$temp_dir)
 	terra::time(temp) <- vpRm$times$temp_time 
 	if(vpRm$verbose){Print_Info(temp)}
-	temp_proc <- proc_3d(temp,plate, temp_times)
+
+	temp_proc <- proc_3d(temp,plate)
 	if(vpRm$verbose){Print_Info(temp_proc)}
 	Save_Rast(temp_proc, vpRm$dirs$temp_proc_dir)
 	rm(temp, temp_proc)
