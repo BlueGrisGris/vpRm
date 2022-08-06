@@ -62,7 +62,7 @@ Wscalar <- Wscalar("fake_lswi", "fake_lswi")
 #############################################
 if(vpRm$verbose){print("start calculate gee")}
 
-gee <- gee(
+GEE <- gee(
 	   lambda
 	   , Tscalar
 	   , Pscalar
@@ -72,24 +72,25 @@ gee <- gee(
 	   , PAR0
 )#end gee
 
-terra::time(gee) <- terra::time(plate)
+
+terra::time(GEE) <- terra::time(plate)
 
 if(vpRm$verbose){print("start apply growing system boundary")}
 ### Set gee to zero outside of growing season
-doy <- lubridate::yday(terra::time(gee)) 
+doy <- lubridate::yday(terra::time(GEE)) 
 green_mask <- (green[[1]] < doy) & (green[[2]] > doy)
 ### but not for evergreen?
 ### TODO: our test set doesn't have evergreen, so untested
 green_mask[lc == 42] <- 1
-gee <- gee*green_mask 
+GEE <- GEE*green_mask 
 
 ### gee = zero where there is water
-gee <- gee * (lc!=11)
+GEE <- GEE * (lc!=11)
 ### just a few pixels come out negative
 ### TODO: send a warning if more than 1%
-gee <- mask(gee, gee<0, maskvalues = 1)
+GEE <- mask(GEE, GEE<0, maskvalues = 1)
 
-terra::writeCDF(gee, vpRm$dirs$gee, overwrite = T, prec = "double")
+terra::writeCDF(GEE, vpRm$dirs$gee, overwrite = T, prec = "double")
 
 # Save_Rast(gee, vpRm$dirs$gee)
 
@@ -98,7 +99,7 @@ terra::writeCDF(gee, vpRm$dirs$gee, overwrite = T, prec = "double")
 #############################################
 if(vpRm$verbose){print("start calculate respiration")}
 
-respir <- respir(
+RESPIR <- respir(
 	temp
 	, alpha
 	, beta
@@ -108,17 +109,19 @@ respir <- respir(
 )#end respir
 
 ### respir = zero where there is water
-respir <- respir * (lc!=11)
+RESPIR <- RESPIR * (lc!=11)
 
-terra::writeCDF(respir, vpRm$dirs$respir, overwrite = T, prec = "double")
+terra::time(RESPIR) <- terra::time(plate)
+
+terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
 # Save_Rast(respir, vpRm$dirs$respir)
 
 if(vpRm$verbose){print("start calculate nee")}
-nee <- respir - gee
-terra::writeCDF(nee, vpRm$dirs$nee, overwrite = T, prec = "double")
+NEE <- RESPIR - GEE
+terra::writeCDF(NEE, vpRm$dirs$nee, overwrite = T, prec = "double")
 # Save_Rast(nee, vpRm$dirs$nee)
 
-if(vpRm$verbose){print("finished!")}
+if(vpRm$verbose){print("run finished!")}
 return(vpRm)
 
 }#end func run.vpRm
