@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 ### Mahadevan et al 2008
 gee <- function(lambda, Tscalar, Pscalar, Wscalar, EVI, PAR, PAR0){
 

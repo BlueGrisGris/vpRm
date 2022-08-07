@@ -1,6 +1,6 @@
 Package: vpRm
 Title: Package for VPRM, a model of NEE
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Ethan", "Manninen", , "emanninen@g.harvard.edu", role = c("aut", "cre"))
 Description: This package provides convenient code to run a Vegetation Photosynthesis and Respiration Model (VPRM). Citation Mahadevan et al 2008.
