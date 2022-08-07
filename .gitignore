@@ -3,3 +3,8 @@
 .Rdata
 .httr-oauth
 .DS_Store
+
+**jukit/
+**__pycache__/
+*/.ipynb_checkpoints/
+*.sw*

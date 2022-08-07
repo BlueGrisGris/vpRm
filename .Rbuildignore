@@ -1,4 +1,5 @@
 ^LICENSE\.md$
 ^create_test_data$
+^fetch_scripts$
 ^data-raw$
 ^\.github$
