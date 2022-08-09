@@ -42,6 +42,9 @@ proc_drivers.vpRm <- function(vpRm){
 	isa <- terra::rast(vpRm$dirs$isa_dir)
 	if(vpRm$verbose){Print_Info(isa)}
 	isa_proc <- proc_2d(isa,plate)
+	### isa should be a fraction, 125 is ocean NA code
+	isa_proc <- isa_proc/100
+	isa_proc <- terra::mask(isa_proc, isa_proc>1, maskvalues = 0)
 	if(vpRm$verbose){Print_Info(isa_proc)}
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(isa, isa_proc)
