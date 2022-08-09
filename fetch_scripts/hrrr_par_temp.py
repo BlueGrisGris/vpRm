@@ -9,6 +9,7 @@ start_time = "2019-01-01 00:00"
 end_time = "2020-12-31 23:00"
 
 times = pd.date_range(start_time, end_time, freq = "1H")
+times
 
 HH_par = fast_Herbie_download(
     DATES = times
