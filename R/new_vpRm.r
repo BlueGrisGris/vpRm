@@ -119,6 +119,8 @@ vpRm <- list(
 
 class(vpRm) <- "vpRm"
 
+saveRDS(vpRm, file.path(vpRm_dir, "vpRm.rds"))
+
 return(vpRm)
 
 }#end func new vpRm

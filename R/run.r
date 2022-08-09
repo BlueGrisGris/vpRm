@@ -105,10 +105,8 @@ GEE <- GEE * (GEE>0)
 # GEE <- terra::mask(GEE, GEE<0, maskvalues = 1)
 
 ### writeCDF breaks but writeRaster doesn't? terra plz fix your shit>>>
-# terra::writeCDF(GEE, vpRm$dirs$gee, overwrite = T, prec = "double")
 terra::writeRaster(GEE, vpRm$dirs$gee, overwrite = T)
-
-# Save_Rast(gee, vpRm$dirs$gee)
+# terra::writeCDF(GEE, vpRm$dirs$gee, overwrite = T, prec = "double")
 
 #############################################
 ### calculate respiration
@@ -129,16 +127,14 @@ RESPIR <- RESPIR * (lc!=11)
 
 terra::time(RESPIR) <- terra::time(plate)
 
-# terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
 terra::writeRaster(RESPIR, vpRm$dirs$respir, overwrite = T)
-# Save_Rast(respir, vpRm$dirs$respir)
+# terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
 
 if(vpRm$verbose){print("start calculate nee")}
 
 NEE <- RESPIR - GEE
 # terra::writeCDF(NEE, vpRm$dirs$nee, overwrite = T, prec = "double")
 terra::writeRaster(NEE, vpRm$dirs$nee, overwrite = T)
-# Save_Rast(nee, vpRm$dirs$nee)
 
 if(vpRm$verbose){print("run finished!")}
 return(vpRm)
