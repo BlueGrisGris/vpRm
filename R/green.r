@@ -7,8 +7,8 @@
 #'
 #' @export
 green <- function(evi
-		  , up_func = function(evi){return( evi>(.85*max(evi)) )}
-		  , down_func = function(evi){return( evi<(.85*max(evi)) )}
+		  , up_func = function(evi){return( evi>(.5*max(evi)) )}
+		  , down_func = function(evi){return( evi<(.65*max(evi)) )}
 		  ){
 
 	### TODO: error if not full year
