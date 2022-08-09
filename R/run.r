@@ -85,9 +85,9 @@ GEE <- gee(
 	   , PAR0
 )#end gee
 
+
 terra::time(GEE) <- terra::time(plate)
 
-if(vpRm$verbose){print("start apply growing system boundary")}
 ### Set gee to zero outside of growing season
 doy <- lubridate::yday(terra::time(GEE)) 
 green_mask <- (GREEN[[1]] < doy) & (GREEN[[2]] > doy)
@@ -103,6 +103,10 @@ GEE <- GEE * (LC!=11)
 GEE <- GEE * (GEE>0)
 ### for some reason this mask crashes R in terra 1.6.3. woo
 # GEE <- terra::mask(GEE, GEE<0, maskvalues = 1)
+
+terra::time(GEE) <- terra::time(plate)
+names(GEE) <- rep("GEE", terra::nlyr(GEE))
+terra::units(GEE) <- rep("micromol CO2 m-2 s-1", terra::nlyr(GEE))
 
 ### writeCDF breaks but writeRaster doesn't? terra plz fix your shit>>>
 terra::writeRaster(GEE, vpRm$dirs$gee, overwrite = T)
@@ -127,6 +131,8 @@ RESPIR <- respir(
 RESPIR <- RESPIR * (LC!=11)
 
 terra::time(RESPIR) <- terra::time(plate)
+names(RESPIR) <- rep("RESPIR", terra::nlyr(RESPIR))
+terra::units(RESPIR) <- rep("micromol CO2 m-2 s-1", terra::nlyr(RESPIR))
 
 terra::writeRaster(RESPIR, vpRm$dirs$respir, overwrite = T)
 # terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
@@ -134,6 +140,11 @@ terra::writeRaster(RESPIR, vpRm$dirs$respir, overwrite = T)
 if(vpRm$verbose){print("start calculate nee")}
 
 NEE <- RESPIR - GEE
+
+terra::time(NEE) <- terra::time(plate)
+names(NEE) <- rep("NEE", terra::nlyr(NEE))
+terra::units(NEE) <- rep("micromol CO2 m-2 s-1", terra::nlyr(NEE))
+
 # terra::writeCDF(NEE, vpRm$dirs$nee, overwrite = T, prec = "double")
 terra::writeRaster(NEE, vpRm$dirs$nee, overwrite = T)
 
