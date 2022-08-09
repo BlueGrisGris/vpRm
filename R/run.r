@@ -122,7 +122,6 @@ RESPIR <- respir(
 	, EVI
 )#end respir
 
-browser()
 
 ### respir = zero where there is water
 RESPIR <- RESPIR * (LC!=11)
