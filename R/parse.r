@@ -39,10 +39,8 @@ hour <- as.numeric(substring( stringr::str_extract(hrrr_filenames, "t[0-9]{2}z")
 hrrr_times <- paste(yr, month, day, hour, sep = "_")
 
 hrrr_times <- lubridate::ymd_h(hrrr_times)
-### there is a mysterious offset in herbie "UTC" to actual UTC????
-hrrr_times <- hrrr_times + lubridate::hours(6)
-return(hrrr_times)
 
+return(hrrr_times)
 }#end func parse_modis_hrrr_times 
 
 #' parse_stilt_times  
