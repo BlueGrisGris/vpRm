@@ -21,4 +21,3 @@ test_that("does run_vpRm produce the correct results?",{
 	expect_equal( dim(terra::rast(vpRm$dirs$gee_files_dir)) , dim(plate) )
 	expect_equal( dim(terra::rast(vpRm$dirs$respir_files_dir)) , dim(plate) )
 }) #end test_that("does run.vpRm produce the correct results?"{
-terra::rast("/tmp/vpRm/out/nee/2020_1_31_100.nc")
