@@ -2,14 +2,15 @@
 #' Creates an empty terra rast template to match other processed driver data to.  
 #' Extent of the input match domain with the projection of the landcover driver data
 #' @param matchdomain (chr or SpatRaster) filepath(s) or SpatRaster of geospatial data readable by terra::rast to run vpRm over. 
-#' @param lc_dir (chr) landcover data filepath
+#' @param lc_dir (chr): landcover data filepath
+#' @param vpRm (vpRm): vpRm object to save the generated plate into
 #' @param verbose (bool) Print messages?
 
 #' @export
 gen_plate <- function(
 		      matchdomain = NULL
 		      , lc_dir  ### TODO: maybe it should be able to eat one already terra::rast'ed?
-		      , vpRM = NULL
+		      , vpRm = NULL
 		      ### TODO: should it be able to convert individual xmin etc into a SpatExtent or should the user do that?
 		      #                       , spatextect = NULL
 		      #                       , xmin = NULL
@@ -93,12 +94,9 @@ terra::values(plate) <- 1:(terra::ncell(plate))
 ### if a vpRm class object is provided, save to file
 ### TODO: testing
 
-#if(!is.null(vpRm){
-#	writeCDF(
-#
-#		 )#end writeCDF
-#
-#})#end if !is null
+if(!is.null(vpRm)){
+	Save_Rast(plate, vpRm$dirs$plate_dir)
+}#end if !is null
 
 return(plate)
 

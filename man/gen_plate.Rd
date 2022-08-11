@@ -6,12 +6,14 @@
 Creates an empty terra rast template to match other processed driver data to.
 Extent of the input match domain with the projection of the landcover driver data}
 \usage{
-gen_plate(matchdomain = NULL, lc_dir, verbose = F)
+gen_plate(matchdomain = NULL, lc_dir, vpRm = NULL, verbose = F)
 }
 \arguments{
 \item{matchdomain}{(chr or SpatRaster) filepath(s) or SpatRaster of geospatial data readable by terra::rast to run vpRm over.}
 
-\item{lc_dir}{(chr) landcover data filepath}
+\item{lc_dir}{(chr): landcover data filepath}
+
+\item{vpRm}{(vpRm): vpRm object to save the generated plate into}
 
 \item{verbose}{(bool) Print messages?}
 }

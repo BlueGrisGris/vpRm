@@ -10,10 +10,14 @@ new_vpRm(
   lc_dir = NULL,
   isa_dir = NULL,
   temp_dir = NULL,
-  par_dir = NULL,
+  dswrf_dir = NULL,
   evi_dir = NULL,
   evi_extrema_dir = NULL,
   green_dir = NULL,
+  year = NULL,
+  temp_time = NULL,
+  dswrf_time = NULL,
+  evi_time = NULL,
   verbose = F
 )
 }
@@ -26,13 +30,21 @@ new_vpRm(
 
 \item{temp_dir}{(chr): path to temperature data}
 
-\item{par_dir}{(chr): path to initialize photosynthetically available radiation data}
+\item{dswrf_dir}{(chr): path to initialize photosynthetically available radiation data}
 
 \item{evi_dir}{(chr): path to vegetation index data}
 
 \item{evi_extrema_dir}{(chr): path to evi_extrema 2d data}
 
 \item{green_dir}{(chr): path to greenup/down data}
+
+\item{year}{(chr): year in which VPRM is being run}
+
+\item{temp_time}{(chr): times of temp}
+
+\item{dswrf_time}{(chr): times of dswrf}
+
+\item{evi_time}{(chr): times of evi}
 
 \item{verbose}{(bool): print intermediary updates?}
 }

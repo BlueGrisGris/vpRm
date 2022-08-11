@@ -14,8 +14,7 @@ plate <- sanitize_raster(plate)
 ### check that the driver covers the times we need
 ### "number of times in plate that arent in driver is not zero
 ### TODO: test strict times behavior
-if( length(which(!terra::time(plate) %in% terra::time(driver))) != 0 ){
-
+if( length(which(!terra::time(plate) %in% terra::time(processed))) != 0 ){
 	### but only if when we want to check
 	if(strict_times){
 		### TODO: error should spec which driver

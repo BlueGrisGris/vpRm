@@ -6,7 +6,7 @@ matchdomain <- Get_Stilt_Out_Filenames(stilt_dir,"foot")
 
 lc_dir <- file.path(data_dir, "lc_test.nc")
 isa_dir <- file.path(data_dir, "isa_test.nc")
-temp_dir <- file.path(data_dir, "hrrr_temp_test_20190131_t01z.nc")
+temp_dir <- file.path(data_dir, "temp_test.nc")
 
 dswrf_dir <- file.path(data_dir, "dswrf_test.nc")
 evi_dir <- file.path(data_dir, "evi_test.nc")

@@ -49,3 +49,29 @@ Print_Info <- function(rast){
 	print(terra::mem_info(rast))
 	print(paste(terra::free_RAM()/1e6, "GB free"))
 }#end func print info
+
+### TODO: test?
+set_vpRm_out_names <- function(vpRm, plate){
+	field_time <- terra::time(plate)
+	for(field_name in c("nee", "gee", "respir")){
+		vpRm$dirs[[paste(field_name, "files", "dir", sep = "_")]] <- file.path( 
+			vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
+			,
+			paste0(
+			paste(
+				lubridate::year(field_time)
+				, lubridate::month(field_time)
+				, lubridate::day(field_time)
+				, paste0(
+					lubridate::hour(field_time)
+					, lubridate::minute(field_time)
+					, lubridate::second(field_time)
+				) #end paste 0 inner
+				, sep = "_"
+			)#end paste
+			, ".nc"
+			)#end paste0
+		)#end file.path
+	}#end for dd
+	return(vpRm)
+}#end func

@@ -1,13 +1,12 @@
-#' run.vpRm
+#' run_vpRm
 #' Run a VPRM model defined by a vpRm object
 #' 
 #' Execute the models calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers(). 
 #' 
-#' 
 #' @param vpRm (vpRm): a vpRm S3 object with attached driver data 
 #' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
 #' @export
-run.vpRm <- function(vpRm){
+run_vpRm <- function(vpRm){
 if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 ### TODO: an option to update the output location
 ### TODO: run should check shape
@@ -120,31 +119,45 @@ RESPIR <- respir(
 	, EVI
 )#end respir
 
+terra::time(RESPIR) <- terra::time(plate)
+
 
 ### respir = zero where there is water
 RESPIR <- RESPIR * (LC!=11)
 
-### TODO: add loop thru and save each output in a single hourly file 
-### single loop
-terra::writeRaster(RESPIR, vpRm$dirs$respir, overwrite = T)
-# terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
-
 if(vpRm$verbose){print("start calculate nee")}
 
 NEE <- RESPIR - GEE
+names(NEE) <- rep("nee", terra::nlyr(NEE))
+
 
 ### save output CO2 flux fields
 lapply(list(NEE, GEE, RESPIR), function(ff){
-	field_name <- tolower(deparse(substitute(ff)))
-	vpRm$dirs
+	field_name <- names(ff)[1]
 	### save each time point to a different file
-	terra::lapp(ff, function(tt){
+	lapply(ff, function(tt){
+		field_time <- terra::time(tt)
 
-		field_time <- terra::time(tt)	
-		field_filename <- file.path(vpRm$dirs[[field_name]], paste0(field_time, ".nc"))
-
+		field_filename <- file.path( 
+			vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
+			,
+			paste0(
+			paste(
+				lubridate::year(field_time)
+				, lubridate::month(field_time)
+				, lubridate::day(field_time)
+				, paste0(
+					lubridate::hour(field_time)
+					, lubridate::minute(field_time)
+					, lubridate::second(field_time)
+				) #end paste 0 inner
+				, sep = "_"
+			)#end paste
+			, ".nc"
+			)#end paste0
+		)#end file.path
 		terra::writeCDF(
-				ff
+				tt
 				, filename = field_filename
 				, varname = field_name
 				, longname = paste(field_name, "CO2 flux")

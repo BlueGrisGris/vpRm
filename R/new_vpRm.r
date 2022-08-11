@@ -5,10 +5,16 @@
 #' @param lc_dir (chr): path to land cover data 
 #' @param isa_dir (chr): path to impermeable surface data 
 #' @param temp_dir (chr): path to temperature data
-#' @param par_dir (chr): path to initialize photosynthetically available radiation data
+#' @param dswrf_dir (chr): path to initialize photosynthetically available radiation data
 #' @param evi_dir (chr): path to vegetation index data
 #' @param evi_extrema_dir (chr): path to evi_extrema 2d data
 #' @param green_dir (chr): path to greenup/down data
+#' 
+#' @param year (chr): year in which VPRM is being run
+#' @param temp_time (chr): times of temp
+#' @param dswrf_time (chr): times of dswrf
+#' @param evi_time (chr): times of evi
+#' 
 #' @param verbose (bool): print intermediary updates?
 #'
 #' @export
@@ -17,14 +23,14 @@ new_vpRm <- function(
 	, lc_dir = NULL
 	, isa_dir = NULL
 	, temp_dir = NULL
-	, par_dir = NULL
+	, dswrf_dir = NULL
 	, evi_dir = NULL
 	, evi_extrema_dir = NULL
 	, green_dir = NULL
 
 	, year = NULL
 	, temp_time = NULL
-	, par_time = NULL
+	, dswrf_time = NULL
 	, evi_time = NULL
 
 	, verbose = F 
@@ -86,7 +92,7 @@ vpRm <- list(
 		, lc_dir = lc_dir 	
 		, isa_dir = isa_dir 	
 		, temp_dir = temp_dir
-		, par_dir = par_dir
+		, dswrf_dir = dswrf_dir
 		, evi_dir = evi_dir
 		, evi_extrema_dir = evi_extrema_dir
 		, green_dir = green_dir
@@ -117,7 +123,7 @@ vpRm <- list(
 		, plate_time = NULL
 
 		, temp_time = temp_time
-		, par_time = par_time
+		, dswrf_time = dswrf_time
 		, evi_time = evi_time
 	)#end list times
 

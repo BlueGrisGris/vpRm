@@ -6,7 +6,7 @@
 #'
 #' @param vpRm (vpRm) a vpRm object 
 #' @export
-proc_drivers.vpRm <- function(vpRm){
+proc_drivers <- function(vpRm){
 
 	### TODO: nicer error
 	### TODO: stopif
@@ -14,7 +14,7 @@ proc_drivers.vpRm <- function(vpRm){
 				    vpRm$dirs$lc_dir
 				  , vpRm$dirs$isa_dir
 				  , vpRm$dirs$temp_dir
-				  , vpRm$dirs$par_dir
+				  , vpRm$dirs$dswrf_dir
 				  , vpRm$dirs$evi_dir
 				  , vpRm$dirs$evi_extrema_dir
 				  , vpRm$dirs$green_dir
@@ -52,7 +52,6 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process temp
 	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
-	terra::time(temp) <- vpRm$times$temp_time 
 	if(vpRm$verbose){Print_Info(temp)}
 
 	temp_proc <- proc_3d(temp,plate)
@@ -60,16 +59,14 @@ proc_drivers.vpRm <- function(vpRm){
 	Save_Rast(temp_proc, vpRm$dirs$temp_proc_dir)
 	rm(temp, temp_proc)
 
-	####### process par
+	####### process dswrf to par
 	if(vpRm$verbose){print("start process PAR")}
-	par <- terra::rast(vpRm$dirs$par_dir)
-	terra::time(par) <- vpRm$times$par_time
-	if(vpRm$verbose){Print_Info(temp)}
-	if(vpRm$verbose){Print_Info(par)}
-	par_proc <- proc_3d(par,plate)
+	dswrf <- terra::rast(vpRm$dirs$dswrf_dir)
+	if(vpRm$verbose){Print_Info(dswrf)}
+	par_proc <- proc_3d(dswrf,plate)
 	if(vpRm$verbose){Print_Info(par_proc)}
 	Save_Rast(par_proc, vpRm$dirs$par_proc_dir)
-	rm(par, par_proc)
+	rm(dswrf, par_proc)
 
 	####### process evi
 	evi_scale_factor <- 1e-5
@@ -77,7 +74,6 @@ proc_drivers.vpRm <- function(vpRm){
 	### TODO: check that evi \in {-1,1}
 	if(vpRm$verbose){print("start process evi")}
 	evi <- terra::rast(vpRm$dirs$evi_dir)
-	terra::time(evi) <- vpRm$times$evi_time
 	if(vpRm$verbose){Print_Info(evi)}
 	evi_proc <- proc_3d(evi,plate, strict_times = F)
 	evi_proc <- evi_proc*evi_scale_factor

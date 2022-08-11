@@ -5,7 +5,7 @@
 \title{proc_3d
 Convert 3d data to match crs and extent to template}
 \usage{
-proc_3d(driver, plate, strict_times = F)
+proc_3d(driver, plate, strict_times = T)
 }
 \arguments{
 \item{driver}{(Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for data file to be processed}
@@ -13,8 +13,6 @@ proc_3d(driver, plate, strict_times = F)
 \item{plate}{(Spat Raster or terra::SpatRaster): SpatRaster or filepath that can be input to terra::Rast for vpRm template}
 
 \item{strict_times}{(bool): Must every time in the vpRm template exist in the driver data?}
-
-\item{times_driver}{(Date, chr): dates of driver if not parsable by terra::rast}
 }
 \description{
 proc_3d

@@ -45,7 +45,7 @@ return(hrrr_times)
 
 #' parse_stilt_times  
 #'  
-#' @param hrrr_filenames (chr): hrrr modis filenames to extract date times from 
+#' @param stilt_filenames (chr): hrrr modis filenames to extract date times from 
 #' 
 #' @export
 parse_stilt_times <- function(stilt_filenames){
