@@ -63,7 +63,8 @@ proc_drivers <- function(vpRm){
 	if(vpRm$verbose){print("start process PAR")}
 	dswrf <- terra::rast(vpRm$dirs$dswrf_dir)
 	if(vpRm$verbose){Print_Info(dswrf)}
-	par_proc <- proc_3d(dswrf,plate)
+	### Mahadevan 2008 factor to convert DSWRF to PAR
+	par_proc <- proc_3d(dswrf,plate)/.505
 	if(vpRm$verbose){Print_Info(par_proc)}
 	Save_Rast(par_proc, vpRm$dirs$par_proc_dir)
 	rm(dswrf, par_proc)
