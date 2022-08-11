@@ -52,7 +52,7 @@ proc_drivers <- function(vpRm){
 	####### process temp
 	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
-	#         terra::time(temp) <- vpRm$times$temp_time
+	terra::time(temp) <- vpRm$times$temp_time
 	temp_proc <- proc_3d(temp,plate)
 	Save_Rast(temp_proc, vpRm$dirs$temp_proc_dir)
 	rm(temp, temp_proc)
@@ -60,7 +60,7 @@ proc_drivers <- function(vpRm){
 	####### process dswrf to par
 	if(vpRm$verbose){print("start process PAR")}
 	dswrf <- terra::rast(vpRm$dirs$dswrf_dir)
-	#         terra::time(dswrf) <- vpRm$times$dswrf_time
+	terra::time(dswrf) <- vpRm$times$dswrf_time
 	if(vpRm$verbose){Print_Info(dswrf)}
 	### Mahadevan 2008 factor to convert DSWRF to PAR
 	par_proc <- proc_3d(dswrf,plate)/.505
@@ -74,7 +74,7 @@ proc_drivers <- function(vpRm){
 	### TODO: check that evi \in {-1,1}
 	if(vpRm$verbose){print("start process evi")}
 	evi <- terra::rast(vpRm$dirs$evi_dir)
-	#         terra::time(evi) <- vpRm$times$evi_time
+	terra::time(evi) <- vpRm$times$evi_time
 	if(vpRm$verbose){Print_Info(evi)}
 	evi_proc <- proc_3d(evi,plate, strict_times = F)
 	evi_proc <- evi_proc*evi_scale_factor
