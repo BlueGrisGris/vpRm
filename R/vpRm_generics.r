@@ -9,3 +9,5 @@ summary.vpRm <- function(){
 	return(NULL)
 
 }#end func print.vpRm
+
+### TODO: [[]] indexing

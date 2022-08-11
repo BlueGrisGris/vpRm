@@ -55,14 +55,18 @@ evi_proc_dir <- file.path(proc_dir, "evi.nc")
 evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema.nc")
 green_proc_dir <- file.path(proc_dir, "green.nc")
 
-gee_dir <- file.path(out_dir, "gee.nc")
-respir_dir <- file.path(out_dir, "respir.nc")
-nee_dir <- file.path(out_dir, "nee.nc")
+gee_dir <- file.path(out_dir, "gee")
+respir_dir <- file.path(out_dir, "respir")
+nee_dir <- file.path(out_dir, "nee")
+
+dir.create(gee_dir, recursive = T, showWarnings = F)
+dir.create(respir_dir, recursive = T, showWarnings = F)
+dir.create(nee_dir, recursive = T, showWarnings = F)
 
 #########################
-### Save plate to vpRm_dir/processed
+### TODO: Save plate to vpRm_dir/processed
+### (once the plain text is ready
 #########################
-
 
 #########################
 ### vprm_params
@@ -74,7 +78,7 @@ params <- vpRm::vprm_params
 #########################
 ### Save S3 class 
 #########################
-### TODO: save as a plaintext? or a rda?
+### TODO: save as a plaintext
 vpRm <- list(
 	dirs = list(
 		vpRm_dir = vpRm_dir
@@ -99,9 +103,13 @@ vpRm <- list(
 		, green_proc_dir = green_proc_dir
 
 		, out_dir = out_dir
+		, nee_dir = nee_dir
 		, gee_dir = gee_dir
 		, respir_dir = respir_dir
-		, nee_dir = nee_dir
+
+		, nee_files_dir = NULL
+		, gee_files_dir = NULL
+		, respir_files_dir = NULL
 	)#end list dirs
 
 	, times = list(

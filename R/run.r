@@ -1,3 +1,4 @@
+#' run.vpRm
 #' Run a VPRM model defined by a vpRm object
 #' 
 #' Execute the models calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers(). 
@@ -7,6 +8,7 @@
 #' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
 #' @export
 run.vpRm <- function(vpRm){
+if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 ### TODO: an option to update the output location
 ### TODO: run should check shape
 
@@ -19,9 +21,9 @@ plate <- terra::rast(vpRm$dirs$plate_dir)
 LC <- terra::rast(vpRm$dirs$lc_proc_dir)
 ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
 
+### TODO: test the stop behavior
 if( any(dim(LC) != c(dim(plate)[1:2], 1) )){stop(paste("dim lc_proc =", dim(LC), " does not align dim plate =", dim(plate)))}
 if( any(dim(ISA) != c(dim(plate)[1:2], 1) )){stop(paste("dim isa_proc =", dim(ISA), " does not align dim plate =", dim(plate)))}
-
 
 TEMP <- terra::rast(vpRm$dirs$temp_proc_dir)
 PAR <- terra::rast(vpRm$dirs$par_proc_dir)
@@ -100,17 +102,9 @@ GEE <- GEE*green_mask
 GEE <- GEE * (LC!=11)
 ### just a few pixels come out negative
 ### TODO: send a warning if more than 1%
-GEE <- GEE * (GEE>0)
+# GEE <- GEE * (GEE>0)
 ### for some reason this mask crashes R in terra 1.6.3. woo
 # GEE <- terra::mask(GEE, GEE<0, maskvalues = 1)
-
-terra::time(GEE) <- terra::time(plate)
-names(GEE) <- rep("GEE", terra::nlyr(GEE))
-terra::units(GEE) <- rep("micromol CO2 m-2 s-1", terra::nlyr(GEE))
-
-### writeCDF breaks but writeRaster doesn't? terra plz fix your shit>>>
-terra::writeRaster(GEE, vpRm$dirs$gee, overwrite = T)
-# terra::writeCDF(GEE, vpRm$dirs$gee, overwrite = T, prec = "double")
 
 #############################################
 ### calculate respiration
@@ -130,10 +124,8 @@ RESPIR <- respir(
 ### respir = zero where there is water
 RESPIR <- RESPIR * (LC!=11)
 
-terra::time(RESPIR) <- terra::time(plate)
-names(RESPIR) <- rep("RESPIR", terra::nlyr(RESPIR))
-terra::units(RESPIR) <- rep("micromol CO2 m-2 s-1", terra::nlyr(RESPIR))
-
+### TODO: add loop thru and save each output in a single hourly file 
+### single loop
 terra::writeRaster(RESPIR, vpRm$dirs$respir, overwrite = T)
 # terra::writeCDF(RESPIR, vpRm$dirs$respir, overwrite = T, prec = "double")
 
@@ -141,12 +133,30 @@ if(vpRm$verbose){print("start calculate nee")}
 
 NEE <- RESPIR - GEE
 
-terra::time(NEE) <- terra::time(plate)
-names(NEE) <- rep("NEE", terra::nlyr(NEE))
-terra::units(NEE) <- rep("micromol CO2 m-2 s-1", terra::nlyr(NEE))
+### save output CO2 flux fields
+lapply(list(NEE, GEE, RESPIR), function(ff){
+	field_name <- tolower(deparse(substitute(ff)))
+	vpRm$dirs
+	### save each time point to a different file
+	terra::lapp(ff, function(tt){
 
-# terra::writeCDF(NEE, vpRm$dirs$nee, overwrite = T, prec = "double")
-terra::writeRaster(NEE, vpRm$dirs$nee, overwrite = T)
+		field_time <- terra::time(tt)	
+		field_filename <- file.path(vpRm$dirs[[field_name]], paste0(field_time, ".nc"))
+
+		terra::writeCDF(
+				ff
+				, filename = field_filename
+				, varname = field_name
+				, longname = paste(field_name, "CO2 flux")
+				, zname = "time"
+				, unit = "micromol CO2 m-2 s-1"
+				, overwrite = T
+				, prec = "double"
+		)#end writeCDF
+		return(NULL)
+	}) #end sapply tt
+	return(NULL)
+})#end lapply list fields
 
 if(vpRm$verbose){print("run finished!")}
 return(vpRm)
