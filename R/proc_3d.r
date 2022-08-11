@@ -29,7 +29,7 @@ if( length(which(!terra::time(plate) %in% terra::time(driver))) != 0 ){
 
 	### for an inexplicable reason, upgrading to terra 1.6.3 makes this projecting multiple layers of evi   
 	### not work (sloooow and GDAL error about bands>1.  also even like this doesnt work if it has been indexed
-	processed <- rast(lapply(processed, function(pp){
+	processed <- terra::rast(lapply(processed, function(pp){
 		return( terra::project(pp, plate, method = "cubicspline") )
 	})#end lapply
 	)#end rast
@@ -66,7 +66,7 @@ processed <- processed[[terra::time(processed) %in% terra::time(plate)]]
 ### AdviseRead(): nBandCount cannot be greater than 1 (GDAL error 5)
 ### it wasn't the class of the index either? any project() of multi layer? but only EVI?
 ### is it the driver data? or is it the "interpolation"? Who knows?
-processed <- rast(lapply(processed, function(pp){
+processed <- terra::rast(lapply(processed, function(pp){
 	return( terra::project(pp, plate, method = "cubicspline") )
 })#end lapply
 )#end rast

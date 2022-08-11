@@ -22,7 +22,7 @@ new_vpRm <- function(
 	, evi_extrema_dir = NULL
 	, green_dir = NULL
 
-	, year
+	, year = NULL
 	, temp_time = NULL
 	, par_time = NULL
 	, evi_time = NULL
