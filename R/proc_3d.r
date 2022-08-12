@@ -40,8 +40,7 @@ if( length(which(!terra::time(plate) %in% terra::time(processed))) != 0 ){
 	idx <- findInterval(lubridate::yday(terra::time(plate)),vec = lubridate::yday(terra::time(processed)))
 	### i think this is right? because otherwise you can get 0 which is no good
 	idx <- idx + 1
-	### a terra update to 1.6.3  made indexing with the class num idx ^^^ produce an esoteric 
-	idx <- as.integer(idx)
+
 	### changes the nlyr(driver) to match nlyr(plate), taking the correct index
 	processed <- processed[[idx]]	
 	#         idx <-sapply(1:terra::nlyr(processed), function(ii){return(length(idx[idx==pp]))})

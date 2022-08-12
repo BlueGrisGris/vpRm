@@ -69,22 +69,17 @@ proc_drivers <- function(vpRm){
 	rm(dswrf, par_proc)
 
 	####### process evi
-	evi_scale_factor <- 1e-5
+	evi_scale_factor <- 1e-4
 
 	### TODO: check that evi \in {-1,1}
 	if(vpRm$verbose){print("start process evi")}
-	evi <- terra::rast(vpRm$dirs$evi_dir)
-	terra::time(evi) <- vpRm$times$evi_time
-	if(vpRm$verbose){Print_Info(evi)}
-	evi_proc <- proc_3d(evi,plate, strict_times = F)
-	evi_proc <- evi_proc*evi_scale_factor
+	EVI <- terra::rast(vpRm$dirs$evi_dir)
+	terra::time(EVI) <- vpRm$times$evi_time
+	EVI_proc <- proc_3d(EVI,plate, strict_times = F)
+	EVI_proc <- EVI_proc*evi_scale_factor
 	### mask out water which would ruin extrema
-	evi_proc <- terra::mask(evi_proc, lc_proc, maskvalues = 11)
-	### TODO: better (real) ocean mask
-	ocean_cutoff <- .33
-	evi_proc <- terra::mask(evi_proc, evi_proc<ocean_cutoff, maskvalues = 0)
-	if(vpRm$verbose){Print_Info(evi)}
-	Save_Rast(evi_proc, vpRm$dirs$evi_proc_dir)
+	EVI_proc <- terra::mask(EVI_proc, lc_proc, maskvalues = 11)
+	Save_Rast(EVI_proc, vpRm$dirs$evi_proc_dir)
 
 	####### process evi extrema
 	### TODO: if it alrdy exists dont rerun?
