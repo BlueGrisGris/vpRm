@@ -11,7 +11,6 @@ proc_3d <- function(driver, plate, strict_times = T){
 processed <- sanitize_raster(driver)
 ### touch plate
 plate <- sanitize_raster(plate)
-# browser()
 ### check that the driver covers the times we need
 ### "number of times in plate that arent in driver is not zero
 ### TODO: test strict times behavior

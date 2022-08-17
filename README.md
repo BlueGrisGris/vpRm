@@ -78,5 +78,8 @@ run(my_vpRm)
 
 
 ## Goals for next version:
+- Manage driver time data in a smooth way: easy assignment/not
+- Handle multiple years per run
+## Goals for future versions:
 - Simple R/vpRm interface for downloading driver data 
 - Wrapper function to run VPRM models in a single line
