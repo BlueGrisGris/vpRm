@@ -1,4 +1,3 @@
-skip("further")
 test_that("does parse_modis_evi_times() return the correct dates", {
 	evi_filenames <- c("MYD13A1.006__500m_16_days_EVI_doy2018361_aid0001.tif" , "MYD13A1.006__500m_16_days_EVI_doy2019009_aid0001.tif")
 	parsed <- parse_modis_evi_times(evi_filenames)
@@ -10,7 +9,6 @@ test_that("does parse_modis_evi_times() return the correct dates", {
 
 })#end test_that("does parse_modis_evi_times() return the correct dates"){
 
-skip("further")
 test_that("does parse_herbie_hrrr_times() return the correct dates", {
 	evi_filenames <- c("/n/wofsy_lab2/Users/emanninen/vprm/driver_data/hrrr_temperature/hrrr/20200627/suc_hrrr.t19z.wrfsfcf06.grib2")
 	parsed <- parse_herbie_hrrr_times(evi_filenames)
@@ -20,7 +18,6 @@ test_that("does parse_herbie_hrrr_times() return the correct dates", {
 
 })#end test_that("does parse_herbie_hrrr_times() return the correct dates"){
 
-skip("further")
 test_that("does parse_stilt_times() return the correct dates", {
 	stilt_filenames <- "/n/holylfs04/LABS/wofsy_lab/Lab/Everyone/for_Ethan/STILT_slantfoot/stilt_slant_hb_202012291900.nc"
 	parsed <- parse_stilt_times(stilt_filenames)

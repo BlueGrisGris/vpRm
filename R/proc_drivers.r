@@ -52,7 +52,10 @@ proc_drivers <- function(vpRm){
 	####### process temp
 	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
-	terra::time(temp) <- vpRm$times$temp_time
+	if(any(is.na(terra::time(temp)))){
+		if(any(is.na(vpRm$times$temp_time))){stop("either driver data:temp or vpRm must supply time")}
+		terra::time(temp) <- vpRm$times$temp_time
+	}#end if(any(is.na(terra::time(temp)))){
 	temp_proc <- proc_3d(temp,plate)
 	Save_Rast(temp_proc, vpRm$dirs$temp_proc_dir)
 	rm(temp, temp_proc)
@@ -60,7 +63,10 @@ proc_drivers <- function(vpRm){
 	####### process dswrf to par
 	if(vpRm$verbose){print("start process PAR")}
 	dswrf <- terra::rast(vpRm$dirs$dswrf_dir)
-	terra::time(dswrf) <- vpRm$times$dswrf_time
+	if(any(is.na(terra::time(dswrf)))){
+		if(any(is.na(vpRm$times$dswrf_time))){stop("either driver data:dswrf or vpRm must supply time")}
+		terra::time(dswrf) <- vpRm$times$dswrf_time
+	}#end if(any(is.na(terra::time(temp)))){
 	if(vpRm$verbose){Print_Info(dswrf)}
 	### Mahadevan 2008 factor to convert DSWRF to PAR
 	par_proc <- proc_3d(dswrf,plate)/.505
@@ -74,7 +80,11 @@ proc_drivers <- function(vpRm){
 	### TODO: check that evi \in {-1,1}
 	if(vpRm$verbose){print("start process evi")}
 	EVI <- terra::rast(vpRm$dirs$evi_dir)
-	terra::time(EVI) <- vpRm$times$evi_time
+	#         if(terra::time(EVI))
+	if(any(is.na(terra::time(EVI)))){
+		if(any(is.na(vpRm$times$evi_time))){stop("either driver data:evi or vpRm must supply time")}
+		terra::time(EVI) <- vpRm$times$evi_time
+	}#end if(any(is.na(terra::time(evi)))){
 	EVI_proc <- proc_3d(EVI,plate, strict_times = F)
 	EVI_proc <- EVI_proc*evi_scale_factor
 	### mask out water which would ruin extrema
@@ -89,7 +99,7 @@ proc_drivers <- function(vpRm){
 		### TODO: TODO: NOT HAVING THIS STOP() IMPLEMENTED RESULTED IN US HUNTING A BUG FOR HOURS>>>>
 		#                 if{
 		#                 }#end 
-		evi_extrema_proc <- c(max(evi_proc, na.rm = T), min(evi_proc, na.rm = T))
+		evi_extrema_proc <- c(max(EVI_proc, na.rm = T), min(EVI_proc, na.rm = T))
 	}else{
 		evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_dir)
 		evi_extrema_proc <- proc_2d(evi_extrema,plate)
@@ -106,16 +116,16 @@ proc_drivers <- function(vpRm){
 		### TODO: TODO: NOT HAVING THIS STOP() IMPLEMENTED RESULTED IN US HUNTING A BUG FOR HOURS>>>>
 		#                 if{
 		#                 }#end 
-		green_proc <- green(evi_proc)
+		green_proc <- green(EVI_proc)
 	}else{
 		green <- terra::rast(vpRm$dirs$green_dir)
 		green_proc <- proc_2d(green,plate)
 	} #end else
 	if(vpRm$verbose){Print_Info(green_proc)}
 	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)
-	rm(green_proc)
 
-	rm(evi, evi_proc)
+	rm(green_proc)
+	rm(EVI, EVI_proc)
 
 	### TODO: CHECK ALL DIMENSIONS
 
