@@ -29,7 +29,8 @@ if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_p
 if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
 
 lapply(terra::time(plate), function(tp){
-### vary hourly or interpolated as such
+
+### vary hourly or "interpolated" as such
 TEMP <- terra::rast(vpRm$dirs$temp_proc_dir)
 PAR <- terra::rast(vpRm$dirs$par_proc_dir)
 EVI <- terra::rast(vpRm$dirs$evi_proc_dir)
@@ -136,26 +137,12 @@ names(NEE) <- rep("nee", terra::nlyr(NEE))
 lapply(list(NEE, GEE, RESPIR), function(ff){
 	field_name <- names(ff)[1]
 	field_time <- terra::time(ff)
-	### TODO: function in misc
-	### TODO: make it pad zeros correctly
+
 	field_filename <- file.path( 
 		vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
-		,
-		paste0(
-		paste(
-			lubridate::year(field_time)
-			, lubridate::month(field_time)
-			, lubridate::day(field_time)
-			, paste0(
-				lubridate::hour(field_time)
-				, lubridate::minute(field_time)
-				, lubridate::second(field_time)
-			) #end paste 0 inner
-			, sep = "_"
-		)#end paste
-		, ".nc"
-		)#end paste0
+		, out_field_filename(field_name, field_time)
 	)#end file.path
+
 	terra::writeCDF(
 			ff
 			, filename = field_filename
@@ -168,6 +155,7 @@ lapply(list(NEE, GEE, RESPIR), function(ff){
 	)#end writeCDF
 	return(NULL)
 })#end lapply list fields
+})#end lapply tp
 
 if(vpRm$verbose){print("run finished!")}
 return(vpRm)

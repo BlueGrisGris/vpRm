@@ -10,4 +10,8 @@ summary.vpRm <- function(){
 
 }#end func print.vpRm
 
-### TODO: [[]] indexing
+[.vpRm <- function(vpRm, i){
+
+	print(template(vpRm))
+
+}#end func 

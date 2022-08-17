@@ -84,4 +84,15 @@ set_vpRm_out_names <- function(vpRm, plate){
 	return(vpRm)
 }#end func
 
+### return the rast of the vpRm's template
+### TODO: alsp for assignment
+domain <- function(vpRm){
+	return(terra::rast(vpRm$dirs$plate_dir))
+}#end func vpRm
+
+"domain<-" <- function(plate){
+	browser()
+	Save_Rast(plate, vpRm$dirs$plate_dir)
+}#edn func domain <- 
+
 
