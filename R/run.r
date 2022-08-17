@@ -16,25 +16,26 @@ if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 #############################################
 
 plate <- terra::rast(vpRm$dirs$plate_dir)
-
+### time invariant 
 LC <- terra::rast(vpRm$dirs$lc_proc_dir)
 ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
-
 ### TODO: test the stop behavior
 if( any(dim(LC) != c(dim(plate)[1:2], 1) )){stop(paste("dim lc_proc =", dim(LC), " does not align dim plate =", dim(plate)))}
 if( any(dim(ISA) != c(dim(plate)[1:2], 1) )){stop(paste("dim isa_proc =", dim(ISA), " does not align dim plate =", dim(plate)))}
+### per year
+EVIextrema <- terra::rast(vpRm$dirs$evi_extrema_proc_dir)
+GREEN <- terra::rast(vpRm$dirs$green_proc_dir)
+if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
+if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
 
+lapply(terra::time(plate), function(tp){
+### vary hourly or interpolated as such
 TEMP <- terra::rast(vpRm$dirs$temp_proc_dir)
 PAR <- terra::rast(vpRm$dirs$par_proc_dir)
 EVI <- terra::rast(vpRm$dirs$evi_proc_dir)
 if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " does not match dim plate =", dim(plate)))}
 if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
 if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
-
-EVIextrema <- terra::rast(vpRm$dirs$evi_extrema_proc_dir)
-GREEN <- terra::rast(vpRm$dirs$green_proc_dir)
-if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
-if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
 
 vprm_params <- vpRm$params
 
@@ -134,40 +135,37 @@ names(NEE) <- rep("nee", terra::nlyr(NEE))
 ### save output CO2 flux fields
 lapply(list(NEE, GEE, RESPIR), function(ff){
 	field_name <- names(ff)[1]
-	### save each time point to a different file
-	lapply(ff, function(tt){
-		field_time <- terra::time(tt)
-
-		field_filename <- file.path( 
-			vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
-			,
-			paste0(
-			paste(
-				lubridate::year(field_time)
-				, lubridate::month(field_time)
-				, lubridate::day(field_time)
-				, paste0(
-					lubridate::hour(field_time)
-					, lubridate::minute(field_time)
-					, lubridate::second(field_time)
-				) #end paste 0 inner
-				, sep = "_"
-			)#end paste
-			, ".nc"
-			)#end paste0
-		)#end file.path
-		terra::writeCDF(
-				tt
-				, filename = field_filename
-				, varname = field_name
-				, longname = paste(field_name, "CO2 flux")
-				, zname = "time"
-				, unit = "micromol CO2 m-2 s-1"
-				, overwrite = T
-				, prec = "double"
-		)#end writeCDF
-		return(NULL)
-	}) #end sapply tt
+	field_time <- terra::time(ff)
+	### TODO: function in misc
+	### TODO: make it pad zeros correctly
+	field_filename <- file.path( 
+		vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
+		,
+		paste0(
+		paste(
+			lubridate::year(field_time)
+			, lubridate::month(field_time)
+			, lubridate::day(field_time)
+			, paste0(
+				lubridate::hour(field_time)
+				, lubridate::minute(field_time)
+				, lubridate::second(field_time)
+			) #end paste 0 inner
+			, sep = "_"
+		)#end paste
+		, ".nc"
+		)#end paste0
+	)#end file.path
+	terra::writeCDF(
+			ff
+			, filename = field_filename
+			, varname = field_name
+			, longname = paste(field_name, "CO2 flux")
+			, zname = "time"
+			, unit = "micromol CO2 m-2 s-1"
+			, overwrite = T
+			, prec = "double"
+	)#end writeCDF
 	return(NULL)
 })#end lapply list fields
 
