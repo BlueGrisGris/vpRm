@@ -4,7 +4,6 @@
 #' 
 #' @export
 parse_modis_evi_times <- function(evi_filenames){
-
 ### someday maybe replace str_split w strsplit
 yy <- stringr::str_extract(evi_filenames, "[0-9]{7}")
 
@@ -12,8 +11,8 @@ yr <- as.numeric( substr(yy, start = 1, stop = 4))
 doy <- as.numeric( substr(yy, start = 5, stop = 7)) 
 doy <- doy - 1
 
-evi_times <- as.Date(paste0(yr, "-01-01")) + doy
-evi_times <- as.POSIXct(evi_times, tz = "")
+evi_times <- as.Date(paste0(yr, "-01-01 00:00:00")) + doy
+evi_times <- as.POSIXct(evi_times, tz = "UTC")
 
 return(evi_times)
 
