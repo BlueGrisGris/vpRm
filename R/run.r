@@ -65,9 +65,13 @@ Tscalar <- Tscalar(TEMP, Tmin, Tmax)
 
 EVImax <- EVIextrema[[1]]
 EVImin <- EVIextrema[[2]]
+
 Pscalar <- Pscalar(EVI, EVImax, EVImin) 
-### TODO: hmmm sometimes EVImax and min are super close..
-Pscalar <- terra::mask(Pscalar, (Pscalar > 1) | (Pscalar < 0)  , maskvalues = 1)
+
+Pscalar[LC == 42] <- 1
+Pscalar[Pscalar < 0] <- 0 
+Pscalar[Pscalar > 1] <- 1 
+
 ### simplified Wscalar
 Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
 
