@@ -53,8 +53,8 @@ Tmax <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmax"] )
 
 PAR0 <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
 
-alpha <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"alpha"] )
-beta <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
+ALPHA <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"alpha"] )
+BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
 
 #############################################
 ### calculate scalars
@@ -116,8 +116,8 @@ if(vpRm$verbose){print("start calculate respiration")}
 
 RESPIR <- respir(
 	TEMP
-	, alpha
-	, beta
+	, ALPHA
+	, BETA
 	, LC
 	, ISA
 	, EVI
