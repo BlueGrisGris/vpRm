@@ -77,7 +77,6 @@ proc_drivers <- function(vpRm){
 	####### process evi
 	evi_scale_factor <- 1e-4
 
-	### TODO: check that evi \in {-1,1}
 	if(vpRm$verbose){print("start process evi")}
 	EVI <- terra::rast(vpRm$dirs$evi_dir)
 	#         if(terra::time(EVI))
