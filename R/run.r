@@ -7,8 +7,9 @@
 #' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
 #' @export
 run_vpRm <- function(vpRm){
+
 if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
-### TODO: an option to update the output location
+
 ### TODO: run should check shape
 
 #############################################
@@ -43,6 +44,7 @@ if(vpRm$verbose){print("read in proc'd data");print(terra::free_RAM())}
 #############################################
 ### collate vprm paramters
 #############################################
+
 if(vpRm$verbose){print("start collate VPRM params")}
 
 ### TODO: check that we dont need an addtl mask
@@ -59,6 +61,7 @@ BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
 #############################################
 ### calculate scalars
 #############################################
+
 if(vpRm$verbose){print("start calculate scalars")}
 
 Tscalar <- Tscalar(TEMP, Tmin, Tmax)

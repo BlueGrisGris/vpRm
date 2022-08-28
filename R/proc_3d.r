@@ -38,8 +38,8 @@ if( length(which(!terra::time(plate) %in% terra::time(processed))) != 0 ){
 	### TODO: w yday, only works for missing data w less granularity the 24h switch to hour_year or smth
 	idx <- findInterval(lubridate::yday(terra::time(plate)),vec = lubridate::yday(terra::time(processed)))
 	### i think this is right? because otherwise you can get 0 which is no good
-	idx <- idx + 1
-
+	### aaaand now its different
+	#         idx <- idx + 1
 	### changes the nlyr(driver) to match nlyr(plate), taking the correct index
 	processed <- processed[[idx]]	
 	#         idx <-sapply(1:terra::nlyr(processed), function(ii){return(length(idx[idx==pp]))})

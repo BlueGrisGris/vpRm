@@ -32,9 +32,20 @@ proc_drivers <- function(vpRm){
 	####### process landcover
 	if(vpRm$verbose){print("start process landcover")}
 	lc <- terra::rast(vpRm$dirs$lc_dir)
-	if(vpRm$verbose){Print_Info(lc)}
 	lc_proc <- proc_2d(lc,plate)
-	if(vpRm$verbose){Print_Info(lc_proc)}
+	### some NLCD LC types are not in vprm params
+	### pick the closest one
+	lc_proc[lc_proc == 21] <- 71
+	lc_proc[lc_proc == 22] <- 24
+	### TODO: maybe take an average of urban/grass for 50% urban?
+	lc_proc[lc_proc == 23] <- 24
+	### TODO: hay = crops?
+	lc_proc[lc_proc == 81] <- 82
+	### I am ok with "barren" coming out zero
+	#         lc_proc[lc_proc == 31] <- 82
+	### emergent wetland as wetland
+	lc_proc[lc_proc == 95] <- 90
+
 	Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
 
 	####### process isa
