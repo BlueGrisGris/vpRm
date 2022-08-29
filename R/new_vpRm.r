@@ -32,6 +32,8 @@ new_vpRm <- function(
 	, temp_time = NULL
 	, dswrf_time = NULL
 	, evi_time = NULL
+	
+	, out_crs = NULL
 
 	, verbose = F 
 	#         , params = NULL
@@ -116,6 +118,7 @@ vpRm <- list(
 		, nee_files_dir = NULL
 		, gee_files_dir = NULL
 		, respir_files_dir = NULL
+
 	)#end list dirs
 
 	, times = list(
@@ -126,6 +129,8 @@ vpRm <- list(
 		, dswrf_time = dswrf_time
 		, evi_time = evi_time
 	)#end list times
+
+	, out_crs = out_crs
 
 	, params = params
 	, verbose = verbose

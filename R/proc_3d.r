@@ -18,7 +18,7 @@ if( length(which(!terra::time(plate) %in% terra::time(processed))) != 0 ){
 	### but only if when we want to check
 	if(strict_times){
 		### TODO: error should spec which driver
-		stop(paste("There are times in plate that are not in driver\n plate times:", terra::time(plate), "driver times:", terra::time(processed)))
+		stop(paste("There are times in plate that are not in driver\n plate times:", terra::time(plate), "\n"))
 	}#end if(strict_times){
 
 	### otherwise, match to closest

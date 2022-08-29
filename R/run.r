@@ -163,6 +163,12 @@ lapply(list(NEE, GEE, RESPIR), function(ff){
 			, ".nc"
 			)#end paste0
 		)#end file.path
+
+		### reproject to input template projection 
+		if(!is.null(vpRm$out_crs)){
+			tt <- terra::project(tt, vpRm$out_crs)
+		}#end if(!is.null(vpRm$out_crs){
+
 		terra::writeCDF(
 				tt
 				, filename = field_filename
@@ -181,4 +187,4 @@ lapply(list(NEE, GEE, RESPIR), function(ff){
 if(vpRm$verbose){print("run finished!")}
 return(vpRm)
 
-}#end func run.vpRm
+}#end func run
