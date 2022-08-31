@@ -29,9 +29,9 @@ new_vpRm <- function(
 
 	, params = vprm::vprm_params 
 
-	, domain_crs = NULL
-	, domain_ext = NULL
-	, domain_times = NULL
+	, vpRm_crs = NULL
+	, vpRm_ext = NULL
+	, vpRm_time = NULL
 
 	, verbose = F 
 	){
@@ -62,6 +62,11 @@ respir_dir <- file.path(out_dir, "respir")
 nee_dir <- file.path(out_dir, "nee")
 
 dir.create(c(nee_dir, gee_dir, respir_dir), recursive = T, showWarnings = F)
+
+### TODO: outfiles for each time -- properly zero padded
+# , nee_dir = nee_files_dir
+# , gee_dir = gee_files_dir
+# , respir_dir = respir_files_dir
 
 #########################
 ### Save S3 class 
@@ -96,20 +101,17 @@ vpRm <- list(
 		, nee_dir = nee_dir
 		, gee_dir = gee_dir
 		, respir_dir = respir_dir
-		, nee_dir = nee_files_dir
-		, gee_dir = gee_files_dir
-		, respir_dir = respir_files_dir
+		### TODO: set
+		#                 , nee_dir = nee_files_dir
+		#                 , gee_dir = gee_files_dir
+		#                 , respir_dir = respir_files_dir
+
 	)#end list dirs
 
-	, times = list(
-		years = NULL 
-		, plate_time = NULL
-	)#end list times
-
 	domain = list(
-		, domain_crs = domain_crs
-		, domain_ext = domain_ext 
-		, domain_times = domain_times 
+		, vpRm_crs = vpRm_crs
+		, vpRm_ext = vpRm_ext 
+		, vpRm_time = vpRm_time
 	) #end list domain
 
 	, params = params

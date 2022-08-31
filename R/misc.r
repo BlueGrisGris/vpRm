@@ -22,7 +22,7 @@ Get_Stilt_Out_Filenames <- function(stilt_out_dir,outtype){
 sanitize_raster <- function(raster){
 if(class(raster)[[1]] != "SpatRaster"){
 	if(class(raster)[[1]] != "character"){
-		stop("input must be either a terra::rasted land cover or a filepath to such")
+		stop("Input must be either a terra::spatRaster or a filepath to geospatial data readable by terra::rast()")
 	}#end if(!class(driver)[[1]] != c){
 	raster <- terra::rast(raster)
 }#end if(class(driver)[[1]]{
