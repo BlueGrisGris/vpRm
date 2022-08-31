@@ -10,31 +10,30 @@
 #' @param evi_extrema_dir (chr): path to evi_extrema 2d data
 #' @param green_dir (chr): path to greenup/down data
 #' 
-#' @param year (chr): year in which VPRM is being run
-#' @param temp_time (chr): times of temp
-#' @param dswrf_time (chr): times of dswrf
-#' @param evi_time (chr): times of evi
-#' 
 #' @param verbose (bool): print intermediary updates?
 #'
 #' @export
 new_vpRm <- function(
+
 	vpRm_dir = "."
+	### TODO: set default to the heavy dir
 	, lc_dir = NULL
 	, isa_dir = NULL
 	, temp_dir = NULL
 	, dswrf_dir = NULL
 	, evi_dir = NULL
+
+	### TODO: set default to the heavy dir
 	, evi_extrema_dir = NULL
 	, green_dir = NULL
 
-	, year = NULL
-	, temp_time = NULL
-	, dswrf_time = NULL
-	, evi_time = NULL
+	, params = vprm::vprm_params 
+
+	, domain_crs = NULL
+	, domain_ext = NULL
+	, domain_times = NULL
 
 	, verbose = F 
-	#         , params = NULL
 	){
 
 #       TODO:  ---> also we are not following the principles about args on pg 304 Advanced R
@@ -42,13 +41,10 @@ new_vpRm <- function(
 #########################
 ### Create Directories 
 #########################
-### TODO: right now drivers are pre downloaded
-### TODO: ability to override dirs
-# driver_dir <- file.path(vpRm_dir, "driver")
+
 proc_dir <- file.path(vpRm_dir, "processed")
 out_dir <- file.path(vpRm_dir, "out")
 
-# dir.create(driver_dir, recursive = T, showWarnings = F)
 dir.create(proc_dir, recursive = T, showWarnings = F)
 dir.create(out_dir, recursive = T, showWarnings = F)
 
@@ -65,27 +61,15 @@ gee_dir <- file.path(out_dir, "gee")
 respir_dir <- file.path(out_dir, "respir")
 nee_dir <- file.path(out_dir, "nee")
 
-dir.create(gee_dir, recursive = T, showWarnings = F)
-dir.create(respir_dir, recursive = T, showWarnings = F)
-dir.create(nee_dir, recursive = T, showWarnings = F)
-
-#########################
-### TODO: Save plate to vpRm_dir/processed
-### (once the plain text is ready
-#########################
-
-#########################
-### vprm_params
-#########################
-### TODO: implement user defined paraams
-
-params <- vpRm::vprm_params
+dir.create(c(nee_dir, gee_dir, respir_dir), recursive = T, showWarnings = F)
 
 #########################
 ### Save S3 class 
 #########################
+
 ### TODO: save as a plaintext
 vpRm <- list(
+
 	dirs = list(
 		vpRm_dir = vpRm_dir
 
@@ -112,22 +96,24 @@ vpRm <- list(
 		, nee_dir = nee_dir
 		, gee_dir = gee_dir
 		, respir_dir = respir_dir
-
-		, nee_files_dir = NULL
-		, gee_files_dir = NULL
-		, respir_files_dir = NULL
+		, nee_dir = nee_files_dir
+		, gee_dir = gee_files_dir
+		, respir_dir = respir_files_dir
 	)#end list dirs
 
 	, times = list(
-		year = year 
+		years = NULL 
 		, plate_time = NULL
-
-		, temp_time = temp_time
-		, dswrf_time = dswrf_time
-		, evi_time = evi_time
 	)#end list times
 
+	domain = list(
+		, domain_crs = domain_crs
+		, domain_ext = domain_ext 
+		, domain_times = domain_times 
+	) #end list domain
+
 	, params = params
+
 	, verbose = verbose
 )#end list vpRm
 

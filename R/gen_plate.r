@@ -1,4 +1,5 @@
 #' gen_plate()
+#'
 #' Creates an empty terra rast template to match other processed driver data to.  
 #' Extent of the input match domain with the projection of the landcover driver data
 #' @param matchdomain (chr or SpatRaster) filepath(s) or SpatRaster of geospatial data readable by terra::rast to run vpRm over. 
