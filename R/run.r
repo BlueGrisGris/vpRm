@@ -7,28 +7,31 @@
 #' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
 #' @export
 run_vpRm <- function(vpRm){
+
 if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
-### TODO: an option to update the output location
-### TODO: run should check shape
+
+lapply(vpRm$domian$time, function(tt){
+
+if(vpRm$verbose){print(tt)}
 
 #############################################
 ### point to processed drivers
 #############################################
 
-plate <- terra::rast(vpRm$dirs$plate_dir)
 ### time invariant 
 LC <- terra::rast(vpRm$dirs$lc_proc_dir)
 ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
-### TODO: test the stop behavior
+
+### TODO: make it a function and add it to a checker function?
 if( any(dim(LC) != c(dim(plate)[1:2], 1) )){stop(paste("dim lc_proc =", dim(LC), " does not align dim plate =", dim(plate)))}
 if( any(dim(ISA) != c(dim(plate)[1:2], 1) )){stop(paste("dim isa_proc =", dim(ISA), " does not align dim plate =", dim(plate)))}
+
 ### per year
+### TODO: grep by year(time)
 EVIextrema <- terra::rast(vpRm$dirs$evi_extrema_proc_dir)
 GREEN <- terra::rast(vpRm$dirs$green_proc_dir)
 if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
 if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
-
-lapply(terra::time(plate), function(tp){
 
 ### vary hourly or "interpolated" as such
 TEMP <- terra::rast(vpRm$dirs$temp_proc_dir)
@@ -38,16 +41,14 @@ if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " do
 if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
 if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
 
-vprm_params <- vpRm$params
-
-if(vpRm$verbose){print("read in proc'd data");print(terra::free_RAM())}
-
 #############################################
 ### collate vprm paramters
 #############################################
-if(vpRm$verbose){print("start collate VPRM params")}
 
-### TODO: check that we dont need an addtl mask
+### TODO: Check for LC not in params
+
+vprm_params <- vpRm$params
+
 lambda <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"lambda"] )
 
 Tmin <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmin"] )
@@ -61,21 +62,25 @@ beta <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
 #############################################
 ### calculate scalars
 #############################################
+
 if(vpRm$verbose){print("start calculate scalars")}
 
+### simplified Tscalar
 Tscalar <- Tscalar(TEMP, Tmin, Tmax)
 
+### calculate Pscalar
 EVImax <- EVIextrema[[1]]
 EVImin <- EVIextrema[[2]]
 Pscalar <- Pscalar(EVI, EVImax, EVImin) 
-### TODO: hmmm sometimes EVImax and min are super close..
 Pscalar <- terra::mask(Pscalar, (Pscalar > 1) | (Pscalar < 0)  , maskvalues = 1)
+
 ### simplified Wscalar
 Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
 
 #############################################
 ### calculate gee
 #############################################
+
 if(vpRm$verbose){print("start calculate gee")}
 
 GEE <- gee(
@@ -88,28 +93,20 @@ GEE <- gee(
 	   , PAR0
 )#end gee
 
-
-terra::time(GEE) <- terra::time(plate)
-
 ### Set gee to zero outside of growing season
 doy <- lubridate::yday(terra::time(GEE)) 
 green_mask <- (GREEN[[1]] < doy) & (GREEN[[2]] > doy)
-### but not for evergreen?
-### TODO: our test set doesn't have evergreen, so untested
+### but not for evergreen (LC == 42)
 green_mask[LC == 42] <- 1
 GEE <- GEE*green_mask 
 
 ### gee = zero where there is water
 GEE <- GEE * (LC!=11)
-### just a few pixels come out negative
-### TODO: send a warning if more than 1%
-# GEE <- GEE * (GEE>0)
-### for some reason this mask crashes R in terra 1.6.3. woo
-# GEE <- terra::mask(GEE, GEE<0, maskvalues = 1)
 
 #############################################
 ### calculate respiration
 #############################################
+
 if(vpRm$verbose){print("start calculate respiration")}
 
 RESPIR <- respir(
@@ -121,9 +118,6 @@ RESPIR <- respir(
 	, EVI
 )#end respir
 
-terra::time(RESPIR) <- terra::time(plate)
-
-
 ### respir = zero where there is water
 RESPIR <- RESPIR * (LC!=11)
 
@@ -131,7 +125,6 @@ if(vpRm$verbose){print("start calculate nee")}
 
 NEE <- RESPIR - GEE
 names(NEE) <- rep("nee", terra::nlyr(NEE))
-
 
 ### save output CO2 flux fields
 lapply(list(NEE, GEE, RESPIR), function(ff){
