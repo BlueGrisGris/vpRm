@@ -33,35 +33,25 @@ proc_drivers <- function(vpRm){
 	if(vpRm$verbose){print("start process landcover")}
 	lc <- terra::rast(vpRm$dirs$lc_dir)
 	lc_proc <- proc_2d(lc,plate)
-	### some NLCD LC types are not in vprm params
-	### pick the closest one
-	lc_proc[lc_proc == 21] <- 71
-	lc_proc[lc_proc == 22] <- 24
-	### TODO: maybe take an average of urban/grass for 50% urban?
-	lc_proc[lc_proc == 23] <- 24
-	### TODO: hay = crops?
-	lc_proc[lc_proc == 81] <- 82
-	### I am ok with "barren" coming out zero
-	#         lc_proc[lc_proc == 31] <- 82
-	### emergent wetland as wetland
-	lc_proc[lc_proc == 95] <- 90
 
 	Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
 
 	####### process isa
-	if(vpRm$verbose){print("start process impermeability")}
 	isa <- terra::rast(vpRm$dirs$isa_dir)
-	if(vpRm$verbose){Print_Info(isa)}
 	isa_proc <- proc_2d(isa,plate)
 	### isa should be a fraction, 125 is ocean NA code
 	isa_proc <- isa_proc/100
 	isa_proc <- terra::mask(isa_proc, isa_proc<1, maskvalues = 0)
-	if(vpRm$verbose){Print_Info(isa_proc)}
+	### rudimentary add canada imperviousness
+	urban_lc <- 17
+	urban_factor <- .25*(lc_proc==urban_lc)
+	urban_factor_canada <- terra::mask(urban_factor, is.na(isa_proc),maskvalues = F)
+	isa_proc <- sum(isa_proc, urban_factor_canada, na.rm = T)
+	
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(isa, isa_proc)
 
 	####### process temp
-	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
 	if(any(is.na(terra::time(temp)))){
 		if(any(is.na(vpRm$times$temp_time))){stop("either driver data:temp or vpRm must supply time")}

@@ -58,9 +58,13 @@ PAR0 <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
 ALPHA <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"alpha"] )
 BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
 
+water_lc <- 18
+evergreen_lc <- c(1,2,3)
+
 #############################################
 ### calculate scalars
 #############################################
+
 
 if(vpRm$verbose){print("start calculate scalars")}
 
@@ -71,7 +75,7 @@ EVImin <- EVIextrema[[2]]
 
 Pscalar <- Pscalar(EVI, EVImax, EVImin) 
 
-Pscalar[LC == 42] <- 1
+Pscalar[LC %in% evergreen_lc] <- 1
 Pscalar[Pscalar < 0] <- 0 
 Pscalar[Pscalar > 1] <- 1 
 
@@ -100,17 +104,11 @@ terra::time(GEE) <- terra::time(plate)
 doy <- lubridate::yday(terra::time(GEE)) 
 green_mask <- (GREEN[[1]] < doy) & (GREEN[[2]] > doy)
 ### but not for evergreen?
-### TODO: our test set doesn't have evergreen, so untested
-green_mask[LC == 42] <- 1
+green_mask[LC %in% evergreen_lc] <- 1
 GEE <- GEE*green_mask 
 
 ### gee = zero where there is water
-GEE <- GEE * (LC!=11)
-### just a few pixels come out negative
-### TODO: send a warning if more than 1%
-# GEE <- GEE * (GEE>0)
-### for some reason this mask crashes R in terra 1.6.3. woo
-# GEE <- terra::mask(GEE, GEE<0, maskvalues = 1)
+GEE <- GEE * (LC!=water_lc)
 
 #############################################
 ### calculate respiration
@@ -130,7 +128,7 @@ terra::time(RESPIR) <- terra::time(plate)
 
 
 ### respir = zero where there is water
-RESPIR <- RESPIR * (LC!=11)
+RESPIR <- RESPIR * (LC!=water_lc)
 
 if(vpRm$verbose){print("start calculate nee")}
 
