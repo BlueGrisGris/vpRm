@@ -108,7 +108,7 @@ vpRm <- list(
 
 	)#end list dirs
 
-	domain = list(
+	, domain = list(
 		, vpRm_crs = vpRm_crs
 		, vpRm_ext = vpRm_ext 
 		, vpRm_time = vpRm_time

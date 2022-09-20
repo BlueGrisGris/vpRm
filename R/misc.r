@@ -43,13 +43,6 @@ Save_Rast <- function(rast, filename){
 	return(rast)
 }#end Save_Rast <- function(rast, filename){
 
-Print_Info <- function(rast){
-	print(deparse(substitute(rast)))
-	print(rast)
-	print(terra::mem_info(rast))
-	print(paste(terra::free_RAM()/1e6, "GB free"))
-}#end func print info
-
 ### TODO: make it pad zeros correctly
 ### TODO: test?
 out_field_filename <- function(field_name, field_time){
@@ -65,34 +58,32 @@ out_field_filename <- function(field_name, field_time){
 				) #end paste 0 inner
 				, sep = "_"
 			)#end paste
+		, field_name 
 		, ".nc"
 		)#end paste0
 	return(field_filename)
 }#end func out_field_filename
 
-### given the times in plate, assign file names for the output files
-### TODO: test?
-### integrate with the rest
-set_vpRm_out_names <- function(vpRm, plate){
-	field_time <- terra::time(plate)
-	for(field_name in c("nee", "gee", "respir")){
-		vpRm$dirs[[paste(field_name, "files", "dir", sep = "_")]] <- file.path( 
-			vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
-			, out_field_filename(field_name, field_time)
-		)#end file.path
-	}#end for dd
-	return(vpRm)
-}#end func
+save_co2_field <- function(ff){
 
-### return the rast of the vpRm's template
-### TODO: alsp for assignment
-domain <- function(vpRm){
-	return(terra::rast(vpRm$dirs$plate_dir))
-}#end func vpRm
+	field_name <- names(ff)[1]
+	field_time <- terra::time(ff)
 
-"domain<-" <- function(plate){
-	browser()
-	Save_Rast(plate, vpRm$dirs$plate_dir)
-}#edn func domain <- 
+	field_filename <- file.path( 
+		vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
+		, out_field_filename(field_name, field_time)
+	)#end file.path
 
+	terra::writeCDF(
+			ff
+			, filename = field_filename
+			, varname = field_name
+			, longname = paste(field_name, "CO2 flux")
+			, zname = "time"
+			, unit = "micromol CO2 m-2 s-1"
+			, overwrite = T
+			, prec = "double"
+	)#end writeCDF
+	return(NULL)
+}#end func save_co2_field
 

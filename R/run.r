@@ -1,7 +1,7 @@
 #' run_vpRm
 #' Run a VPRM model defined by a vpRm object
 #' 
-#' Execute the models calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers(). 
+#' Execute the "model" calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers(). 
 #' 
 #' @param vpRm (vpRm): a vpRm S3 object with attached driver data 
 #' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
@@ -10,7 +10,7 @@ run_vpRm <- function(vpRm){
 
 if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 
-lapply(vpRm$domian$time, function(tt){
+lapply(vpRm$domain$time, function(tt){
 
 if(vpRm$verbose){print(tt)}
 
@@ -56,8 +56,8 @@ Tmax <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmax"] )
 
 PAR0 <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
 
-alpha <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"alpha"] )
-beta <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
+ALPHA <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"ALPHA"] )
+BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"BETA"] )
 
 #############################################
 ### calculate scalars
@@ -111,8 +111,8 @@ if(vpRm$verbose){print("start calculate respiration")}
 
 RESPIR <- respir(
 	TEMP
-	, alpha
-	, beta
+	, ALPHA
+	, BETA
 	, LC
 	, ISA
 	, EVI
@@ -121,36 +121,19 @@ RESPIR <- respir(
 ### respir = zero where there is water
 RESPIR <- RESPIR * (LC!=11)
 
-if(vpRm$verbose){print("start calculate nee")}
+#############################################
+### calculate nee and save outputs
+#############################################
 
+### net ecosystem exchange
 NEE <- RESPIR - GEE
 names(NEE) <- rep("nee", terra::nlyr(NEE))
 
 ### save output CO2 flux fields
-lapply(list(NEE, GEE, RESPIR), function(ff){
-	field_name <- names(ff)[1]
-	field_time <- terra::time(ff)
+lapply(list(NEE, GEE, RESPIR), save_co2_field(ff))
 
-	field_filename <- file.path( 
-		vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
-		, out_field_filename(field_name, field_time)
-	)#end file.path
+})#end lapply run
 
-	terra::writeCDF(
-			ff
-			, filename = field_filename
-			, varname = field_name
-			, longname = paste(field_name, "CO2 flux")
-			, zname = "time"
-			, unit = "micromol CO2 m-2 s-1"
-			, overwrite = T
-			, prec = "double"
-	)#end writeCDF
-	return(NULL)
-})#end lapply list fields
-})#end lapply tp
-
-if(vpRm$verbose){print("run finished!")}
 return(vpRm)
 
-}#end func run.vpRm
+}#end func run_vpRm
