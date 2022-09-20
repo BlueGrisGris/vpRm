@@ -1,5 +1,5 @@
 test_that("does Tscalar() return correct values?", {
-	expect_equal(Tscalar(Tair = 25, Tmin = 0, Tmax = 40),.7)
+	expect_equal(Tscalar(Tair = 25, Tmin = 0, Tmax = 40),.85)
 })#end test_that("does gen_templ() create a good template?", {
 
 test_that("does Pscalar() return correct values?", {

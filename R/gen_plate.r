@@ -2,13 +2,15 @@
 #' Creates an empty terra rast template to match other processed driver data to.  
 #' Extent of the input match domain with the projection of the landcover driver data
 #' @param matchdomain (chr or SpatRaster) filepath(s) or SpatRaster of geospatial data readable by terra::rast to run vpRm over. 
-#' @param lc_dir (chr) landcover data filepath
+#' @param lc_dir (chr): landcover data filepath
+#' @param vpRm (vpRm): vpRm object to save the generated plate into
 #' @param verbose (bool) Print messages?
 
 #' @export
 gen_plate <- function(
 		      matchdomain = NULL
 		      , lc_dir  ### TODO: maybe it should be able to eat one already terra::rast'ed?
+		      , vpRm = NULL
 		      ### TODO: should it be able to convert individual xmin etc into a SpatExtent or should the user do that?
 		      #                       , spatextect = NULL
 		      #                       , xmin = NULL
@@ -41,19 +43,17 @@ if(is.null(matchdomain)){
 
 ### can accept rasters not saved to storage
 if(class(matchdomain) != "SpatRaster"){
-if(verbose){
-print(paste("Attempting to parse",matchdomain,"and create plate"))
-### TODO: add to vpRm.log
-}#end if verbose
+	if(verbose){
+		print(paste("Attempting to parse",matchdomain,"and create plate"))
+		### TODO: add to vpRm.log
+	}#end if verbose
 
-### check if matchdomain is a directory
-if(length(list.files(matchdomain)!=0)){
-	### TODO: further sanitize inputs from dir
-matchdomain<- list.files(matchdomain)
-}#end if(length(list.files(matchdomain)!=0)){
+		### check if matchdomain is a directory
+	if(length(list.files(matchdomain)!=0)){
+			matchdomain<- list.files(matchdomain)
+	}#end if(length(list.files(matchdomain)!=0)){
 
-### read in data to match domain to using terra
-domain <- terra::rast(matchdomain)
+	domain <- terra::rast(matchdomain)
 
 }else{domain <- matchdomain}
 
@@ -90,6 +90,13 @@ terra::values(plate) <- 1:(terra::ncell(plate))
 ### create plate from given coordinates
 ### TO BE IMPLEMENTED
 #########################
+
+### if a vpRm class object is provided, save to file
+### TODO: testing
+
+if(!is.null(vpRm)){
+	Save_Rast(plate, vpRm$dirs$plate_dir)
+}#end if !is null
 
 return(plate)
 

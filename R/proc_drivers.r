@@ -6,7 +6,7 @@
 #'
 #' @param vpRm (vpRm) a vpRm object 
 #' @export
-proc_drivers.vpRm <- function(vpRm){
+proc_drivers <- function(vpRm){
 
 	### TODO: nicer error
 	### TODO: stopif
@@ -14,7 +14,7 @@ proc_drivers.vpRm <- function(vpRm){
 				    vpRm$dirs$lc_dir
 				  , vpRm$dirs$isa_dir
 				  , vpRm$dirs$temp_dir
-				  , vpRm$dirs$par_dir
+				  , vpRm$dirs$dswrf_dir
 				  , vpRm$dirs$evi_dir
 				  , vpRm$dirs$evi_extrema_dir
 				  , vpRm$dirs$green_dir
@@ -32,9 +32,20 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process landcover
 	if(vpRm$verbose){print("start process landcover")}
 	lc <- terra::rast(vpRm$dirs$lc_dir)
-	if(vpRm$verbose){Print_Info(lc)}
 	lc_proc <- proc_2d(lc,plate)
-	if(vpRm$verbose){Print_Info(lc_proc)}
+	### some NLCD LC types are not in vprm params
+	### pick the closest one
+	lc_proc[lc_proc == 21] <- 71
+	lc_proc[lc_proc == 22] <- 24
+	### TODO: maybe take an average of urban/grass for 50% urban?
+	lc_proc[lc_proc == 23] <- 24
+	### TODO: hay = crops?
+	lc_proc[lc_proc == 81] <- 82
+	### I am ok with "barren" coming out zero
+	#         lc_proc[lc_proc == 31] <- 82
+	### emergent wetland as wetland
+	lc_proc[lc_proc == 95] <- 90
+
 	Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
 
 	####### process isa
@@ -42,6 +53,9 @@ proc_drivers.vpRm <- function(vpRm){
 	isa <- terra::rast(vpRm$dirs$isa_dir)
 	if(vpRm$verbose){Print_Info(isa)}
 	isa_proc <- proc_2d(isa,plate)
+	### isa should be a fraction, 125 is ocean NA code
+	isa_proc <- isa_proc/100
+	isa_proc <- terra::mask(isa_proc, isa_proc<1, maskvalues = 0)
 	if(vpRm$verbose){Print_Info(isa_proc)}
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(isa, isa_proc)
@@ -49,42 +63,43 @@ proc_drivers.vpRm <- function(vpRm){
 	####### process temp
 	if(vpRm$verbose){print("start process temperature")}
 	temp <- terra::rast(vpRm$dirs$temp_dir)
-	terra::time(temp) <- vpRm$times$temp_time 
-	if(vpRm$verbose){Print_Info(temp)}
-
+	if(any(is.na(terra::time(temp)))){
+		if(any(is.na(vpRm$times$temp_time))){stop("either driver data:temp or vpRm must supply time")}
+		terra::time(temp) <- vpRm$times$temp_time
+	}#end if(any(is.na(terra::time(temp)))){
 	temp_proc <- proc_3d(temp,plate)
-	if(vpRm$verbose){Print_Info(temp_proc)}
 	Save_Rast(temp_proc, vpRm$dirs$temp_proc_dir)
 	rm(temp, temp_proc)
 
-	####### process par
+	####### process dswrf to par
 	if(vpRm$verbose){print("start process PAR")}
-	par <- terra::rast(vpRm$dirs$par_dir)
-	terra::time(par) <- vpRm$times$par_time
-	if(vpRm$verbose){Print_Info(temp)}
-	if(vpRm$verbose){Print_Info(par)}
-	par_proc <- proc_3d(par,plate)
+	dswrf <- terra::rast(vpRm$dirs$dswrf_dir)
+	if(any(is.na(terra::time(dswrf)))){
+		if(any(is.na(vpRm$times$dswrf_time))){stop("either driver data:dswrf or vpRm must supply time")}
+		terra::time(dswrf) <- vpRm$times$dswrf_time
+	}#end if(any(is.na(terra::time(temp)))){
+	if(vpRm$verbose){Print_Info(dswrf)}
+	### Mahadevan 2008 factor to convert DSWRF to PAR
+	par_proc <- proc_3d(dswrf,plate)/.505
 	if(vpRm$verbose){Print_Info(par_proc)}
 	Save_Rast(par_proc, vpRm$dirs$par_proc_dir)
-	rm(par, par_proc)
+	rm(dswrf, par_proc)
 
 	####### process evi
-	evi_scale_factor <- 1e-5
+	evi_scale_factor <- 1e-4
 
-	### TODO: check that evi \in {-1,1}
 	if(vpRm$verbose){print("start process evi")}
-	evi <- terra::rast(vpRm$dirs$evi_dir)
-	terra::time(evi) <- vpRm$times$evi_time
-	if(vpRm$verbose){Print_Info(evi)}
-	evi_proc <- proc_3d(evi,plate, strict_times = F)
-	evi_proc <- evi_proc*evi_scale_factor
+	EVI <- terra::rast(vpRm$dirs$evi_dir)
+	#         if(terra::time(EVI))
+	if(any(is.na(terra::time(EVI)))){
+		if(any(is.na(vpRm$times$evi_time))){stop("either driver data:evi or vpRm must supply time")}
+		terra::time(EVI) <- vpRm$times$evi_time
+	}#end if(any(is.na(terra::time(evi)))){
+	EVI_proc <- proc_3d(EVI,plate, strict_times = F)
+	EVI_proc <- EVI_proc*evi_scale_factor
 	### mask out water which would ruin extrema
-	evi_proc <- terra::mask(evi_proc, lc_proc, maskvalues = 11)
-	### TODO: better (real) ocean mask
-	ocean_cutoff <- .33
-	evi_proc <- terra::mask(evi_proc, evi_proc<ocean_cutoff, maskvalues = 0)
-	if(vpRm$verbose){Print_Info(evi)}
-	Save_Rast(evi_proc, vpRm$dirs$evi_proc_dir)
+	EVI_proc <- terra::mask(EVI_proc, lc_proc, maskvalues = 11)
+	Save_Rast(EVI_proc, vpRm$dirs$evi_proc_dir)
 
 	####### process evi extrema
 	### TODO: if it alrdy exists dont rerun?
@@ -94,7 +109,7 @@ proc_drivers.vpRm <- function(vpRm){
 		### TODO: TODO: NOT HAVING THIS STOP() IMPLEMENTED RESULTED IN US HUNTING A BUG FOR HOURS>>>>
 		#                 if{
 		#                 }#end 
-		evi_extrema_proc <- c(max(evi_proc, na.rm = T), min(evi_proc, na.rm = T))
+		evi_extrema_proc <- c(max(EVI_proc, na.rm = T), min(EVI_proc, na.rm = T))
 	}else{
 		evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_dir)
 		evi_extrema_proc <- proc_2d(evi_extrema,plate)
@@ -111,16 +126,16 @@ proc_drivers.vpRm <- function(vpRm){
 		### TODO: TODO: NOT HAVING THIS STOP() IMPLEMENTED RESULTED IN US HUNTING A BUG FOR HOURS>>>>
 		#                 if{
 		#                 }#end 
-		green_proc <- green(evi_proc)
+		green_proc <- green(EVI_proc)
 	}else{
 		green <- terra::rast(vpRm$dirs$green_dir)
 		green_proc <- proc_2d(green,plate)
 	} #end else
 	if(vpRm$verbose){Print_Info(green_proc)}
 	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)
-	rm(green_proc)
 
-	rm(evi, evi_proc)
+	rm(green_proc)
+	rm(EVI, EVI_proc)
 
 	### TODO: CHECK ALL DIMENSIONS
 

@@ -7,7 +7,7 @@
 parse_stilt_times(stilt_filenames)
 }
 \arguments{
-\item{hrrr_filenames}{(chr): hrrr modis filenames to extract date times from}
+\item{stilt_filenames}{(chr): hrrr modis filenames to extract date times from}
 }
 \description{
 parse_stilt_times
