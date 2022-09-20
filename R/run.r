@@ -74,8 +74,7 @@ EVImax <- EVIextrema[[1]]
 EVImin <- EVIextrema[[2]]
 
 Pscalar <- Pscalar(EVI, EVImax, EVImin) 
-
-Pscalar[LC %in% evergreen_lc] <- 1
+Pscalar[sum(LC == evergreen_lc)] <- 1
 Pscalar[Pscalar < 0] <- 0 
 Pscalar[Pscalar > 1] <- 1 
 
@@ -104,7 +103,7 @@ terra::time(GEE) <- terra::time(plate)
 doy <- lubridate::yday(terra::time(GEE)) 
 green_mask <- (GREEN[[1]] < doy) & (GREEN[[2]] > doy)
 ### but not for evergreen?
-green_mask[LC %in% evergreen_lc] <- 1
+green_mask[sum(LC == evergreen_lc)] <- 1
 GEE <- GEE*green_mask 
 
 ### gee = zero where there is water

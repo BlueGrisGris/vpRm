@@ -34,11 +34,13 @@ if( length(which(!terra::time(plate) %in% terra::time(processed))) != 0 ){
 		return( terra::project(pp, plate, method = "cubicspline") )
 	})#end lapply
 	)#end rast
-
 	### stepwise time interpolation
 	### get the index to the driver day of year closest to each plate doy  
 	### TODO: w yday, only works for missing data w less granularity the 24h switch to hour_year or smth
-	idx <- findInterval(lubridate::yday(terra::time(plate)),vec = lubridate::yday(terra::time(processed)))
+	plate_days <- lubridate::yday(terra::time(plate))
+	proc_days <- lubridate::yday(terra::time(processed))
+	idx <- findInterval(plate_days,vec = proc_days)
+	rm(plate_days, proc_days)
 	### i think this is right? because otherwise you can get 0 which is no good
 	### aaaand now its different
 	#         idx <- idx + 1
