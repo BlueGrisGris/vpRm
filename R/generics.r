@@ -10,8 +10,8 @@ summary.vpRm <- function(){
 
 }#end func print.vpRm
 
-[.vpRm <- function(vpRm, i){
+# [.vpRm <- function(vpRm, i){
 
-	print(template(vpRm))
+#         print(template(vpRm))
 
-}#end func 
+# }#end func 
