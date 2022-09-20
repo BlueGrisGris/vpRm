@@ -9,11 +9,11 @@
 #'
 #' @param vpRm (vpRm): vpRm object you want to set the domain of
 #' @param domain (spatRaster or chr): domain you want to run VRPM over 
-#' @param xybounds (vector): c(xmin, xmax, ymin, ymax) 
+#' @param vpRm_ext (vector): c(xmin, xmax, ymin, ymax) 
 #' @param vpRm_crs (chr): optional CRS. 
-#' @param times (vector): times to run VPRM over
+#' @param vpRm_time (vector): times to run VPRM over
 #' 
-#' If not NULL, xybounds, vpRm_crs, times, will overwrite the CRS of domain, if domain is given. 
+#' If not NULL- vpRm_ext, vpRm_crs, vpRm_time, will overwrite the CRS of domain, if domain is given. 
 #'
 #' @export
 set_domain <- function(
@@ -34,6 +34,12 @@ vpRm$domain$vpRm_crs <- terra::crs(domain)
 vpRm$domain$vpRm_ext <- terra::ext(domain)
 vpRm$domain$vpRm_time <- terra::time(domain)
 
+### set spatio temporal domain of vpRm object to match given by domain 
+
+vpRm$domain$vpRm_crs <- terra::crs(domain)
+vpRm$domain$vpRm_ext <- terra::ext(domain)
+vpRm$domain$vpRm_time <- terra::time(domain)
+
 ### overwrite domain data if supplied 
 if(!is.null(vpRm_crs)){
 	vpRm$domain$vpRm_crs <- vpRm_crs
@@ -44,8 +50,6 @@ if(!is.null(vpRm_ext)){
 if(!is.null(vpRm_time)){
 	vpRm$domain$vpRm_time <- vpRm_time
 }#end if(!is.null(vpRm_time)){
-
-### TODO: somethng lc?
 
 return(vpRm)
 
