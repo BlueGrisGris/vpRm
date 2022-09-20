@@ -61,11 +61,12 @@ proc_drivers(my_vpRm)
 ```
 Finally, run the model:
 ```R
-run(my_vpRm)
+run_vpRm(my_vpRm)
 ```
 
 # Version Information 
 ## Version 0.0.0.9002 "Thuja plicata"
+- Fixes to correct VPRM results
 
 ## Version 0.0.0.9001 "Ficus rubiginosa"
 - Implement simple interface to run VPRM over a predetermined spatial-temporal domain (for example, a STILT output)
