@@ -27,7 +27,7 @@ new_vpRm <- function(
 	, evi_extrema_dir = NULL
 	, green_dir = NULL
 
-	, params = vprm::vprm_params 
+	, params = vpRm::vprm_params 
 
 	, vpRm_crs = NULL
 	, vpRm_ext = NULL
@@ -61,7 +61,9 @@ gee_dir <- file.path(out_dir, "gee")
 respir_dir <- file.path(out_dir, "respir")
 nee_dir <- file.path(out_dir, "nee")
 
-dir.create(c(nee_dir, gee_dir, respir_dir), recursive = T, showWarnings = F)
+dir.create(nee_dir, recursive = T, showWarnings = F)
+dir.create(gee_dir, recursive = T, showWarnings = F)
+dir.create(respir_dir, recursive = T, showWarnings = F)
 
 ### TODO: outfiles for each time -- properly zero padded
 # , nee_dir = nee_files_dir
@@ -109,7 +111,7 @@ vpRm <- list(
 	)#end list dirs
 
 	, domain = list(
-		, vpRm_crs = vpRm_crs
+		  vpRm_crs = vpRm_crs
 		, vpRm_ext = vpRm_ext 
 		, vpRm_time = vpRm_time
 	) #end list domain

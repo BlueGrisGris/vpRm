@@ -30,25 +30,19 @@ set_domain <- function(
 
 ### read domain and extract data 
 domain <- sanitize_raster(domain)
-vpRm$domain$vpRm_crs <- terra::crs(domain)
-vpRm$domain$vpRm_ext <- terra::ext(domain)
-vpRm$domain$vpRm_time <- terra::time(domain)
-
-### set spatio temporal domain of vpRm object to match given by domain 
-
-vpRm$domain$vpRm_crs <- terra::crs(domain)
-vpRm$domain$vpRm_ext <- terra::ext(domain)
-vpRm$domain$vpRm_time <- terra::time(domain)
+vpRm$domain$crs <- terra::crs(domain)
+vpRm$domain$ext <- terra::ext(domain)
+vpRm$domain$time <- terra::time(domain)
 
 ### overwrite domain data if supplied 
 if(!is.null(vpRm_crs)){
-	vpRm$domain$vpRm_crs <- vpRm_crs
+	vpRm$domain$crs <- vpRm_crs
 }#end if(!is.null(vpRm_crs)){
 if(!is.null(vpRm_ext)){
-	vpRm$domain$vpRm_ext <- vpRm_ext
+	vpRm$domain$ext <- vpRm_ext
 }#end if(!is.null(vpRm_ext)){
 if(!is.null(vpRm_time)){
-	vpRm$domain$vpRm_time <- vpRm_time
+	vpRm$domain$time <- vpRm_time
 }#end if(!is.null(vpRm_time)){
 
 return(vpRm)

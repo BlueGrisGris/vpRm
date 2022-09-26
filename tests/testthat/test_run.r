@@ -1,4 +1,4 @@
-# skip("the test driver filenames are messed up for the parsers...")
+skip("not rdy")
 test_that("does run_vpRm produce the correct results?",{
 	vpRm <- new_vpRm(
 		vpRm_dir
