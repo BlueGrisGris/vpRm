@@ -22,11 +22,26 @@ proc_drivers <- function(vpRm){
 	       stop("all driver data directories must be provided")
 	}#end if length which
 
-	if(!file.exists(vpRm$dirs$plate)){
-	stop(paste(deparse(substitute(vpRM)), "does not have an associated template. use gen_plate()"))
-	}#end if(!file.exists(vpRm$dirs$plate)){
+	####### create plate
+	plate <- terra::rast(
+		crs = vpRm$domain$crs
+		extent = vpRm$domain$ext
+		resolution = vpRm$domain$res
+	)#end terra::rast
 
-	plate <- terra::rast(vpRm$dirs$plate)
+	terra::values(plate) <- 1:ncell(plate)
+
+	####### loop
+	sapply(vpRm$domain$time, function(tt){
+
+	terra::time(plate) <- tt
+
+	####### TODO: get directories of driver data
+	temp_dir_tt <- parse_herbie_hrrr_times(vpRm$dirs$temp_dir)[tt = parse_herbie_hrrr_times(vpRm$dirs$temp_dir)]
+	dswrf_dir_tt <- parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)[tt = parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)]
+
+	### TODO: only process evi when you have to
+	evi_dir_tt <- parse_modis_evi_times(vpRm$dirs$evi_dir)[tt == parse_modis_evi_times(vpRm$dirs$evi_dir)]
 
 	####### process landcover
 	if(vpRm$verbose){print("start process landcover")}
@@ -109,6 +124,8 @@ proc_drivers <- function(vpRm){
 	rm(evi, EVI_proc)
 
 	### TODO: CHECK ALL DIMENSIONS
+
+	})#end sapply
 
 	return(vpRm)
 }#end func process.vpRm
