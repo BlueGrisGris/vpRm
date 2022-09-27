@@ -64,7 +64,7 @@ out_field_filename <- function(field_name, field_time){
 	return(field_filename)
 }#end func out_field_filename
 
-save_co2_field <- function(ff){
+save_co2_field <- function(ff, vpRm){
 
 	field_name <- names(ff)[1]
 	field_time <- terra::time(ff)

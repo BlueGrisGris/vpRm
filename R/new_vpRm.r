@@ -10,6 +10,12 @@
 #' @param evi_extrema_dir (chr): path to evi_extrema 2d data
 #' @param green_dir (chr): path to greenup/down data
 #' 
+#' @param vprm_params (data.frame): VPRM parameters, trained from tower data
+#' 
+#' @param vpRm_crs (terra::crs): coordinate reference system for intake
+#' @param vpRm_ext (terra::ext): extent for intake
+#' @param vpRm_time (terra::time): times of intake
+#'
 #' @param verbose (bool): print intermediary updates?
 #'
 #' @export
@@ -27,7 +33,7 @@ new_vpRm <- function(
 	, evi_extrema_dir = NULL
 	, green_dir = NULL
 
-	, params = vpRm::vprm_params 
+	, vprm_params = vpRm::vprm_params 
 
 	, vpRm_crs = NULL
 	, vpRm_ext = NULL
@@ -116,7 +122,7 @@ vpRm <- list(
 		, vpRm_time = vpRm_time
 	) #end list domain
 
-	, params = params
+	, vprm_params = vprm_params
 
 	, verbose = verbose
 )#end list vpRm

@@ -23,23 +23,23 @@ LC <- terra::rast(vpRm$dirs$lc_proc_dir)
 ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
 
 ### TODO: make it a function and add it to a checker function?
-if( any(dim(LC) != c(dim(plate)[1:2], 1) )){stop(paste("dim lc_proc =", dim(LC), " does not align dim plate =", dim(plate)))}
-if( any(dim(ISA) != c(dim(plate)[1:2], 1) )){stop(paste("dim isa_proc =", dim(ISA), " does not align dim plate =", dim(plate)))}
+# if( any(dim(LC) != c(dim(plate)[1:2], 1) )){stop(paste("dim lc_proc =", dim(LC), " does not align dim plate =", dim(plate)))}
+# if( any(dim(ISA) != c(dim(plate)[1:2], 1) )){stop(paste("dim isa_proc =", dim(ISA), " does not align dim plate =", dim(plate)))}
 
 ### per year
 ### TODO: grep by year(time)
 EVIextrema <- terra::rast(vpRm$dirs$evi_extrema_proc_dir)
 GREEN <- terra::rast(vpRm$dirs$green_proc_dir)
-if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
-if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
+# if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
+# if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
 
 ### vary hourly or "interpolated" as such
 TEMP <- terra::rast(vpRm$dirs$temp_proc_dir)
 PAR <- terra::rast(vpRm$dirs$par_proc_dir)
 EVI <- terra::rast(vpRm$dirs$evi_proc_dir)
-if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " does not match dim plate =", dim(plate)))}
-if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
-if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
+# if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " does not match dim plate =", dim(plate)))}
+# if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
+# if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
 
 #############################################
 ### collate vprm paramters
@@ -130,7 +130,7 @@ NEE <- RESPIR - GEE
 names(NEE) <- rep("nee", terra::nlyr(NEE))
 
 ### save output CO2 flux fields
-lapply(list(NEE, GEE, RESPIR), save_co2_field(ff))
+lapply(list(NEE, GEE, RESPIR), save_co2_field())
 
 })#end lapply run
 
