@@ -10,9 +10,7 @@ run_vpRm <- function(vpRm){
 
 if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 
-lapply(vpRm$domain$time, function(tt){
 
-if(vpRm$verbose){print(tt)}
 
 #############################################
 ### point to processed drivers
@@ -33,106 +31,118 @@ GREEN <- terra::rast(vpRm$dirs$green_proc_dir)
 # if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
 # if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
 
-### vary hourly or "interpolated" as such
-TEMP <- terra::rast(vpRm$dirs$temp_proc_dir)
-PAR <- terra::rast(vpRm$dirs$par_proc_dir)
-EVI <- terra::rast(vpRm$dirs$evi_proc_dir)
-# if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " does not match dim plate =", dim(plate)))}
-# if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
-# if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
+### loop hourly
+lapply(vpRm$domain$time, function(tt){
+	if(vpRm$verbose){print(tt)}
 
-#############################################
-### collate vprm paramters
-#############################################
+	### TODO: correct filenames ttt
 
-### TODO: Check for LC not in params
+	### vary hourly or "interpolated" as such
+	TEMP <- terra::rast(vpRm$dirs$temp_proc_dir)
+	PAR <- terra::rast(vpRm$dirs$par_proc_dir)
+	EVI <- terra::rast(vpRm$dirs$evi_proc_dir)
+	# if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " does not match dim plate =", dim(plate)))}
+	# if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
+	# if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
 
-vprm_params <- vpRm$params
+	#############################################
+	### collate vprm paramters
+	#############################################
 
-lambda <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"lambda"] )
+	### TODO: Check for LC codes not in params
 
-Tmin <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmin"] )
-Tmax <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmax"] )
+	vprm_params <- vpRm$params
 
-PAR0 <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
+	lambda <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"lambda"] )
 
-ALPHA <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"ALPHA"] )
-BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"BETA"] )
+	Tmin <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmin"] )
+	Tmax <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmax"] )
 
-#############################################
-### calculate scalars
-#############################################
+	PAR0 <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
 
-if(vpRm$verbose){print("start calculate scalars")}
+	ALPHA <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"alpha"] )
+	BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
 
-### simplified Tscalar
-Tscalar <- Tscalar(TEMP, Tmin, Tmax)
+	### important landcodes for exclusion of processes
+	water_lc <- 18
+	evergreen_lc <- c(1,2,3)
 
-### calculate Pscalar
-EVImax <- EVIextrema[[1]]
-EVImin <- EVIextrema[[2]]
-Pscalar <- Pscalar(EVI, EVImax, EVImin) 
-Pscalar <- terra::mask(Pscalar, (Pscalar > 1) | (Pscalar < 0)  , maskvalues = 1)
+	#############################################
+	### calculate scalars
+	#############################################
 
-### simplified Wscalar
-Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
+	### simplified Tscalar
+	Tscalar <- Tscalar(TEMP, Tmin, Tmax)
 
-#############################################
-### calculate gee
-#############################################
+	### calculate Pscalar
+	EVImax <- EVIextrema[[1]]
+	EVImin <- EVIextrema[[2]]
 
-if(vpRm$verbose){print("start calculate gee")}
+	Pscalar <- Pscalar(EVI, EVImax, EVImin) 
+	### phenology of evergreens is always max
+	Pscalar[sum(LC == evergreen_lc)] <- 1
+	Pscalar[Pscalar < 0] <- 0 
+	Pscalar[Pscalar > 1] <- 1 
 
-GEE <- gee(
-	   lambda
-	   , Tscalar
-	   , Pscalar
-	   , Wscalar
-	   , EVI
-	   , PAR
-	   , PAR0
-)#end gee
+	### simplified Wscalar
+	Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
 
-### Set gee to zero outside of growing season
-doy <- lubridate::yday(terra::time(GEE)) 
-green_mask <- (GREEN[[1]] < doy) & (GREEN[[2]] > doy)
-### but not for evergreen (LC == 42)
-green_mask[LC == 42] <- 1
-GEE <- GEE*green_mask 
+	#############################################
+	### calculate gee
+	#############################################
 
-### gee = zero where there is water
-GEE <- GEE * (LC!=11)
+	if(vpRm$verbose){print("start calculate gee")}
 
-#############################################
-### calculate respiration
-#############################################
+	GEE <- gee(
+		   lambda
+		   , Tscalar
+		   , Pscalar
+		   , Wscalar
+		   , EVI
+		   , PAR
+		   , PAR0
+	)#end gee
 
-if(vpRm$verbose){print("start calculate respiration")}
+	### Set gee to zero outside of growing season
+	doy <- lubridate::yday(terra::time(GEE)) 
+	green_mask <- (GREEN[[1]] < doy) & (GREEN[[2]] > doy)
+	### but not for evergreen?
+	green_mask[sum(LC == evergreen_lc)] <- 1
+	GEE <- GEE*green_mask 
 
-RESPIR <- respir(
-	TEMP
-	, ALPHA
-	, BETA
-	, LC
-	, ISA
-	, EVI
-)#end respir
+	### gee = zero where there is water
+	GEE <- GEE * (LC!=water_lc)
 
-### respir = zero where there is water
-RESPIR <- RESPIR * (LC!=11)
+	#############################################
+	### calculate respiration
+	#############################################
 
-#############################################
-### calculate nee and save outputs
-#############################################
+	if(vpRm$verbose){print("start calculate respiration")}
 
-### net ecosystem exchange
-NEE <- RESPIR - GEE
-names(NEE) <- rep("nee", terra::nlyr(NEE))
+	RESPIR <- respir(
+		TEMP
+		, ALPHA
+		, BETA
+		, LC
+		, ISA
+		, EVI
+	)#end respir
 
-### save output CO2 flux fields
-lapply(list(NEE, GEE, RESPIR), save_co2_field())
+	### respir = zero where there is water
+	RESPIR <- RESPIR * (LC!=water_lc)
 
-})#end lapply run
+	#############################################
+	### calculate nee and save outputs
+	#############################################
+
+	### net ecosystem exchange
+	NEE <- RESPIR - GEE
+	names(NEE) <- rep("nee", terra::nlyr(NEE))
+
+	### save output CO2 flux fields
+	lapply(list(NEE, GEE, RESPIR), save_co2_field())
+
+})#end lapply times 
 
 return(vpRm)
 

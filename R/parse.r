@@ -4,7 +4,6 @@
 #' 
 #' @export
 parse_modis_evi_times <- function(evi_filenames){
-
 ### someday maybe replace str_split w strsplit
 yy <- stringr::str_extract(evi_filenames, "[0-9]{7}")
 
@@ -12,8 +11,8 @@ yr <- as.numeric( substr(yy, start = 1, stop = 4))
 doy <- as.numeric( substr(yy, start = 5, stop = 7)) 
 doy <- doy - 1
 
-evi_times <- as.Date(paste0(yr, "-01-01")) + doy
-evi_times <- as.POSIXct(evi_times, tz = "")
+evi_times <- as.Date(paste0(yr, "-01-01 00:00:00")) + doy
+evi_times <- as.POSIXct(evi_times, tz = "UTC")
 
 return(evi_times)
 
@@ -35,10 +34,12 @@ yr <- as.numeric( substr(yy, start = 1, stop = 4))
 month <- as.numeric( substr(yy, start = 5, stop = 6)) 
 day <- as.numeric( substr(yy, start = 7, stop = 8)) 
 hour <- as.numeric(substring( stringr::str_extract(hrrr_filenames, "t[0-9]{2}z") , 2, 3))
+### lubridate stopped parsing ymd_h ...
+minute <- 0
 
-hrrr_times <- paste(yr, month, day, hour, sep = "_")
+hrrr_times <- paste(yr, month, day, hour, minute, sep = "_")
 
-hrrr_times <- lubridate::ymd_h(hrrr_times)
+hrrr_times <- lubridate::ymd_hm(hrrr_times)
 
 return(hrrr_times)
 }#end func parse_modis_hrrr_times 

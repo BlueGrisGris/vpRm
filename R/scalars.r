@@ -44,14 +44,15 @@ Tscalar <- function(Tair, Tmin, Tmax){
 
 ### Modified Pscalar from Winbourne et al 2021
 Pscalar <- function(EVI, EVImax, EVImin){
-	return(
-	       (EVI - EVImin)/(EVImax-EVImin)
-	)#end return
+	Pscalar <- (EVI - EVImin)/(EVImax-EVImin)
+	Pscalar[Pscalar < 0] <- 0 
+	Pscalar[Pscalar > 1] <- 1 
+	return(Pscalar )
 }#end func Pscalar
 
 ### simplified Tscalar for forests.  avg value from mahadevan 2008
 Tscalar <- function(Tair, Tmin, Tmax){
-	return(.7)
+	return(.85)
 }#end func Tscalar 
 
 ### From Mahadevan 2008

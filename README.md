@@ -1,5 +1,5 @@
 # vpRm
-## Version 0.0.0.9001 "Ficus rubiginosa"
+## Version 0.0.0.9002 "Thuja plicata"
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/BlueGrisGris/vpRm/workflows/R-CMD-check/badge.svg)](https://github.com/BlueGrisGris/vpRm/actions)
@@ -65,6 +65,7 @@ run(my_vpRm)
 ```
 
 # Version Information 
+## Version 0.0.0.9002 "Thuja plicata"
 
 ## Version 0.0.0.9001 "Ficus rubiginosa"
 - Implement simple interface to run VPRM over a predetermined spatial-temporal domain (for example, a STILT output)
@@ -75,7 +76,6 @@ run(my_vpRm)
 
 ## Version 0.0.0.9000 "Picea pungens"
 - No minimum viable soluton
-
 
 ## Goals for next version:
 - Manage driver time data in a smooth way: easy assignment/not

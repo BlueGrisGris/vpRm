@@ -26,6 +26,7 @@ new_vpRm <- function(
 	### TODO: set default to the heavy dir
 	, lc_dir = NULL
 	, isa_dir = NULL
+
 	, temp_dir = NULL
 	, dswrf_dir = NULL
 	, evi_dir = NULL
@@ -111,11 +112,6 @@ vpRm <- list(
 		, nee_dir = nee_dir
 		, gee_dir = gee_dir
 		, respir_dir = respir_dir
-		### TODO: set
-		#                 , nee_dir = nee_files_dir
-		#                 , gee_dir = gee_files_dir
-		#                 , respir_dir = respir_files_dir
-
 	)#end list dirs
 
 	, domain = list(
