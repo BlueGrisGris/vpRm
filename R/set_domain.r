@@ -21,6 +21,7 @@ set_domain <- function(
 	, domain = NULL
 	, vpRm_crs = NULL
 	, vpRm_ext = NULL
+	, vpRm_res = NULL
 	, vpRm_time = NULL
 ){
 
@@ -34,6 +35,7 @@ if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 domain <- sanitize_raster(domain)
 vpRm$domain$crs <- terra::crs(domain)
 vpRm$domain$ext <- terra::ext(domain)
+vpRm$domain$res <- terra::res(domain)
 vpRm$domain$time <- terra::time(domain)
 
 ### overwrite domain data if supplied 
@@ -43,6 +45,9 @@ if(!is.null(vpRm_crs)){
 if(!is.null(vpRm_ext)){
 	vpRm$domain$ext <- vpRm_ext
 }#end if(!is.null(vpRm_ext)){
+if(!is.null(vpRm_res)){
+	vpRm$domain$res <- vpRm_res
+}#end if(!is.null(vpRm_res)){
 if(!is.null(vpRm_time)){
 	vpRm$domain$time <- vpRm_time
 }#end if(!is.null(vpRm_time)){

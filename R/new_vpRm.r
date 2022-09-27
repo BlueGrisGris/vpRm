@@ -14,6 +14,7 @@
 #' 
 #' @param vpRm_crs (terra::crs): coordinate reference system for intake
 #' @param vpRm_ext (terra::ext): extent for intake
+#' @param vpRm_res (terra::ext): resolution for intake
 #' @param vpRm_time (terra::time): times of intake
 #'
 #' @param verbose (bool): print intermediary updates?
@@ -35,9 +36,10 @@ new_vpRm <- function(
 
 	, vprm_params = vpRm::vprm_params 
 
-	, crs = NULL
-	, ext = NULL
-	, time = NULL
+	, vpRm_crs = NULL
+	, vpRm_ext = NULL
+	, res_time = NULL
+	, vpRm_time = NULL
 
 	, verbose = F 
 	){
@@ -117,9 +119,10 @@ vpRm <- list(
 	)#end list dirs
 
 	, domain = list(
-		  crs = crs
-		, ext = ext 
-		, time = time
+		  crs = vpRm_crs
+		, ext = vpRm_ext 
+		, res = vpRm_res
+		, time = vpRm_time
 	) #end list domain
 
 	, vprm_params = vprm_params
