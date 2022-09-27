@@ -1,8 +1,5 @@
-### TODO: make an actual generic/method
-
-#' proc_drivers.vpRm()
+#' proc_drivers()
 #' Process the driver data for a VPRM model
-#' calls functions proc*
 #'
 #' @param vpRm (vpRm) a vpRm object 
 #' @export
@@ -10,17 +7,17 @@ proc_drivers <- function(vpRm){
 
 	### TODO: nicer error
 	### TODO: stopif
-	if(length(which(is.null(c(
-				    vpRm$dirs$lc_dir
-				  , vpRm$dirs$isa_dir
-				  , vpRm$dirs$temp_dir
-				  , vpRm$dirs$dswrf_dir
-				  , vpRm$dirs$evi_dir
-				  , vpRm$dirs$evi_extrema_dir
-				  , vpRm$dirs$green_dir
-				  )))) != 0 ){
+	if(any(is.null(c(
+		  vpRm$dirs$lc_dir
+		, vpRm$dirs$isa_dir
+		, vpRm$dirs$temp_dir
+		, vpRm$dirs$dswrf_dir
+		, vpRm$dirs$evi_dir
+		, vpRm$dirs$evi_extrema_dir
+		, vpRm$dirs$green_dir
+	)))){
 	       stop("all driver data directories must be provided")
-	}#end if length which
+	}#end if is null
 
 	####### create plate
 	plate <- terra::rast(
@@ -29,7 +26,7 @@ proc_drivers <- function(vpRm){
 		, resolution = vpRm$domain$res
 	)#end terra::rast
 
-	terra::values(plate) <- 1:ncell(plate)
+	terra::values(plate) <- 1:terra::ncell(plate)
 
 	####### scale factors
 	evi_scale_factor <- 1e-4
@@ -37,11 +34,12 @@ proc_drivers <- function(vpRm){
 
 	####### process landcover
 	lc <- terra::rast(vpRm$dirs$lc_dir)
-	terra::project(lc,plate, method = "near", filename = vpRm$dirs$lc_proc_dir)
+	lc_proc <- terra::project(lc,plate, method = "near")
+	Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
 
 	####### process isa
 	ISA <- terra::rast(vpRm$dirs$isa_dir)
-	isa_proc <- terra::project(ISA,plate, method = "near")
+	isa_proc <- terra::project(ISA,plate, method = "cubicspline")
 	### isa should be a fraction, 125 is ocean NA code
 	isa_proc <- isa_proc/100
 	isa_proc <- terra::mask(isa_proc, isa_proc<1, maskvalues = 0)
@@ -70,14 +68,21 @@ proc_drivers <- function(vpRm){
 	####### loop through hourly driver data
 	sapply(vpRm$domain$time, function(tt){
 		if(vpRm$verbose){print(tt)}
+		browser()
 		terra::time(plate) <- tt
 
 		####### TODO: get directories of driver data
-		temp_dir_tt <- parse_herbie_hrrr_times(vpRm$dirs$temp_dir)[tt = parse_herbie_hrrr_times(vpRm$dirs$temp_dir)]
-		dswrf_dir_tt <- parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)[tt = parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)]
+		temp_dir_tt <- parse_herbie_hrrr_times(vpRm$dirs$temp_dir)[
+			tt = parse_herbie_hrrr_times(vpRm$dirs$temp_dir)
+		]#end parse herbie
+		dswrf_dir_tt <- parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)[
+			tt = parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)
+		]#end parse herbie
 
 		### TODO: only process evi when you have to
-		evi_dir_tt <- parse_modis_evi_times(vpRm$dirs$evi_dir)[tt == parse_modis_evi_times(vpRm$dirs$evi_dir)]
+		evi_dir_tt <- parse_modis_evi_times(vpRm$dirs$evi_dir)[
+			tt == parse_modis_evi_times(vpRm$dirs$evi_dir)
+		] #end parse modis
 
 		####### process temp
 		temp <- terra::rast(temp_dir_tt)

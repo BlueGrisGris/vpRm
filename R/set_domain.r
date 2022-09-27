@@ -10,8 +10,9 @@
 #' @param vpRm (vpRm): vpRm object you want to set the domain of
 #' @param domain (spatRaster or chr): domain you want to run VRPM over 
 #' @param vpRm_ext (vector): c(xmin, xmax, ymin, ymax) 
-#' @param vpRm_crs (chr): optional CRS. 
-#' @param vpRm_time (vector): times to run VPRM over
+#' @param vpRm_crs (chr): Optional CRS.  Overwrites CRS of domain 
+#' @param vpRm_res (chr): Optional resolution. Overwrites res of domain
+#' @param vpRm_time (vector): Optional times to run VPRM over. Overwrites time of domain 
 #' 
 #' If not NULL- vpRm_ext, vpRm_crs, vpRm_time, will overwrite the CRS of domain, if domain is given. 
 #'
@@ -32,11 +33,13 @@ if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 #######
 
 ### read domain and extract data 
-domain <- sanitize_raster(domain)
-vpRm$domain$crs <- terra::crs(domain)
-vpRm$domain$ext <- terra::ext(domain)
-vpRm$domain$res <- terra::res(domain)
-vpRm$domain$time <- terra::time(domain)
+if(!is.null(domain)){
+	domain <- sanitize_raster(domain)
+	vpRm$domain$crs <- terra::crs(domain)
+	vpRm$domain$ext <- terra::ext(domain)
+	vpRm$domain$res <- terra::res(domain)
+	vpRm$domain$time <- terra::time(domain)
+}#end if(!is.null(domain)){
 
 ### overwrite domain data if supplied 
 if(!is.null(vpRm_crs)){

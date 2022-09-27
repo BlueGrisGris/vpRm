@@ -39,7 +39,7 @@ new_vpRm <- function(
 
 	, vpRm_crs = NULL
 	, vpRm_ext = NULL
-	, res_time = NULL
+	, vpRm_res = NULL
 	, vpRm_time = NULL
 
 	, verbose = F 

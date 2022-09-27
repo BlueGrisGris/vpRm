@@ -2,9 +2,8 @@
 % Please edit documentation in R/proc_drivers.r
 \name{proc_drivers}
 \alias{proc_drivers}
-\title{proc_drivers.vpRm()
-Process the driver data for a VPRM model
-calls functions proc*}
+\title{proc_drivers()
+Process the driver data for a VPRM model}
 \usage{
 proc_drivers(vpRm)
 }
@@ -12,7 +11,6 @@ proc_drivers(vpRm)
 \item{vpRm}{(vpRm) a vpRm object}
 }
 \description{
-proc_drivers.vpRm()
+proc_drivers()
 Process the driver data for a VPRM model
-calls functions proc*
 }

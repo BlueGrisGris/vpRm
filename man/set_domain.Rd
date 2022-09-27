@@ -9,6 +9,7 @@ set_domain(
   domain = NULL,
   vpRm_crs = NULL,
   vpRm_ext = NULL,
+  vpRm_res = NULL,
   vpRm_time = NULL
 )
 }
@@ -17,11 +18,13 @@ set_domain(
 
 \item{domain}{(spatRaster or chr): domain you want to run VRPM over}
 
-\item{vpRm_crs}{(chr): optional CRS.}
+\item{vpRm_crs}{(chr): Optional CRS.  Overwrites CRS of domain}
 
 \item{vpRm_ext}{(vector): c(xmin, xmax, ymin, ymax)}
 
-\item{vpRm_time}{(vector): times to run VPRM over
+\item{vpRm_res}{(chr): Optional resolution. Overwrites res of domain}
+
+\item{vpRm_time}{(vector): Optional times to run VPRM over. Overwrites time of domain
 
 If not NULL- vpRm_ext, vpRm_crs, vpRm_time, will overwrite the CRS of domain, if domain is given.}
 }

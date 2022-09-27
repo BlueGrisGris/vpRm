@@ -17,6 +17,7 @@ new_vpRm(
   vprm_params = vpRm::vprm_params,
   vpRm_crs = NULL,
   vpRm_ext = NULL,
+  vpRm_res = NULL,
   vpRm_time = NULL,
   verbose = F
 )
@@ -43,6 +44,8 @@ new_vpRm(
 \item{vpRm_crs}{(terra::crs): coordinate reference system for intake}
 
 \item{vpRm_ext}{(terra::ext): extent for intake}
+
+\item{vpRm_res}{(terra::ext): resolution for intake}
 
 \item{vpRm_time}{(terra::time): times of intake}
 
