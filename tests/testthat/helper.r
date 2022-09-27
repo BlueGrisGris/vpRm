@@ -2,7 +2,7 @@
 ### used in many tests
 data_dir <- system.file("test_data",package="vpRm",mustWork = T)
 stilt_dir <- file.path(data_dir, "stilt_test")
-matchdomain <- Get_Stilt_Out_Filenames(stilt_dir,"foot")
+domain <- Get_Stilt_Out_Filenames(stilt_dir,"foot")
 
 lc_dir <- file.path(data_dir, "lc_test.nc")
 isa_dir <- file.path(data_dir, "isa_test.nc")

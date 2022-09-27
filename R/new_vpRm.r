@@ -35,9 +35,9 @@ new_vpRm <- function(
 
 	, vprm_params = vpRm::vprm_params 
 
-	, vpRm_crs = NULL
-	, vpRm_ext = NULL
-	, vpRm_time = NULL
+	, crs = NULL
+	, ext = NULL
+	, time = NULL
 
 	, verbose = F 
 	){
@@ -117,9 +117,9 @@ vpRm <- list(
 	)#end list dirs
 
 	, domain = list(
-		  vpRm_crs = vpRm_crs
-		, vpRm_ext = vpRm_ext 
-		, vpRm_time = vpRm_time
+		  crs = crs
+		, ext = ext 
+		, time = time
 	) #end list domain
 
 	, vprm_params = vprm_params
