@@ -8,7 +8,7 @@ test_that("does run_vpRm produce the correct results?",{
 		, evi_dir
 		, evi_extrema_dir
 		, green_dir
-		, verbose = T
+		, verbose = F
 		)#end new_vpRm 
 	domain <- terra::rast(domain_dir)
 	domain <- domain[[5:8]]

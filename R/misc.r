@@ -38,7 +38,7 @@ return(raster)
 #' @export 
 Save_Rast <- function(RAST, filename){
 	suppressWarnings( ### warning when saving an empty netcdf
-	terra::writeCDF( RAST, filename = paste0(filename, ".nc"), overwrite = T )#end terra::writeCDF
+	terra::writeCDF( RAST, filename = filename, overwrite = T )#end terra::writeCDF
 	)#end suppressWarnings
 	return(RAST)
 }#end Save_Rast <- function(rast, filename){

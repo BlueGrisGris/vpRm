@@ -18,8 +18,8 @@ if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 
 ### time invariant 
 ### TODO: ".nc" is a stop gap
-LC <- terra::rast(paste0(vpRm$dirs$lc_proc_dir, ".nc"))
-ISA <- terra::rast(paste0(vpRm$dirs$isa_proc_dir, ".nc"))
+LC <- terra::rast(vpRm$dirs$lc_proc_dir)
+ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
 
 ### TODO: make it a function and add it to a checker function?
 # if( any(dim(LC) != c(dim(plate)[1:2], 1) )){stop(paste("dim lc_proc =", dim(LC), " does not align dim plate =", dim(plate)))}
@@ -47,41 +47,30 @@ BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
 water_lc <- 18
 evergreen_lc <- c(1,2,3)
 
-### loop yearly
-lapply(unique(lubridate::year(vpRm$domain$time)), function(yy){
 
-	evi_files <- list.files(vpRm$dirs$evi_extrema_proc_dir, full.names = T)
-	evi_extrema_dir_yy <- evi_files[grep(yy, evi_files)]
+### loop hourly
+lapply(1:length(vpRm$domain$time), function(tt_idx){
 
-	green_files <- list.files(vpRm$dirs$green_proc_dir, full.names = T)
-	green_dir_yy <- green_files[grep(yy, green_files)]
+	tt <- vpRm$domain$time[tt_idx]
+
+	if(vpRm$verbose){print(tt)}
+
+	### TODO: loading yearly data for each hour is 2 loads on top of 3 hourly loads inefficient 
+	### To resolve, would have to save yearly data to a different environement.
+	yy <- lubridate::year(tt)
+	evi_extrema_dir_yy <- vpRm$dirs$evi_extrema_proc_files_dir[grep(yy, vpRm$dirs$evi_extrema_proc_files_dir)]
+
+	vpRm$dirs$green_proc_files_dir
+	green_dir_yy <- vpRm$dirs$green_proc_files_dir[grep(yy, vpRm$dirs$green_proc_files_dir)]
 
 	EVIextrema <- terra::rast(evi_extrema_dir_yy)
 	GREEN <- terra::rast(green_dir_yy)
 	# if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
 	# if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
-### loop hourly
-lapply(vpRm$domain$time, function(tt){
 
-
-	if(vpRm$verbose){print(tt)}
-
-
-	temp_files <- list.files(vpRm$dirs$temp_proc_dir, full.names = T)
-	temp_times <- lubridate::ymd_hm(stringr::str_extract(temp_files, "[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]{2}_[0-9]{2}"))
-	temp_files_tt <- temp_files[temp_times == tt]
-
-	par_files <- list.files(vpRm$dirs$par_proc_dir, full.names = T)
-	par_times <- lubridate::ymd_hm(stringr::str_extract(par_files, "[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]{2}_[0-9]{2}"))
-	par_files_tt <- par_files[par_times == tt]
-
-	evi_files <- list.files(vpRm$dirs$evi_proc_dir, full.names = T)
-	evi_times <- lubridate::ymd_hm(stringr::str_extract(evi_files, "[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]{2}_[0-9]{2}"))
-	evi_files_tt <- evi_files[evi_times == tt]
-
-	TEMP <- terra::rast(temp_files_tt)
-	PAR <- terra::rast(par_files_tt)
-	EVI <- terra::rast(evi_files_tt)
+	TEMP <- terra::rast(vpRm$dirs$temp_proc_files_dir[tt_idx])
+	PAR <- terra::rast(vpRm$dirs$par_proc_files_dir[tt_idx])
+	EVI <- terra::rast(vpRm$dirs$evi_proc_files_dir[tt_idx])
 	# if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " does not match dim plate =", dim(plate)))}
 	# if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
 	# if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
@@ -162,20 +151,12 @@ lapply(vpRm$domain$time, function(tt){
 	### save output CO2 flux fields
 	lapply(list(NEE, GEE, RESPIR), function(ff){
 		
-		out_dir <- vpRm$dirs[[paste(names(ff), "dir", sep = "_")]]
+		       ### TODO: access +idx out files
+		filename <- vpRm$dirs[[paste(names(ff), "files_dir", sep = "_")]][tt_idx]
 		      	 
-		filename <- paste(
-			lubridate::year(tt)
-			, stringr::str_pad(lubridate::month(tt),width = 2, pad = "0")
-			, stringr::str_pad(lubridate::day(tt),width = 2, pad = "0")
-			, stringr::str_pad(lubridate::hour(tt),width = 2, pad = "0")
-			, stringr::str_pad(lubridate::minute(tt),width = 2, pad = "0")
-			, sep = "_"
-		)#end paste
-
 		terra::writeCDF(
 				ff
-				, filename = file.path(out_dir, paste0(filename,".nc"))
+				, filename = filename
 				, varname = names(ff)
 				, longname = paste(names(ff), "CO2 flux")
 				, zname = "time"
@@ -187,7 +168,6 @@ lapply(vpRm$domain$time, function(tt){
 	}) #end lapply
 
 })#end lapply hours 
-})#end lapply years 
 
 return(vpRm)
 

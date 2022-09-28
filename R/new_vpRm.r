@@ -58,8 +58,8 @@ dir.create(out_dir, recursive = T, showWarnings = F)
 
 lc_isa_proc_dir <- file.path(proc_dir, "lc_isa")
 dir.create(lc_isa_proc_dir, recursive = T, showWarnings = F)
-lc_proc_dir <- file.path(proc_dir, lc_isa_proc_dir, "lc.nc")
-isa_proc_dir <- file.path(proc_dir, lc_isa_proc_dir, "isa.nc")
+lc_proc_dir <- file.path(lc_isa_proc_dir, "lc.nc")
+isa_proc_dir <- file.path(lc_isa_proc_dir, "isa.nc")
 
 ### parent directories of processed hourly driver data
 temp_proc_dir <- file.path(proc_dir, "temp")
