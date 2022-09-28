@@ -1,4 +1,3 @@
-# skip("the test driver filenames are messed up for the parsers...")
 test_that("does run_vpRm produce the correct results?",{
 	vpRm <- new_vpRm(
 		vpRm_dir
@@ -11,13 +10,14 @@ test_that("does run_vpRm produce the correct results?",{
 		, green_dir
 		, verbose = F
 		)#end new_vpRm 
-	plate <- gen_plate(matchdomain, vpRm$dirs$lc_dir)
-	plate <- plate[[5:8]]
-	Save_Rast(plate, vpRm$dirs$plate_dir)
-	vpRm <- set_vpRm_out_names(vpRm, plate)
+	domain <- terra::rast(domain_dir)
+	domain <- domain[[5:8]]
+
+	vpRm <- set_domain(vpRm, domain)
 	vpRm <- proc_drivers(vpRm)
 	vpRm <- run_vpRm(vpRm)
-	expect_equal( dim( terra::rast( vpRm$dirs$nee_files_dir)) , dim(plate) )
-	expect_equal( dim(terra::rast(vpRm$dirs$gee_files_dir)) , dim(plate) )
-	expect_equal( dim(terra::rast(vpRm$dirs$respir_files_dir)) , dim(plate) )
+
+	expect_equal( dim(terra::rast(vpRm$dirs$nee_files_dir)) , dim(domain) )
+	expect_equal( dim(terra::rast(vpRm$dirs$gee_files_dir)) , dim(domain) )
+	expect_equal( dim(terra::rast(vpRm$dirs$respir_files_dir)) , dim(domain) )
 }) #end test_that("does run.vpRm produce the correct results?"{

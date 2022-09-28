@@ -1,143 +1,113 @@
-### TODO: make an actual generic/method
-
-#' proc_drivers.vpRm()
+#' proc_drivers()
 #' Process the driver data for a VPRM model
-#' calls functions proc*
 #'
 #' @param vpRm (vpRm) a vpRm object 
 #' @export
 proc_drivers <- function(vpRm){
 
-	### TODO: nicer error
 	### TODO: stopif
-	if(length(which(is.null(c(
-				    vpRm$dirs$lc_dir
-				  , vpRm$dirs$isa_dir
-				  , vpRm$dirs$temp_dir
-				  , vpRm$dirs$dswrf_dir
-				  , vpRm$dirs$evi_dir
-				  , vpRm$dirs$evi_extrema_dir
-				  , vpRm$dirs$green_dir
-				  )))) != 0 ){
+	if(any(is.null(c(
+		  vpRm$dirs$lc_dir
+		, vpRm$dirs$isa_dir
+		, vpRm$dirs$temp_dir
+		, vpRm$dirs$dswrf_dir
+		, vpRm$dirs$evi_dir
+		, vpRm$dirs$evi_extrema_dir
+		, vpRm$dirs$green_dir
+	)))){
 	       stop("all driver data directories must be provided")
-	}#end if length which
+	}#end if is null
 
-	if(!file.exists(vpRm$dirs$plate)){
-	stop(paste(deparse(substitute(vpRM)), "does not have an associated template. use gen_plate()"))
-	}#end if(!file.exists(vpRm$dirs$plate)){
+	### TODO: check that domain exists
 
-	plate <- terra::rast(vpRm$dirs$plate)
-	if(vpRm$verbose){Print_Info(plate)}
+	####### create plate
+	plate <- terra::rast(
+		crs = vpRm$domain$crs
+		, extent = vpRm$domain$ext
+		, resolution = vpRm$domain$res
+	)#end terra::rast
+
+	terra::values(plate) <- 1:terra::ncell(plate)
+
+	####### scale factors
+	evi_scale_factor <- 1e-4
+	par_scale_factor <- 1/.505
 
 	####### process landcover
-	if(vpRm$verbose){print("start process landcover")}
 	lc <- terra::rast(vpRm$dirs$lc_dir)
-	lc_proc <- proc_2d(lc,plate)
-	### some NLCD LC types are not in vprm params
-	### pick the closest one
-	lc_proc[lc_proc == 21] <- 71
-	lc_proc[lc_proc == 22] <- 24
-	### TODO: maybe take an average of urban/grass for 50% urban?
-	lc_proc[lc_proc == 23] <- 24
-	### TODO: hay = crops?
-	lc_proc[lc_proc == 81] <- 82
-	### I am ok with "barren" coming out zero
-	#         lc_proc[lc_proc == 31] <- 82
-	### emergent wetland as wetland
-	lc_proc[lc_proc == 95] <- 90
-
+	lc_proc <- terra::project(lc,plate, method = "near")
 	Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
 
 	####### process isa
-	if(vpRm$verbose){print("start process impermeability")}
-	isa <- terra::rast(vpRm$dirs$isa_dir)
-	if(vpRm$verbose){Print_Info(isa)}
-	isa_proc <- proc_2d(isa,plate)
+	ISA <- terra::rast(vpRm$dirs$isa_dir)
+	isa_proc <- terra::project(ISA,plate, method = "cubicspline")
 	### isa should be a fraction, 125 is ocean NA code
 	isa_proc <- isa_proc/100
 	isa_proc <- terra::mask(isa_proc, isa_proc<1, maskvalues = 0)
-	if(vpRm$verbose){Print_Info(isa_proc)}
+	### rudimentary add canada imperviousness
+	urban_lc <- 17
+	urban_factor <- .25*(lc_proc==urban_lc)
+	urban_factor_canada <- terra::mask(urban_factor, is.na(isa_proc),maskvalues = F)
+	isa_proc <- sum(isa_proc, urban_factor_canada, na.rm = T)
+	### save processed isa	
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
-	rm(isa, isa_proc)
+	rm(ISA, isa_proc)
 
-	####### process temp
-	if(vpRm$verbose){print("start process temperature")}
-	temp <- terra::rast(vpRm$dirs$temp_dir)
-	if(any(is.na(terra::time(temp)))){
-		if(any(is.na(vpRm$times$temp_time))){stop("either driver data:temp or vpRm must supply time")}
-		terra::time(temp) <- vpRm$times$temp_time
-	}#end if(any(is.na(terra::time(temp)))){
-	temp_proc <- proc_3d(temp,plate)
-	Save_Rast(temp_proc, vpRm$dirs$temp_proc_dir)
-	rm(temp, temp_proc)
-
-	####### process dswrf to par
-	if(vpRm$verbose){print("start process PAR")}
-	dswrf <- terra::rast(vpRm$dirs$dswrf_dir)
-	if(any(is.na(terra::time(dswrf)))){
-		if(any(is.na(vpRm$times$dswrf_time))){stop("either driver data:dswrf or vpRm must supply time")}
-		terra::time(dswrf) <- vpRm$times$dswrf_time
-	}#end if(any(is.na(terra::time(temp)))){
-	if(vpRm$verbose){Print_Info(dswrf)}
-	### Mahadevan 2008 factor to convert DSWRF to PAR
-	par_proc <- proc_3d(dswrf,plate)/.505
-	if(vpRm$verbose){Print_Info(par_proc)}
-	Save_Rast(par_proc, vpRm$dirs$par_proc_dir)
-	rm(dswrf, par_proc)
-
-	####### process evi
-	evi_scale_factor <- 1e-4
-
-	if(vpRm$verbose){print("start process evi")}
-	EVI <- terra::rast(vpRm$dirs$evi_dir)
-	#         if(terra::time(EVI))
-	if(any(is.na(terra::time(EVI)))){
-		if(any(is.na(vpRm$times$evi_time))){stop("either driver data:evi or vpRm must supply time")}
-		terra::time(EVI) <- vpRm$times$evi_time
-	}#end if(any(is.na(terra::time(evi)))){
-	EVI_proc <- proc_3d(EVI,plate, strict_times = F)
-	EVI_proc <- EVI_proc*evi_scale_factor
-	### mask out water which would ruin extrema
-	EVI_proc <- terra::mask(EVI_proc, lc_proc, maskvalues = 11)
-	Save_Rast(EVI_proc, vpRm$dirs$evi_proc_dir)
-
-	####### process evi extrema
-	### TODO: if it alrdy exists dont rerun?
-	if(vpRm$verbose){print("start process evi extrema")}
-	if(is.null(vpRm$dirs$evi_extrema_dir)){
-		### TODO: if there are times in plate in any year, that whole year must be present or error
-		### TODO: TODO: NOT HAVING THIS STOP() IMPLEMENTED RESULTED IN US HUNTING A BUG FOR HOURS>>>>
-		#                 if{
-		#                 }#end 
-		evi_extrema_proc <- c(max(EVI_proc, na.rm = T), min(EVI_proc, na.rm = T))
-	}else{
+	####### loop through hourly driver data
+	lapply(unique(lubridate::year(vpRm$domain$time)), function(yy){
+		####### process evi extrema
 		evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_dir)
-		evi_extrema_proc <- proc_2d(evi_extrema,plate)
+		evi_extrema_proc <- terra::project(evi_extrema,plate, method = "cubicspline")
 		evi_extrema_proc <- evi_extrema_proc*evi_scale_factor
-	} #end else
-	if(vpRm$verbose){Print_Info(evi_extrema_proc)}
-	Save_Rast(evi_extrema_proc, vpRm$dirs$evi_extrema_proc_dir)
-	rm(evi_extrema_proc)
+		Save_Rast(evi_extrema_proc, file.path(vpRm$dirs$evi_extrema_proc_dir, paste0(yy, ".nc")))
+		rm(evi_extrema, evi_extrema_proc)
 
-	####### process green
-	if(vpRm$verbose){print("start process green")}
-	if(is.null(vpRm$dirs$green_dir)){
-		### TODO: if there are times in plate in any year, that whole year evi must be present or error
-		### TODO: TODO: NOT HAVING THIS STOP() IMPLEMENTED RESULTED IN US HUNTING A BUG FOR HOURS>>>>
-		#                 if{
-		#                 }#end 
-		green_proc <- green(EVI_proc)
-	}else{
-		green <- terra::rast(vpRm$dirs$green_dir)
-		green_proc <- proc_2d(green,plate)
-	} #end else
-	if(vpRm$verbose){Print_Info(green_proc)}
-	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)
+		####### process green
+		GREEN <- terra::rast(vpRm$dirs$green_dir)
+		green_proc <- terra::project(GREEN,plate, method = "cubicspline")
+		Save_Rast(green_proc, file.path(vpRm$dirs$green_proc_dir, paste0(yy, ".nc")))
+		rm(GREEN, green_proc)
+	}) #end lapply yearly
 
-	rm(green_proc)
-	rm(EVI, EVI_proc)
+	####### loop through hourly driver data
+	### TODO: when generics implemented length(vpRm)
+	lapply(1:length(vpRm$domain$time), function(tt_idx){
 
-	### TODO: CHECK ALL DIMENSIONS
+		tt <- vpRm$domain$time[tt_idx]
+
+		if(vpRm$verbose){print(tt)}
+
+		terra::time(plate) <- tt
+
+		####### process temp
+		temp_dir_tt <- vpRm$dirs$temp_dir[tt == parse_herbie_hrrr_times(vpRm$dirs$temp_dir)]
+		temp_proc <- terra::rast(temp_dir_tt)
+		temp_proc <- terra::project(temp_proc,plate, method = "cubicspline")
+		Save_Rast(temp_proc, vpRm$dirs$temp_proc_files_dir[tt_idx])
+		rm(temp_proc)
+
+		####### process dswrf to par
+		dswrf_dir_tt <- vpRm$dirs$dswrf_dir[tt == parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)]
+		dswrf <- terra::rast(dswrf_dir_tt)
+		### Mahadevan 2008 factor to convert DSWRF to PAR
+		par_proc <- terra::project(dswrf,plate, method = "cubicspline")*par_scale_factor
+		Save_Rast(par_proc, vpRm$dirs$par_proc_files_dir[tt_idx])
+		rm(dswrf, par_proc)
+
+		####### process evi
+		### TODO: only process evi when you have to
+		doy_evi <- lubridate::yday(parse_modis_evi_times(vpRm$dirs$evi_dir))
+		doy_domain <- lubridate::yday(tt)
+		idx <- findInterval(doy_domain, vec = doy_evi)
+		evi_dir_tt <- vpRm$dirs$evi_dir[idx]
+
+		EVI <- terra::rast(evi_dir_tt)
+		EVI_proc <- terra::project(EVI,plate, method = "cubicspline")*evi_scale_factor
+		Save_Rast(EVI_proc, vpRm$dirs$evi_proc_files_dir[tt_idx])
+		rm(EVI, EVI_proc)
+
+		return(NULL)
+	})#end lapply hourly
 
 	return(vpRm)
 }#end func process.vpRm

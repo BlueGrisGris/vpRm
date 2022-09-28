@@ -14,5 +14,5 @@ run_vpRm(vpRm)
 vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files.
 }
 \description{
-Execute the models calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers().
+Execute the "model" calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers().
 }

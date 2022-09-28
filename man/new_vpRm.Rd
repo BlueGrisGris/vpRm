@@ -14,10 +14,11 @@ new_vpRm(
   evi_dir = NULL,
   evi_extrema_dir = NULL,
   green_dir = NULL,
-  year = NULL,
-  temp_time = NULL,
-  dswrf_time = NULL,
-  evi_time = NULL,
+  vprm_params = vpRm::vprm_params,
+  vpRm_crs = NULL,
+  vpRm_ext = NULL,
+  vpRm_res = NULL,
+  vpRm_time = NULL,
   verbose = F
 )
 }
@@ -38,13 +39,15 @@ new_vpRm(
 
 \item{green_dir}{(chr): path to greenup/down data}
 
-\item{year}{(chr): year in which VPRM is being run}
+\item{vprm_params}{(data.frame): VPRM parameters, trained from tower data}
 
-\item{temp_time}{(chr): times of temp}
+\item{vpRm_crs}{(terra::crs): coordinate reference system for intake}
 
-\item{dswrf_time}{(chr): times of dswrf}
+\item{vpRm_ext}{(terra::ext): extent for intake}
 
-\item{evi_time}{(chr): times of evi}
+\item{vpRm_res}{(terra::ext): resolution for intake}
+
+\item{vpRm_time}{(terra::time): times of intake}
 
 \item{verbose}{(bool): print intermediary updates?}
 }
