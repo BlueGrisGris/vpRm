@@ -55,6 +55,32 @@ if(!is.null(vpRm_time)){
 	vpRm$domain$time <- vpRm_time
 }#end if(!is.null(vpRm_time)){
 
+### the hours in the domain for use in filenames
+filename_tt <- paste0(paste(
+	lubridate::year(vpRm$domain$time)
+	, stringr::str_pad(lubridate::month(vpRm$domain$time),width = 2, pad = "0")
+	, stringr::str_pad(lubridate::day(vpRm$domain$time),width = 2, pad = "0")
+	, stringr::str_pad(lubridate::hour(vpRm$domain$time),width = 2, pad = "0")
+	, stringr::str_pad(lubridate::minute(vpRm$domain$time),width = 2, pad = "0")
+	, sep = "_"
+), ".nc") #end paste
+
+### set the processed data filenames
+### yearly processed filenames
+domain_years <- unique(lubridate::year(vpRm$domain$time))
+vpRm$dirs$evi_extrema_proc_files_dir <- file.path(vpRm$dirs$evi_extrema_proc_dir, paste0(domain_years, ".nc"))
+vpRm$dirs$green_proc_files_dir <- file.path(vpRm$dirs$green_proc_dir, paste0(domain_years, ".nc"))
+### hourly processed filenames
+### TODO: evi needs to be special when we stop reproccing every hour
+vpRm$dirs$temp_proc_files_dir <- file.path(vpRm$dirs$temp_proc_dir, filename_tt)
+vpRm$dirs$par_proc_files_dir <- file.path(vpRm$dirs$par_proc_dir, filename_tt)
+vpRm$dirs$evi_proc_files_dir <- file.path(vpRm$dirs$evi_proc_dir, filename_tt)
+
+### set the output filenames
+vpRm$dirs$nee_files_dir <- file.path(vpRm$dirs$nee_dir, filename_tt)
+vpRm$dirs$gee_files_dir <- file.path(vpRm$dirs$gee_dir, filename_tt)
+vpRm$dirs$respir_files_dir <- file.path(vpRm$dirs$respir_dir, filename_tt)
+
 return(vpRm)
 
 }#end func set_domain

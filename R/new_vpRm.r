@@ -46,8 +46,6 @@ new_vpRm <- function(
 	, verbose = F 
 	){
 
-#       TODO:  ---> also we are not following the principles about args on pg 304 Advanced R
-
 #########################
 ### Create Directories 
 #########################
@@ -58,9 +56,12 @@ out_dir <- file.path(vpRm_dir, "out")
 dir.create(proc_dir, recursive = T, showWarnings = F)
 dir.create(out_dir, recursive = T, showWarnings = F)
 
-lc_proc_dir <- file.path(proc_dir, "lc")
-isa_proc_dir <- file.path(proc_dir, "isa")
+lc_isa_proc_dir <- file.path(proc_dir, "lc_isa")
+dir.create(lc_isa_proc_dir, recursive = T, showWarnings = F)
+lc_proc_dir <- file.path(proc_dir, lc_isa_proc_dir, "lc.nc")
+isa_proc_dir <- file.path(proc_dir, lc_isa_proc_dir, "isa.nc")
 
+### parent directories of processed hourly driver data
 temp_proc_dir <- file.path(proc_dir, "temp")
 par_proc_dir <- file.path(proc_dir, "par")
 evi_proc_dir <- file.path(proc_dir, "evi")
@@ -68,11 +69,13 @@ dir.create(temp_proc_dir, recursive = T, showWarnings = F)
 dir.create(par_proc_dir, recursive = T, showWarnings = F)
 dir.create(evi_proc_dir , recursive = T, showWarnings = F)
 
+### parent directories of processed yearly driver data
 evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema")
 green_proc_dir <- file.path(proc_dir, "green")
 dir.create(evi_extrema_proc_dir, recursive = T, showWarnings = F)
 dir.create(green_proc_dir, recursive = T, showWarnings = F)
 
+### parent directories of VPRM outputs
 nee_dir <- file.path(out_dir, "nee")
 gee_dir <- file.path(out_dir, "gee")
 respir_dir <- file.path(out_dir, "respir")
@@ -80,10 +83,17 @@ dir.create(nee_dir, recursive = T, showWarnings = F)
 dir.create(gee_dir, recursive = T, showWarnings = F)
 dir.create(respir_dir, recursive = T, showWarnings = F)
 
-### TODO: outfiles for each time -- properly zero padded
-# , nee_dir = nee_files_dir
-# , gee_dir = gee_files_dir
-# , respir_dir = respir_files_dir
+
+evi_extrema_proc_files_dir <- NULL
+green_proc_files_dir <- NULL
+
+temp_proc_files_dir <- NULL
+par_proc_files_dir <- NULL
+evi_proc_files_dir <- NULL
+
+nee_files_dir <- NULL
+gee_files_dir <- NULL
+respir_files_dir <- NULL
 
 #########################
 ### Save S3 class 
@@ -105,18 +115,35 @@ vpRm <- list(
 
 		, proc_dir = proc_dir
 
+		, lc_isa_proc_dir = lc_isa_proc_dir 	
 		, lc_proc_dir = lc_proc_dir 	
 		, isa_proc_dir = isa_proc_dir 	
+
+		### parent directories of processed hourly driver data
 		, temp_proc_dir = temp_proc_dir
 		, par_proc_dir = par_proc_dir
 		, evi_proc_dir = evi_proc_dir
+		### filenames of processed hourly driver data
+		, temp_proc_files_dir = temp_proc_files_dir
+		, par_proc_files_dir = par_proc_files_dir
+		, evi_proc_files_dir = evi_proc_files_dir
+
+		### parent directories of processed yearly driver data
 		, evi_extrema_proc_dir = evi_extrema_proc_dir
 		, green_proc_dir = green_proc_dir
+		### filenames of processed yearly driver data
+		, evi_extrema_proc_files_dir = evi_extrema_proc_files_dir
+		, green_proc_files_dir = green_proc_files_dir
 
+		### parent directories of VPRM outputs
 		, out_dir = out_dir
 		, nee_dir = nee_dir
 		, gee_dir = gee_dir
 		, respir_dir = respir_dir
+		### filenames of VPRM outputs
+		, nee_files_dir = nee_files_dir
+		, gee_files_dir = gee_files_dir
+		, respir_files_dir = respir_files_dir
 	)#end list dirs
 
 	, domain = list(
