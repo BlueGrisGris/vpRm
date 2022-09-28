@@ -1,4 +1,3 @@
-skip("not rdy")
 test_that("does run_vpRm produce the correct results?",{
 	vpRm <- new_vpRm(
 		vpRm_dir
@@ -18,7 +17,7 @@ test_that("does run_vpRm produce the correct results?",{
 	vpRm <- proc_drivers(vpRm)
 	vpRm <- run_vpRm(vpRm)
 
-	expect_equal( dim(terra::rast( vpRm$dirs$nee_files_dir)) , dim(plate) )
-	expect_equal( dim(terra::rast(vpRm$dirs$gee_files_dir)) , dim(plate) )
-	expect_equal( dim(terra::rast(vpRm$dirs$respir_files_dir)) , dim(plate) )
+	expect_equal( dim(terra::rast(vpRm$dirs$nee_files_dir)) , dim(domain) )
+	expect_equal( dim(terra::rast(vpRm$dirs$gee_files_dir)) , dim(domain) )
+	expect_equal( dim(terra::rast(vpRm$dirs$respir_files_dir)) , dim(domain) )
 }) #end test_that("does run.vpRm produce the correct results?"{

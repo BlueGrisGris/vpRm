@@ -27,6 +27,7 @@ new_vpRm <- function(
 	, lc_dir = NULL
 	, isa_dir = NULL
 
+	### TODO: enable ingest many files each with one time, or a rast w many times
 	, temp_dir = NULL
 	, dswrf_dir = NULL
 	, evi_dir = NULL
@@ -57,19 +58,24 @@ out_dir <- file.path(vpRm_dir, "out")
 dir.create(proc_dir, recursive = T, showWarnings = F)
 dir.create(out_dir, recursive = T, showWarnings = F)
 
-lc_proc_dir <- file.path(proc_dir, "lc.nc")
-isa_proc_dir <- file.path(proc_dir, "isa.nc")
-plate_dir <- file.path(proc_dir, "plate.nc")
-temp_proc_dir <- file.path(proc_dir, "temp.nc")
-par_proc_dir <- file.path(proc_dir, "par.nc")
-evi_proc_dir <- file.path(proc_dir, "evi.nc")
-evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema.nc")
-green_proc_dir <- file.path(proc_dir, "green.nc")
+lc_proc_dir <- file.path(proc_dir, "lc")
+isa_proc_dir <- file.path(proc_dir, "isa")
 
+temp_proc_dir <- file.path(proc_dir, "temp")
+par_proc_dir <- file.path(proc_dir, "par")
+evi_proc_dir <- file.path(proc_dir, "evi")
+dir.create(temp_proc_dir, recursive = T, showWarnings = F)
+dir.create(par_proc_dir, recursive = T, showWarnings = F)
+dir.create(evi_proc_dir , recursive = T, showWarnings = F)
+
+evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema")
+green_proc_dir <- file.path(proc_dir, "green")
+dir.create(evi_extrema_proc_dir, recursive = T, showWarnings = F)
+dir.create(green_proc_dir, recursive = T, showWarnings = F)
+
+nee_dir <- file.path(out_dir, "nee")
 gee_dir <- file.path(out_dir, "gee")
 respir_dir <- file.path(out_dir, "respir")
-nee_dir <- file.path(out_dir, "nee")
-
 dir.create(nee_dir, recursive = T, showWarnings = F)
 dir.create(gee_dir, recursive = T, showWarnings = F)
 dir.create(respir_dir, recursive = T, showWarnings = F)
@@ -98,7 +104,6 @@ vpRm <- list(
 		, green_dir = green_dir
 
 		, proc_dir = proc_dir
-		, plate_dir = plate_dir
 
 		, lc_proc_dir = lc_proc_dir 	
 		, isa_proc_dir = isa_proc_dir 	

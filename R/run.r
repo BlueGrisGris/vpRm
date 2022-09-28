@@ -17,55 +17,75 @@ if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 #############################################
 
 ### time invariant 
-LC <- terra::rast(vpRm$dirs$lc_proc_dir)
-ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
+### TODO: ".nc" is a stop gap
+LC <- terra::rast(paste0(vpRm$dirs$lc_proc_dir, ".nc"))
+ISA <- terra::rast(paste0(vpRm$dirs$isa_proc_dir, ".nc"))
 
 ### TODO: make it a function and add it to a checker function?
 # if( any(dim(LC) != c(dim(plate)[1:2], 1) )){stop(paste("dim lc_proc =", dim(LC), " does not align dim plate =", dim(plate)))}
 # if( any(dim(ISA) != c(dim(plate)[1:2], 1) )){stop(paste("dim isa_proc =", dim(ISA), " does not align dim plate =", dim(plate)))}
 
-### per year
-### TODO: grep by year(time)
-EVIextrema <- terra::rast(vpRm$dirs$evi_extrema_proc_dir)
-GREEN <- terra::rast(vpRm$dirs$green_proc_dir)
-# if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
-# if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
+#############################################
+### collate vprm paramters
+#############################################
 
+### TODO: Check for LC codes not in params
+
+vprm_params <- vpRm$vprm_params
+
+lambda <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"lambda"] )
+
+Tmin <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmin"] )
+Tmax <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmax"] )
+
+PAR0 <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
+
+ALPHA <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"alpha"] )
+BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
+
+### important landcodes for exclusion of processes
+water_lc <- 18
+evergreen_lc <- c(1,2,3)
+
+### loop yearly
+lapply(unique(lubridate::year(vpRm$domain$time)), function(yy){
+
+	evi_files <- list.files(vpRm$dirs$evi_extrema_proc_dir, full.names = T)
+	evi_extrema_dir_yy <- evi_files[grep(yy, evi_files)]
+
+	green_files <- list.files(vpRm$dirs$green_proc_dir, full.names = T)
+	green_dir_yy <- green_files[grep(yy, green_files)]
+
+	EVIextrema <- terra::rast(evi_extrema_dir_yy)
+	GREEN <- terra::rast(green_dir_yy)
+	# if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
+	# if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
 ### loop hourly
 lapply(vpRm$domain$time, function(tt){
+
+
 	if(vpRm$verbose){print(tt)}
 
-	### TODO: correct filenames ttt
 
-	### vary hourly or "interpolated" as such
-	TEMP <- terra::rast(vpRm$dirs$temp_proc_dir)
-	PAR <- terra::rast(vpRm$dirs$par_proc_dir)
-	EVI <- terra::rast(vpRm$dirs$evi_proc_dir)
+	temp_files <- list.files(vpRm$dirs$temp_proc_dir, full.names = T)
+	temp_times <- lubridate::ymd_hm(stringr::str_extract(temp_files, "[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]{2}_[0-9]{2}"))
+	temp_files_tt <- temp_files[temp_times == tt]
+
+	par_files <- list.files(vpRm$dirs$par_proc_dir, full.names = T)
+	par_times <- lubridate::ymd_hm(stringr::str_extract(par_files, "[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]{2}_[0-9]{2}"))
+	par_files_tt <- par_files[par_times == tt]
+
+	evi_files <- list.files(vpRm$dirs$evi_proc_dir, full.names = T)
+	evi_times <- lubridate::ymd_hm(stringr::str_extract(evi_files, "[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]{2}_[0-9]{2}"))
+	evi_files_tt <- evi_files[evi_times == tt]
+
+	TEMP <- terra::rast(temp_files_tt)
+	PAR <- terra::rast(par_files_tt)
+	EVI <- terra::rast(evi_files_tt)
 	# if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " does not match dim plate =", dim(plate)))}
 	# if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
 	# if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
 
-	#############################################
-	### collate vprm paramters
-	#############################################
-
-	### TODO: Check for LC codes not in params
-
-	vprm_params <- vpRm$params
-
-	lambda <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"lambda"] )
-
-	Tmin <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmin"] )
-	Tmax <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmax"] )
-
-	PAR0 <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
-
-	ALPHA <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"alpha"] )
-	BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
-
-	### important landcodes for exclusion of processes
-	water_lc <- 18
-	evergreen_lc <- c(1,2,3)
 
 	#############################################
 	### calculate scalars
@@ -81,8 +101,6 @@ lapply(vpRm$domain$time, function(tt){
 	Pscalar <- Pscalar(EVI, EVImax, EVImin) 
 	### phenology of evergreens is always max
 	Pscalar[sum(LC == evergreen_lc)] <- 1
-	Pscalar[Pscalar < 0] <- 0 
-	Pscalar[Pscalar > 1] <- 1 
 
 	### simplified Wscalar
 	Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
@@ -90,9 +108,6 @@ lapply(vpRm$domain$time, function(tt){
 	#############################################
 	### calculate gee
 	#############################################
-
-	if(vpRm$verbose){print("start calculate gee")}
-
 	GEE <- gee(
 		   lambda
 		   , Tscalar
@@ -102,6 +117,7 @@ lapply(vpRm$domain$time, function(tt){
 		   , PAR
 		   , PAR0
 	)#end gee
+
 
 	### Set gee to zero outside of growing season
 	doy <- lubridate::yday(terra::time(GEE)) 
@@ -113,11 +129,11 @@ lapply(vpRm$domain$time, function(tt){
 	### gee = zero where there is water
 	GEE <- GEE * (LC!=water_lc)
 
+	terra::time(GEE) <- tt
+
 	#############################################
 	### calculate respiration
 	#############################################
-
-	if(vpRm$verbose){print("start calculate respiration")}
 
 	RESPIR <- respir(
 		TEMP
@@ -131,18 +147,47 @@ lapply(vpRm$domain$time, function(tt){
 	### respir = zero where there is water
 	RESPIR <- RESPIR * (LC!=water_lc)
 
+	terra::time(RESPIR) <- tt
+
 	#############################################
 	### calculate nee and save outputs
 	#############################################
 
 	### net ecosystem exchange
 	NEE <- RESPIR - GEE
-	names(NEE) <- rep("nee", terra::nlyr(NEE))
+	names(NEE) <- "nee"
+	terra::time(NEE) <- tt
+	terra::units(NEE) <- "micromol CO2 m-2 s-1"
 
 	### save output CO2 flux fields
-	lapply(list(NEE, GEE, RESPIR), save_co2_field())
+	lapply(list(NEE, GEE, RESPIR), function(ff){
+		
+		out_dir <- vpRm$dirs[[paste(names(ff), "dir", sep = "_")]]
+		      	 
+		filename <- paste(
+			lubridate::year(tt)
+			, stringr::str_pad(lubridate::month(tt),width = 2, pad = "0")
+			, stringr::str_pad(lubridate::day(tt),width = 2, pad = "0")
+			, stringr::str_pad(lubridate::hour(tt),width = 2, pad = "0")
+			, stringr::str_pad(lubridate::minute(tt),width = 2, pad = "0")
+			, sep = "_"
+		)#end paste
 
-})#end lapply times 
+		terra::writeCDF(
+				ff
+				, filename = file.path(out_dir, paste0(filename,".nc"))
+				, varname = names(ff)
+				, longname = paste(names(ff), "CO2 flux")
+				, zname = "time"
+				, unit = "micromol CO2 m-2 s-1"
+				, overwrite = T
+				, prec = "double"
+		)#end writeCDF
+		return(NULL)
+	}) #end lapply
+
+})#end lapply hours 
+})#end lapply years 
 
 return(vpRm)
 

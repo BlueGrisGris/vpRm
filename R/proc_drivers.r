@@ -5,7 +5,6 @@
 #' @export
 proc_drivers <- function(vpRm){
 
-	### TODO: nicer error
 	### TODO: stopif
 	if(any(is.null(c(
 		  vpRm$dirs$lc_dir
@@ -18,6 +17,8 @@ proc_drivers <- function(vpRm){
 	)))){
 	       stop("all driver data directories must be provided")
 	}#end if is null
+
+	### TODO: check that domain exists
 
 	####### create plate
 	plate <- terra::rast(
@@ -35,7 +36,7 @@ proc_drivers <- function(vpRm){
 	####### process landcover
 	lc <- terra::rast(vpRm$dirs$lc_dir)
 	lc_proc <- terra::project(lc,plate, method = "near")
-	Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
+	Save_Rast(lc_proc, file.path(vpRm$dirs$lc_proc_dir))
 
 	####### process isa
 	ISA <- terra::rast(vpRm$dirs$isa_dir)
@@ -52,54 +53,65 @@ proc_drivers <- function(vpRm){
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(ISA, isa_proc)
 
+	### TODO: handle multiple years of evi extrema and green
 	####### process evi extrema
 	evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_dir)
 	evi_extrema_proc <- terra::project(evi_extrema,plate, method = "cubicspline")
 	evi_extrema_proc <- evi_extrema_proc*evi_scale_factor
-	Save_Rast(evi_extrema_proc, vpRm$dirs$evi_extrema_proc_dir)
+	Save_Rast(evi_extrema_proc
+		, file.path(vpRm$dirs$evi_extrema_proc_dir, lubridate::year(terra::time(evi_extrema)[1]))
+	)#end Save_Rast
 	rm(evi_extrema, evi_extrema_proc)
 
 	####### process green
-	green <- terra::rast(vpRm$dirs$green_dir)
-	green_proc <- terra::project(green,plate, method = "cubicspline")
-	Save_Rast(green_proc, vpRm$dirs$green_proc_dir)
-	rm(green, green_proc)
+	GREEN <- terra::rast(vpRm$dirs$green_dir)
+	green_proc <- terra::project(GREEN,plate, method = "cubicspline")
+	Save_Rast(green_proc
+		, file.path(vpRm$dirs$green_proc_dir , lubridate::year(terra::time(GREEN))[1])
+	)#end Save_Rast
+	rm(GREEN, green_proc)
 
 	####### loop through hourly driver data
-	sapply(vpRm$domain$time, function(tt){
+	lapply(vpRm$domain$time, function(tt){
 		if(vpRm$verbose){print(tt)}
-		browser()
+
 		terra::time(plate) <- tt
 
-		####### TODO: get directories of driver data
-		temp_dir_tt <- parse_herbie_hrrr_times(vpRm$dirs$temp_dir)[
-			tt = parse_herbie_hrrr_times(vpRm$dirs$temp_dir)
-		]#end parse herbie
-		dswrf_dir_tt <- parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)[
-			tt = parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)
-		]#end parse herbie
-
-		### TODO: only process evi when you have to
-		evi_dir_tt <- parse_modis_evi_times(vpRm$dirs$evi_dir)[
-			tt == parse_modis_evi_times(vpRm$dirs$evi_dir)
-		] #end parse modis
+		####### get directories of driver data
+		filename <- paste(
+			lubridate::year(tt)
+			, stringr::str_pad(lubridate::month(tt),width = 2, pad = "0")
+			, stringr::str_pad(lubridate::day(tt),width = 2, pad = "0")
+			, stringr::str_pad(lubridate::hour(tt),width = 2, pad = "0")
+			, stringr::str_pad(lubridate::minute(tt),width = 2, pad = "0")
+			, sep = "_"
+		)#end paste
 
 		####### process temp
+		temp_dir_tt <- vpRm$dirs$temp_dir[tt == parse_herbie_hrrr_times(vpRm$dirs$temp_dir)]
 		temp <- terra::rast(temp_dir_tt)
-		temp_proc <- terra::project(temp,plate, method = "cubicspline", filename = vpRm$dirs$temp_proc_dir)
-		rm(temp, temp_proc)
+		temp <- terra::project(temp,plate, method = "cubicspline")
+		Save_Rast(temp, file.path(vpRm$dirs$temp_proc_dir, filename))
+		rm(temp)
 
 		####### process dswrf to par
+		dswrf_dir_tt <- vpRm$dirs$dswrf_dir[tt == parse_herbie_hrrr_times(vpRm$dirs$dswrf_dir)]
 		dswrf <- terra::rast(dswrf_dir_tt)
 		### Mahadevan 2008 factor to convert DSWRF to PAR
 		par_proc <- terra::project(dswrf,plate, method = "cubicspline")*par_scale_factor
-		Save_Rast(par_proc, vpRm$dirs$par_proc_dir)
+		Save_Rast(par_proc, file.path(vpRm$dirs$par_proc_dir, filename))
 		rm(dswrf, par_proc)
 
 		####### process evi
-		EVI <- terra::rast(vpRm$dirs$evi_dir)
+		### TODO: only process evi when you have to
+		doy_evi <- lubridate::yday(parse_modis_evi_times(vpRm$dirs$evi_dir))
+		doy_domain <- lubridate::yday(tt)
+		idx <- findInterval(doy_domain, vec = doy_evi)
+		evi_dir_tt <- vpRm$dirs$evi_dir[idx]
+
+		EVI <- terra::rast(evi_dir_tt)
 		EVI_proc <- terra::project(EVI,plate, method = "cubicspline")*evi_scale_factor
-		Save_Rast(EVI_proc, vpRm$dirs$evi_proc_dir)
+		Save_Rast(EVI_proc, file.path(vpRm$dirs$evi_proc_dir, filename))
 
 		return(NULL)
 	})#end sapply

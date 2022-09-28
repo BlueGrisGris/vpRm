@@ -36,11 +36,11 @@ return(raster)
 #' @param filename (chr): filename to save to 
 #'
 #' @export 
-Save_Rast <- function(rast, filename){
+Save_Rast <- function(RAST, filename){
 	suppressWarnings( ### warning when saving an empty netcdf
-	terra::writeCDF( rast , filename = filename , overwrite = T )#end terra::writeCDF
+	terra::writeCDF( RAST, filename = paste0(filename, ".nc"), overwrite = T )#end terra::writeCDF
 	)#end suppressWarnings
-	return(rast)
+	return(RAST)
 }#end Save_Rast <- function(rast, filename){
 
 ### TODO: make it pad zeros correctly
@@ -65,8 +65,7 @@ out_field_filename <- function(field_name, field_time){
 }#end func out_field_filename
 
 save_co2_field <- function(ff, vpRm){
-
-	field_name <- names(ff)[1]
+	field_name <- names(ff)
 	field_time <- terra::time(ff)
 
 	field_filename <- file.path( 
