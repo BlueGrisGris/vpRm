@@ -11,7 +11,6 @@ run_vpRm <- function(vpRm){
 if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 
 
-
 #############################################
 ### point to processed drivers
 #############################################
@@ -60,7 +59,6 @@ lapply(1:length(vpRm$domain$time), function(tt_idx){
 	yy <- lubridate::year(tt)
 	evi_extrema_dir_yy <- vpRm$dirs$evi_extrema_proc_files_dir[grep(yy, vpRm$dirs$evi_extrema_proc_files_dir)]
 
-	vpRm$dirs$green_proc_files_dir
 	green_dir_yy <- vpRm$dirs$green_proc_files_dir[grep(yy, vpRm$dirs$green_proc_files_dir)]
 
 	EVIextrema <- terra::rast(evi_extrema_dir_yy)
@@ -107,6 +105,7 @@ lapply(1:length(vpRm$domain$time), function(tt_idx){
 		   , PAR0
 	)#end gee
 
+	terra::time(GEE) <- tt
 
 	### Set gee to zero outside of growing season
 	doy <- lubridate::yday(terra::time(GEE)) 
@@ -117,8 +116,6 @@ lapply(1:length(vpRm$domain$time), function(tt_idx){
 
 	### gee = zero where there is water
 	GEE <- GEE * (LC!=water_lc)
-
-	terra::time(GEE) <- tt
 
 	#############################################
 	### calculate respiration
@@ -133,10 +130,10 @@ lapply(1:length(vpRm$domain$time), function(tt_idx){
 		, EVI
 	)#end respir
 
+	terra::time(RESPIR) <- tt
+
 	### respir = zero where there is water
 	RESPIR <- RESPIR * (LC!=water_lc)
-
-	terra::time(RESPIR) <- tt
 
 	#############################################
 	### calculate nee and save outputs
