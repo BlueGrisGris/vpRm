@@ -42,3 +42,9 @@ Save_Rast <- function(RAST, filename){
 	)#end suppressWarnings
 	return(RAST)
 }#end Save_Rast <- function(rast, filename){
+
+Dir_Create <- function(dir){
+	if(!dir.exists(dir)){
+		dir.create(dir, recursive = T, showWarnings = F)	
+	}#end if dir.exists
+}#end func Create_Dir
