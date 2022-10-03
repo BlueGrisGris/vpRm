@@ -50,14 +50,16 @@ new_vpRm <- function(
 ### Create Directories 
 #########################
 
+Dir_Create(vpRm_dir)
+
 proc_dir <- file.path(vpRm_dir, "processed")
 out_dir <- file.path(vpRm_dir, "out")
 
-Dir_Create(proc_dir, recursive = T, showWarnings = F)
-Dir_Create(out_dir, recursive = T, showWarnings = F)
+Dir_Create(proc_dir)
+Dir_Create(out_dir)
 
 lc_isa_proc_dir <- file.path(proc_dir, "lc_isa")
-Dir_Create(lc_isa_proc_dir, recursive = T, showWarnings = F)
+Dir_Create(lc_isa_proc_dir)
 lc_proc_dir <- file.path(lc_isa_proc_dir, "lc.nc")
 isa_proc_dir <- file.path(lc_isa_proc_dir, "isa.nc")
 
@@ -65,23 +67,23 @@ isa_proc_dir <- file.path(lc_isa_proc_dir, "isa.nc")
 temp_proc_dir <- file.path(proc_dir, "temp")
 par_proc_dir <- file.path(proc_dir, "par")
 evi_proc_dir <- file.path(proc_dir, "evi")
-Dir_Create(temp_proc_dir, recursive = T, showWarnings = F)
-Dir_Create(par_proc_dir, recursive = T, showWarnings = F)
-Dir_Create(evi_proc_dir , recursive = T, showWarnings = F)
+Dir_Create(temp_proc_dir)
+Dir_Create(par_proc_dir)
+Dir_Create(evi_proc_dir)
 
 ### parent directories of processed yearly driver data
 evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema")
 green_proc_dir <- file.path(proc_dir, "green")
-Dir_Create(evi_extrema_proc_dir, recursive = T, showWarnings = F)
-Dir_Create(green_proc_dir, recursive = T, showWarnings = F)
+Dir_Create(evi_extrema_proc_dir)
+Dir_Create(green_proc_dir)
 
 ### parent directories of VPRM outputs
 nee_dir <- file.path(out_dir, "nee")
 gee_dir <- file.path(out_dir, "gee")
 respir_dir <- file.path(out_dir, "respir")
-Dir_Create(nee_dir, recursive = T, showWarnings = F)
-Dir_Create(gee_dir, recursive = T, showWarnings = F)
-Dir_Create(respir_dir, recursive = T, showWarnings = F)
+Dir_Create(nee_dir)
+Dir_Create(gee_dir)
+Dir_Create(respir_dir)
 
 evi_extrema_proc_files_dir <- NULL
 green_proc_files_dir <- NULL

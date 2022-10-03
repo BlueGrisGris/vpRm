@@ -6,7 +6,11 @@
 #' @param vpRm (vpRm): a vpRm S3 object with attached driver data 
 #' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
 #' @export
-run_vpRm <- function(vpRm){
+run_vpRm <- function(
+	vpRm
+	, water_lc = 18
+	, evergreen_lc = c(1,2,3)
+){
 
 if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 
@@ -16,7 +20,6 @@ if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
 #############################################
 
 ### time invariant 
-### TODO: ".nc" is a stop gap
 LC <- terra::rast(vpRm$dirs$lc_proc_dir)
 ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
 
@@ -43,9 +46,8 @@ ALPHA <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"alpha"] )
 BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
 
 ### important landcodes for exclusion of processes
-water_lc <- 18
-evergreen_lc <- c(1,2,3)
-
+water_lc <- water_lc
+evergreen_lc <- evergreen_lc
 
 ### loop hourly
 lapply(1:length(vpRm$domain$time), function(tt_idx){
@@ -56,6 +58,7 @@ lapply(1:length(vpRm$domain$time), function(tt_idx){
 
 	### TODO: loading yearly data for each hour is 2 loads on top of 3 hourly loads inefficient 
 	### To resolve, would have to save yearly data to a different environement.
+	### running is already pretty fast though
 	yy <- lubridate::year(tt)
 	evi_extrema_dir_yy <- vpRm$dirs$evi_extrema_proc_files_dir[grep(yy, vpRm$dirs$evi_extrema_proc_files_dir)]
 
