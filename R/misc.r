@@ -22,7 +22,7 @@ Get_Stilt_Out_Filenames <- function(stilt_out_dir,outtype){
 sanitize_raster <- function(raster){
 if(class(raster)[[1]] != "SpatRaster"){
 	if(class(raster)[[1]] != "character"){
-		stop("input must be either a terra::rasted land cover or a filepath to such")
+		stop("Input must be either a terra::spatRaster or a filepath to geospatial data readable by terra::rast()")
 	}#end if(!class(driver)[[1]] != c){
 	raster <- terra::rast(raster)
 }#end if(class(driver)[[1]]{
@@ -36,42 +36,9 @@ return(raster)
 #' @param filename (chr): filename to save to 
 #'
 #' @export 
-Save_Rast <- function(rast, filename){
+Save_Rast <- function(RAST, filename){
 	suppressWarnings( ### warning when saving an empty netcdf
-	terra::writeCDF( rast , filename = filename , overwrite = T )#end terra::writeCDF
+	terra::writeCDF( RAST, filename = filename, overwrite = T )#end terra::writeCDF
 	)#end suppressWarnings
-	return(rast)
+	return(RAST)
 }#end Save_Rast <- function(rast, filename){
-
-Print_Info <- function(rast){
-	print(deparse(substitute(rast)))
-	print(rast)
-	print(terra::mem_info(rast))
-	print(paste(terra::free_RAM()/1e6, "GB free"))
-}#end func print info
-
-### TODO: test?
-set_vpRm_out_names <- function(vpRm, plate){
-	field_time <- terra::time(plate)
-	for(field_name in c("nee", "gee", "respir")){
-		vpRm$dirs[[paste(field_name, "files", "dir", sep = "_")]] <- file.path( 
-			vpRm$dirs[[paste(field_name, "dir", sep = "_")]]
-			,
-			paste0(
-			paste(
-				lubridate::year(field_time)
-				, lubridate::month(field_time)
-				, lubridate::day(field_time)
-				, paste0(
-					lubridate::hour(field_time)
-					, lubridate::minute(field_time)
-					, lubridate::second(field_time)
-				) #end paste 0 inner
-				, sep = "_"
-			)#end paste
-			, ".nc"
-			)#end paste0
-		)#end file.path
-	}#end for dd
-	return(vpRm)
-}#end func

@@ -18,8 +18,6 @@ return(evi_times)
 
 }#end func parse_modis_evi_times 
 
-### TODO: TEST
-
 #' parse_herbie_hrrr_times  
 #'  
 #' @param hrrr_filenames (chr): hrrr modis filenames to extract date times from 
@@ -27,14 +25,12 @@ return(evi_times)
 #' @export
 parse_herbie_hrrr_times <- function(hrrr_filenames){
 
-### someday maybe replace str_split w strsplit
 yy <- stringr::str_extract(hrrr_filenames, "[0-9]{8}")
 
 yr <- as.numeric( substr(yy, start = 1, stop = 4)) 
 month <- as.numeric( substr(yy, start = 5, stop = 6)) 
 day <- as.numeric( substr(yy, start = 7, stop = 8)) 
 hour <- as.numeric(substring( stringr::str_extract(hrrr_filenames, "t[0-9]{2}z") , 2, 3))
-### lubridate stopped parsing ymd_h ...
 minute <- 0
 
 hrrr_times <- paste(yr, month, day, hour, minute, sep = "_")

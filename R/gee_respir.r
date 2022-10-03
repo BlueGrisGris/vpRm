@@ -5,7 +5,7 @@ gee <- function(lambda, Tscalar, Pscalar, Wscalar, EVI, PAR, PAR0){
 	gee <- (lambda * Tscalar * Pscalar * Wscalar * EVI * PAR )/ ( 1+(PAR/PAR0) )
 
 	if(class(gee) == "SpatRaster"){
-		names(gee) <- rep("gee", terra::nlyr(gee))
+		names(gee) <- "gee"
 		terra::units(gee) <- rep("micromol CO2 m-2 s-1" , terra::nlyr(gee))
 	}#end if class
 

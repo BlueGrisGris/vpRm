@@ -5,12 +5,12 @@
 \title{Save_Rast
 Save a SpatRaster as a netcdf}
 \usage{
-Save_Rast(rast, filename)
+Save_Rast(RAST, filename)
 }
 \arguments{
-\item{rast}{(SpatRaster): SpatRaster to be saved}
-
 \item{filename}{(chr): filename to save to}
+
+\item{rast}{(SpatRaster): SpatRaster to be saved}
 }
 \description{
 Save_Rast
