@@ -1,5 +1,5 @@
 # vpRm
-## Version 0.0.0.9002 "Thuja plicata"
+## Version 0.0.0.9003 "Phoenix canariensis"
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/BlueGrisGris/vpRm/workflows/R-CMD-check/badge.svg)](https://github.com/BlueGrisGris/vpRm/actions)
@@ -65,6 +65,9 @@ run_vpRm(my_vpRm)
 ```
 
 # Version Information 
+## Version 0.0.0.9003 "Phoenix canariensis"
+- Rewrite Codebase to vectorize processing of hourly driver data and VPRM calculation independently of terra multilayer calculations
+
 ## Version 0.0.0.9002 "Thuja plicata"
 - Fixes to correct VPRM results
 
@@ -78,9 +81,6 @@ run_vpRm(my_vpRm)
 ## Version 0.0.0.9000 "Picea pungens"
 - No minimum viable soluton
 
-## Goals for next version:
-- Manage driver time data in a smooth way: easy assignment/not
-- Handle multiple years per run
 ## Goals for future versions:
 - Simple R/vpRm interface for downloading driver data 
 - Wrapper function to run VPRM models in a single line

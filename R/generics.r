@@ -15,3 +15,5 @@ summary.vpRm <- function(){
 #         print(template(vpRm))
 
 # }#end func 
+
+### easily subset by dates

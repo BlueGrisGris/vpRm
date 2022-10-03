@@ -55,6 +55,8 @@ proc_drivers <- function(vpRm){
 
 	####### loop through hourly driver data
 	lapply(unique(lubridate::year(vpRm$domain$time)), function(yy){
+		if(vpRm$verbose){print(yy)}
+
 		####### process evi extrema
 		evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_dir)
 		evi_extrema_proc <- terra::project(evi_extrema,plate, method = "cubicspline")
@@ -91,14 +93,18 @@ proc_drivers <- function(vpRm){
 		dswrf <- terra::rast(dswrf_dir_tt)
 		### Mahadevan 2008 factor to convert DSWRF to PAR
 		par_proc <- terra::project(dswrf,plate, method = "cubicspline")*par_scale_factor
+		par_proc[par_proc < 0] <- 0
 		Save_Rast(par_proc, vpRm$dirs$par_proc_files_dir[tt_idx])
 		rm(dswrf, par_proc)
 
 		####### process evi
 		### TODO: only process evi when you have to
-		doy_evi <- lubridate::yday(parse_modis_evi_times(vpRm$dirs$evi_dir))
-		doy_domain <- lubridate::yday(tt)
-		idx <- findInterval(doy_domain, vec = doy_evi)
+		### TODO: I think EVI is still slower than the others?
+		### TODO: evi date alignment only need to happen once, but that is not the issue
+		### TODO: maybe the missing domain slows it down? thats only difference i can see..
+		date_evi <- parse_modis_evi_times(vpRm$dirs$evi_dir)
+		date_domain <- vpRm$domain$time[tt_idx]
+		idx <- findInterval(date_domain, vec = date_evi)
 		evi_dir_tt <- vpRm$dirs$evi_dir[idx]
 
 		EVI <- terra::rast(evi_dir_tt)
