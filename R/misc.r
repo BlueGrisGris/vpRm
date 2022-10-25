@@ -32,15 +32,15 @@ return(raster)
 #' Save_Rast
 #' Save a SpatRaster as a netcdf
 #'
-#' @param rast (SpatRaster): SpatRaster to be saved
+#' @param SpatRaster (spatRaster): SpatRaster to be saved
 #' @param filename (chr): filename to save to 
 #'
 #' @export 
-Save_Rast <- function(RAST, filename){
+Save_Rast <- function(SpatRaster, filename){
 	suppressWarnings( ### warning when saving an empty netcdf
-	terra::writeCDF( RAST, filename = filename, overwrite = T )#end terra::writeCDF
+	terra::writeCDF(SpatRaster, filename = filename, overwrite = T )#end terra::writeCDF
 	)#end suppressWarnings
-	return(RAST)
+	return(SpatRaster)
 }#end Save_Rast <- function(rast, filename){
 
 Dir_Create <- function(dir){

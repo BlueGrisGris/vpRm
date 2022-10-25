@@ -4,7 +4,11 @@
 #' Execute the "model" calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers(). 
 #' 
 #' @param vpRm (vpRm): a vpRm S3 object with attached driver data 
+#' @param water_lc (int): which land cover values correspond to water cover
+#' @param evergreen_lc (int): which land cover values correspond to evergreen forests
+#' 
 #' @return vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files. 
+#' 
 #' @export
 run_vpRm <- function(
 	vpRm

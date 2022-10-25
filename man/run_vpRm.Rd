@@ -5,10 +5,14 @@
 \title{run_vpRm
 Run a VPRM model defined by a vpRm object}
 \usage{
-run_vpRm(vpRm)
+run_vpRm(vpRm, water_lc = 18, evergreen_lc = c(1, 2, 3))
 }
 \arguments{
 \item{vpRm}{(vpRm): a vpRm S3 object with attached driver data}
+
+\item{water_lc}{(int): which land cover values correspond to water cover}
+
+\item{evergreen_lc}{(int): which land cover values correspond to evergreen forests}
 }
 \value{
 vpRm (vpRm): the same vpRm object, now with attached gee, respiration and nee netcdf files.
