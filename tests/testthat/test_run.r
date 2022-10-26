@@ -1,4 +1,6 @@
+skip("doesn't work with r-cmd-check github action")
 test_that("does run_vpRm produce the correct results?",{
+	skip_on_cran() # integration test not appropriate for cran
 	vpRm <- new_vpRm(
 		vpRm_dir
 		, lc_dir
