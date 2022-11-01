@@ -1,4 +1,4 @@
-skip("doesn't work with r-cmd-check github action")
+# skip("doesn't work with r-cmd-check github action")
 test_that("does run_vpRm produce the correct results?",{
 	skip_on_cran() # integration test not appropriate for cran
 	vpRm <- new_vpRm(
@@ -17,7 +17,7 @@ test_that("does run_vpRm produce the correct results?",{
 
 	vpRm <- set_domain(vpRm, domain)
 	vpRm <- proc_drivers(vpRm)
-	vpRm <- run_vpRm(vpRm)
+	vpRm <- run_vpRm(vpRm, n_cores = 2)
 
 	expect_equal( dim(terra::rast(vpRm$dirs$nee_files_dir)) , dim(domain) )
 	expect_equal( dim(terra::rast(vpRm$dirs$gee_files_dir)) , dim(domain) )

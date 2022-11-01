@@ -2,8 +2,13 @@
 #' Process the driver data for a VPRM model
 #'
 #' @param vpRm (vpRm) a vpRm object 
+#' @param n_cores (int): number of cores for parallel processing. vpRm only parallellizes over hourly times, not over spatial subsets
+#'
 #' @export
-proc_drivers <- function(vpRm){
+proc_drivers <- function(
+	vpRm
+	, n_cores = 1
+	){ #end parameters
 
 	### TODO: stopif
 	if(any(is.null(c(
@@ -53,7 +58,7 @@ proc_drivers <- function(vpRm){
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(ISA, isa_proc)
 
-	####### loop through hourly driver data
+	####### loop through yearly driver data
 	lapply(unique(lubridate::year(vpRm$domain$time)), function(yy){
 		if(vpRm$verbose){print(yy)}
 
@@ -72,8 +77,7 @@ proc_drivers <- function(vpRm){
 	}) #end lapply yearly
 
 	####### loop through hourly driver data
-	### TODO: when generics implemented length(vpRm)
-	lapply(1:length(vpRm$domain$time), function(tt_idx){
+	parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_idx){
 
 		tt <- vpRm$domain$time[tt_idx]
 

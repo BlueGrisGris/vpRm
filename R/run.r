@@ -4,6 +4,7 @@
 #' Execute the "model" calculations defined in Mahadevan et al 2008 and Winbourne et al 2021.  Processes the driver data attached to the vpRm object with a call to proc_drivers(). 
 #' 
 #' @param vpRm (vpRm): a vpRm S3 object with attached driver data 
+#' @param n_cores (int): number of cores for parallel processing. vpRm only parallellizes over hourly times, not over spatial subsets
 #' @param water_lc (int): which land cover values correspond to water cover
 #' @param evergreen_lc (int): which land cover values correspond to evergreen forests
 #' 
@@ -12,6 +13,8 @@
 #' @export
 run_vpRm <- function(
 	vpRm
+	, n_cores = 1
+	### TODO: standardize lc codes and code for translation
 	, water_lc = 18
 	, evergreen_lc = c(1,2,3)
 ){
@@ -54,7 +57,7 @@ water_lc <- water_lc
 evergreen_lc <- evergreen_lc
 
 ### loop hourly
-lapply(1:length(vpRm$domain$time), function(tt_idx){
+parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_idx){
 
 	tt <- vpRm$domain$time[tt_idx]
 
@@ -155,7 +158,6 @@ lapply(1:length(vpRm$domain$time), function(tt_idx){
 	### save output CO2 flux fields
 	lapply(list(NEE, GEE, RESPIR), function(ff){
 		
-		       ### TODO: access +idx out files
 		filename <- vpRm$dirs[[paste(names(ff), "files_dir", sep = "_")]][tt_idx]
 		      	 
 		terra::writeCDF(

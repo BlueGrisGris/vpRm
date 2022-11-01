@@ -5,10 +5,12 @@
 \title{proc_drivers()
 Process the driver data for a VPRM model}
 \usage{
-proc_drivers(vpRm)
+proc_drivers(vpRm, n_cores = 1)
 }
 \arguments{
 \item{vpRm}{(vpRm) a vpRm object}
+
+\item{n_cores}{(int): number of cores for parallel processing. vpRm only parallellizes over hourly times, not over spatial subsets}
 }
 \description{
 proc_drivers()

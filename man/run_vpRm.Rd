@@ -5,10 +5,12 @@
 \title{run_vpRm
 Run a VPRM model defined by a vpRm object}
 \usage{
-run_vpRm(vpRm, water_lc = 18, evergreen_lc = c(1, 2, 3))
+run_vpRm(vpRm, n_cores = 1, water_lc = 18, evergreen_lc = c(1, 2, 3))
 }
 \arguments{
 \item{vpRm}{(vpRm): a vpRm S3 object with attached driver data}
+
+\item{n_cores}{(int): number of cores for parallel processing. vpRm only parallellizes over hourly times, not over spatial subsets}
 
 \item{water_lc}{(int): which land cover values correspond to water cover}
 
