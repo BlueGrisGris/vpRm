@@ -1,5 +1,4 @@
-
-### Mahadevan et al 2008
+## Mahadevan et al 2008
 gee <- function(lambda, Tscalar, Pscalar, Wscalar, EVI, PAR, PAR0){
 
 	gee <- (lambda * Tscalar * Pscalar * Wscalar * EVI * PAR )/ ( 1+(PAR/PAR0) )
@@ -13,12 +12,16 @@ gee <- function(lambda, Tscalar, Pscalar, Wscalar, EVI, PAR, PAR0){
 }#end func gee
 
 ### Winbourne et al 2021
-respir <- function(tair, alpha, beta, lc, isa, evi){
+respir <- function(tair, ALPHA, BETA, lc, ISA, evi, tlow){
 
-	respir_naive <- alpha * tair + beta 
+	### soil respiration persists into cold winter when soils are insulated
+	### Mahadevan 2008
+	if(tair < tlow){tair <- tlow}
+
+	respir_naive <- ALPHA * tair + BETA 
 
 	### TODO: ask Ian whats up with this madness
-	respir_het <- .5 * respir_naive * (1-isa)
+	respir_het <- .5 * respir_naive * (1-ISA)
 	respir_aut <- .5 * respir_naive * evi  
 	
 	respir <- respir_het + respir_aut
