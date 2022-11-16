@@ -1,17 +1,20 @@
 ### TODO: I doubt this setup scheme is robust.  Can also direct user to herbie github
+
 #' setup_herbie  
 #' Set up herbie for downloading HRRR meteorology files. 
-#' conda is a prerequisite. 
+#' An installation of conda is a prerequisite. 
+#' if this fails to automatically setup the 
 #' This is taken from the herbie github: https://github.com/blaylockbk/Herbie 
 #'  
 #' @export
 setup_herbie <- function(){
 	### TODO: check that python version 3.10
 	system("conda install -c conda-forge herbie-data")
-	system("wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml")
-	system("conda env create -f environment.yml")
-	system("rm environment.yml")
-	system("source activate herbie")
+	### TODO: do we need the below env managament to do the unholy download?
+	#         system("wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml")
+	#         system("conda env create -f environment.yml")
+	#         system("rm environment.yml")
+	#         system("source activate herbie")
 
 	return(NULL)
 
