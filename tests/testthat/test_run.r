@@ -1,4 +1,4 @@
-# skip("doesn't work with r-cmd-check github action")
+skip("doesn't work with r-cmd-check github action")
 test_that("does run_vpRm produce the correct results?",{
 	skip_on_cran() # integration test not appropriate for cran
 	vpRm <- new_vpRm(
@@ -7,6 +7,7 @@ test_that("does run_vpRm produce the correct results?",{
 		, isa_dir
 		, temp_dir
 		, dswrf_dir
+		, landsat_dir
 		, evi_dir
 		, evi_extrema_dir
 		, green_dir
