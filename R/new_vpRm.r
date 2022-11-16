@@ -2,11 +2,17 @@
 #' Initialize an object of class vpRm
 #'
 #' @param vpRm_dir (chr): path to initialize vpRm into; where to store processed drivers and outputs
+#'
 #' @param lc_dir (chr): path to land cover data 
 #' @param isa_dir (chr): path to impermeable surface data 
+#'
 #' @param temp_dir (chr): path to temperature data
 #' @param dswrf_dir (chr): path to initialize photosynthetically available radiation data
+#'
+#' @param landsat_dir (chr): path to raw landsat reflectance data
 #' @param evi_dir (chr): path to vegetation index data
+#' @param lswi_dir (chr): path to LSWI data
+#'
 #' @param evi_extrema_dir (chr): path to evi_extrema 2d data
 #' @param green_dir (chr): path to greenup/down data
 #' 
@@ -23,16 +29,17 @@
 new_vpRm <- function(
 
 	vpRm_dir = "."
-	### TODO: set default to the heavy dir
+
 	, lc_dir = NULL
 	, isa_dir = NULL
 
-	### TODO: enable ingest many files each with one time, or a rast w many times
 	, temp_dir = NULL
 	, dswrf_dir = NULL
-	, evi_dir = NULL
 
-	### TODO: set default to the heavy dir
+	, landsat_dir = NULL
+	, evi_dir = NULL
+	, lswi_dir = NULL
+
 	, evi_extrema_dir = NULL
 	, green_dir = NULL
 
@@ -67,9 +74,11 @@ isa_proc_dir <- file.path(lc_isa_proc_dir, "isa.nc")
 temp_proc_dir <- file.path(proc_dir, "temp")
 par_proc_dir <- file.path(proc_dir, "par")
 evi_proc_dir <- file.path(proc_dir, "evi")
+lswi_proc_dir <- file.path(proc_dir, "lswi")
 Dir_Create(temp_proc_dir)
 Dir_Create(par_proc_dir)
 Dir_Create(evi_proc_dir)
+Dir_Create(lswi_proc_dir)
 
 ### parent directories of processed yearly driver data
 evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema")

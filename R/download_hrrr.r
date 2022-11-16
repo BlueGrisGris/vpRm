@@ -27,9 +27,10 @@ setup_herbie <- function(){
 #'  
 #' @param times (POSIXct): 
 #' @param vpRm (vpRm, character): An object of class vpRm, or a file path to a vpRm control file.
+#' @param hrrr_dir (chr): the directory in which to save the downloaded hrrr data files
 #'  
 #' @export
-download_hrrr <- function(times = NULL, vpRm = NULL, download_dir = "."){
+download_hrrr <- function(times = NULL, vpRm = NULL, hrrr_dir = "."){
 	### use times from vpRm object if one is provided
 	if(!is.null(vpRm)){
 		if(class(vpRm) %in% c("character", "vpRm")){stop("parameter vpRm must be of class vpRm or path to control file of such")}
@@ -51,7 +52,7 @@ download_hrrr <- function(times = NULL, vpRm = NULL, download_dir = "."){
 		, product='sfc'
 		, fxx=as.integer(0)
 		, searchString = "TMP:2 m"
-		, save_dir = file.path(download_dir, "hrrr_temp")
+		, save_dir = file.path(hrrr_dir, "hrrr_temp")
 	)#end fast_Herbie_download
 	### download par
 	herbie$tools$fast_Herbie_download(
@@ -60,7 +61,7 @@ download_hrrr <- function(times = NULL, vpRm = NULL, download_dir = "."){
 		, product='sfc'
 		, fxx=as.integer(0)
 		, searchString = "DSWRF"
-		, save_dir = file.path(download_dir, "hrrr_par")
+		, save_dir = file.path(hrrr_dir, "hrrr_par")
 	)#end fast_Herbie_download
 
 	return(NULL)

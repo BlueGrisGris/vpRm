@@ -2,6 +2,7 @@
 
 export(Get_Stilt_Out_Filenames)
 export(Save_Rast)
+export(download_hrrr)
 export(green)
 export(new_vpRm)
 export(parse_herbie_hrrr_times)
@@ -10,3 +11,5 @@ export(parse_stilt_times)
 export(proc_drivers)
 export(run_vpRm)
 export(set_domain)
+export(setup_herbie)
+export(vpRm)
