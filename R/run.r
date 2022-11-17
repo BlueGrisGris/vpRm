@@ -19,7 +19,7 @@ run_vpRm <- function(
 	, evergreen_lc = c(1,2,3)
 ){
 
-if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
+if(!methods::is(vpRm,"vpRm")){stop("must be an object of class vpRm")}
 
 
 #############################################

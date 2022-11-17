@@ -26,7 +26,7 @@ set_domain <- function(
 	, vpRm_time = NULL
 ){
 
-if(class(vpRm) != "vpRm"){stop("must be an object of class vpRm")}
+if(!methods::is(vpRm, "vpRm")){stop("must be an object of class vpRm")}
 
 #######
 ### check different bits
