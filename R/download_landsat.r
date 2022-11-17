@@ -1,6 +1,3 @@
-library(RGISTools)
-library(vpRm)
-
 #' usgs_credentials
 #' Store USGS Earth Explorer credentials using the R package keyring:
 #' Create a USGS Earth Explorer Account here:
@@ -18,7 +15,7 @@ usgs_credentials <- function(usgs_username,usgs_password){
 		, password = usgs_password 
 	)#end keyring::key_set_with_value(
 	return(NULL)
-}#end fund usgs_credentials
+}#end func usgs_credentials
 
 #' download_landsat
 #' Download landsat reflectance data, mosaic and cloud screen, and calculate EVI and LSWI ratios over the domain of a vpRm object 
@@ -26,7 +23,7 @@ usgs_credentials <- function(usgs_username,usgs_password){
 #' @param vpRm (vpRm): The vpRm object for which download LSWI reflectance data
 #' 
 #' @export 
-download_landsat(vpRm){
+download_landsat <- function(vpRm){
 
 	RGISTools::lsDownSearch(
 		satellite = "ls7" 
@@ -47,7 +44,7 @@ download_landsat(vpRm){
 		, lvl = 1
 		, verbose = T
 		, raw.rm = F
-		, username = keyring::key_list()[key_list$service == "vpRm_usgs_keyring", "username"]
+		, username = keyring::key_list()[keyring::key_list()$service == "vpRm_usgs_keyring", "username"]
 		, password = keyring::key_get("vpRm_usgs_keyring")
 	)#end lsDownSearch(
 
