@@ -33,9 +33,9 @@ day <- as.numeric( substr(yy, start = 7, stop = 8))
 hour <- as.numeric(substring( stringr::str_extract(hrrr_filenames, "t[0-9]{2}z") , 2, 3))
 minute <- 0
 
-hrrr_times <- paste(yr, month, day, hour, minute, sep = "_")
+hrrr_times <- paste(yr, month, day, hour, sep = "_")
 
-hrrr_times <- lubridate::ymd_hm(hrrr_times)
+hrrr_times <- lubridate::ymd_h(hrrr_times)
 
 return(hrrr_times)
 }#end func parse_modis_hrrr_times 
@@ -48,14 +48,15 @@ return(hrrr_times)
 parse_stilt_times <- function(stilt_filenames){
 yy <- (stringr::str_extract_all(stilt_filenames,"[0-9]{12}", simplify = T)) 
 ### wtf cant lubridate parse 
-stilt_times <- lubridate::ymd_hm(
+stilt_times <- lubridate::ymd_h(
 	paste(
 	substring(yy, 1,4)
 	, substring(yy, 5,6)
 	, substring(yy, 7,8)
 	, substring(yy, 9,10)
-	, substring(yy, 11,12)
-	, sep = "_")
+	#         , substring(yy, 11,12)
+	, sep = "-"
+	)#end paste
 )#end ymd_hms
 return(stilt_times)
 }#end func parse stilt
