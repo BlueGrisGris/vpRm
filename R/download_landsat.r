@@ -23,13 +23,19 @@ usgs_credentials <- function(usgs_username,usgs_password){
 #' @param vpRm (vpRm): The vpRm object for which download LSWI reflectance data
 #' 
 #' @export 
-download_landsat <- function(vpRm){
+download_landsat <- function(
+	vpRm
+	, return_missing_times = F
+){#end func download landsat params
 
+	### TODO: get missing domain
+	
 	RGISTools::lsDownSearch(
-		satellite = "ls7" 
+		satellite = "ls8" 
 		### TODO: these time are likely not correct
 		#                 , startDate = min(vpRm$domain$time)
 		#                 , endDate = max(vpRm$domain$time)
+		### TODO: is this possible to accomplish w/o raster::?
 		, extent = raster::raster(
 			terra::rast(
 				ext = vpRm$domain$ext
@@ -40,12 +46,12 @@ download_landsat <- function(vpRm){
 		, startDate = as.Date("2019-01-01", "%Y-%m-%d")
 		, endDate = as.Date("2019-01-16", "%Y-%m-%d")
 		### TODO: make a landsat directory
-		, AppRoot = vpRm$dirs$landsat_data
+		, AppRoot = vpRm$dirs$landsat_dir
 		, lvl = 1
 		, verbose = T
 		, raw.rm = F
 		, username = keyring::key_list()[keyring::key_list()$service == "vpRm_usgs_keyring", "username"]
-		, password = keyring::key_get("vpRm_usgs_keyring")
+	, password = keyring::key_get("vpRm_usgs_keyring")
 	)#end lsDownSearch(
 
 	### TODO: cloud filter scenes
@@ -58,4 +64,3 @@ download_landsat <- function(vpRm){
 
 	return(NULL)
 } #end func download landsat
-

@@ -117,9 +117,14 @@ vpRm <- list(
 
 		, lc_dir = lc_dir 	
 		, isa_dir = isa_dir 	
+
 		, temp_dir = temp_dir
 		, dswrf_dir = dswrf_dir
+
+		, landsat_dir = landsat_dir
 		, evi_dir = evi_dir
+		, lswi_dir = lswi_dir
+
 		, evi_extrema_dir = evi_extrema_dir
 		, green_dir = green_dir
 
