@@ -1,3 +1,4 @@
+
 #' parse_modis_evi_times  
 #'  
 #' @param evi_filenames (chr): evi modis filenames to extract date times from 
@@ -7,8 +8,8 @@ parse_modis_evi_times <- function(evi_filenames){
 ### someday maybe replace str_split w strsplit
 yy <- stringr::str_extract(evi_filenames, "[0-9]{7}")
 
-yr <- as.numeric( substr(yy, start = 1, stop = 4)) 
-doy <- as.numeric( substr(yy, start = 5, stop = 7)) 
+yr <- as.numeric( substr(yy, start = 1, stop = 4))
+doy <- as.numeric( substr(yy, start = 5, stop = 7))
 doy <- doy - 1
 
 evi_times <- as.Date(paste0(yr, "-01-01 00:00:00")) + doy
