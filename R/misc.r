@@ -22,7 +22,7 @@ Get_Stilt_Out_Filenames <- function(stilt_out_dir,outtype){
 sanitize_raster <- function(raster){
 if(class(raster)[[1]] != "SpatRaster"){
 	if(class(raster)[[1]] != "character"){
-		stop("input must be either a terra::rasted land cover or a filepath to such")
+		stop("Input must be either a terra::spatRaster or a filepath to geospatial data readable by terra::rast()")
 	}#end if(!class(driver)[[1]] != c){
 	raster <- terra::rast(raster)
 }#end if(class(driver)[[1]]{
@@ -32,20 +32,19 @@ return(raster)
 #' Save_Rast
 #' Save a SpatRaster as a netcdf
 #'
-#' @param rast (SpatRaster): SpatRaster to be saved
+#' @param SpatRaster (spatRaster): SpatRaster to be saved
 #' @param filename (chr): filename to save to 
 #'
 #' @export 
-Save_Rast <- function(rast, filename){
+Save_Rast <- function(SpatRaster, filename){
 	suppressWarnings( ### warning when saving an empty netcdf
-	terra::writeCDF( rast , filename = filename , overwrite = T )#end terra::writeCDF
+	terra::writeCDF(SpatRaster, filename = filename, overwrite = T )#end terra::writeCDF
 	)#end suppressWarnings
-	return(rast)
+	return(SpatRaster)
 }#end Save_Rast <- function(rast, filename){
 
-Print_Info <- function(rast){
-	print(deparse(substitute(rast)))
-	print(rast)
-	print(terra::mem_info(rast))
-	print(paste(terra::free_RAM()/1e6, "GB free"))
-}#end func print info
+Dir_Create <- function(dir){
+	if(!dir.exists(dir)){
+		dir.create(dir, recursive = T, showWarnings = F)	
+	}#end if dir.exists
+}#end func Create_Dir

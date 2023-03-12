@@ -1,5 +1,5 @@
 # vpRm
-## Version 0.0.0.9001 "Ficus rubiginosa"
+## Version 0.0.0.9003 "Phoenix canariensis"
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/BlueGrisGris/vpRm/workflows/R-CMD-check/badge.svg)](https://github.com/BlueGrisGris/vpRm/actions)
@@ -61,10 +61,15 @@ proc_drivers(my_vpRm)
 ```
 Finally, run the model:
 ```R
-run(my_vpRm)
+run_vpRm(my_vpRm)
 ```
 
 # Version Information 
+## Version 0.0.0.9003 "Phoenix canariensis"
+- Rewrite Codebase to vectorize processing of hourly driver data and VPRM calculation independently of terra multilayer calculations
+
+## Version 0.0.0.9002 "Thuja plicata"
+- Fixes to correct VPRM results
 
 ## Version 0.0.0.9001 "Ficus rubiginosa"
 - Implement simple interface to run VPRM over a predetermined spatial-temporal domain (for example, a STILT output)
@@ -76,7 +81,6 @@ run(my_vpRm)
 ## Version 0.0.0.9000 "Picea pungens"
 - No minimum viable soluton
 
-
-## Goals for next version:
+## Goals for future versions:
 - Simple R/vpRm interface for downloading driver data 
 - Wrapper function to run VPRM models in a single line
