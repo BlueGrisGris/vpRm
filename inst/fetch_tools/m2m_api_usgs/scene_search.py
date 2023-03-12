@@ -17,7 +17,7 @@ import datetime
 
 import pandas as pd
 
-import test_landsat as m2m
+import m2m_api as m2m
 serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
 
 # Login
@@ -27,16 +27,16 @@ payload = {'username' : username, 'password' : password}
 apiKey = m2m.sendRequest(serviceUrl + "login", payload)    
 print("Logged In\n")
 
-minlon = -84
-maxlon = -68 
-minlat = 37 
-maxlat = 47 
+minlon = -84.5
+maxlon = -67.5 
+minlat = 36 
+maxlat = 48 
 
-startdate = '2020-01-01'
-enddate = '2020-01-31'
+startdate = '2018-06-01'
+enddate = '2022-12-31'
 
 mincloud = 0
-maxcloud = 10
+maxcloud = 20
 
 maxResults = 5000
 
@@ -65,13 +65,13 @@ payload = {
 results = m2m.sendRequest(serviceUrl + "scene-search", payload, apiKey)["results"]
 
 ### init scenes.txt
-scenesFile = open("/home/ethan/m2m_api/scenes.txt", "w")
+#scenesFile = open("/home/ethan/m2m_api/scenes.txt", "w")
+scenesFile = open("/n/wofsy_lab2/Users/emanninen/vprm_20230311/driver_data/landsat/scenes.txt", "w")
 scenesFile.write("landsat_ot_c2_l2|entityId\n")
-# append entityIds to scenes.txt
+### append entityIds to scenes.txt
 for rr in range(0,len(results)):
-    #print(rr)
     result = results[rr]
-    #print(result["entityId"])
+    ### the first one doesn't need a new line
     if rr == 0:
         scenesFile.write(result["entityId"])
     else:

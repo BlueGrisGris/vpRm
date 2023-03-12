@@ -4,9 +4,10 @@
 # use usgs m2m api example python functions to download specific landsat bands
 # -u usgs username
 # -p usgs password
-# -f filetype. use bands
 # -d output directory for downloads
 # -s path to scenes.txt containing properly formatted entityId's (created by scene_search.py)
+# -is start_index of scenes in scenes.txt to download
+# -ie end_index of scenes in scenes.txt to download
 #
 ##############################################################
 
@@ -32,6 +33,9 @@ if __name__ == '__main__':
     #parser.add_argument('-f', '--filetype', required=False, choices=['bundle', 'band'], help='File types to download, "bundle" for bundle files and "band" for band files')
     parser.add_argument('-d', '--path', required=True, help='path to desired download destination')
     parser.add_argument('-s', '--scenesFile', required=True, help='path to scenes.txt')
+    parser.add_argument('-is', '--index_start', required=False, help='start index of scenes in scenes.txt to download')
+    parser.add_argument('-ie', '--index_end', required=False, help='end index of scenes in scenes.txt to download')
+
 
     #path = "/home/ethan/m2m_api/test_landsat/landsat" # Fill a valid download path
     #scenesFile = '/home/ethan/m2m_api/scenes.txt'
@@ -43,6 +47,18 @@ if __name__ == '__main__':
     filetype = "band"
     path = args.path
     scenesFile = args.scenesFile
+    index_start = args.index_start
+    index_end = args.index_end
+
+    scene_index_bool = False
+    ### if both start and end indexes were given, only take those scenes
+    if index_start is not None or index_end is not None:
+        ###  need both indices
+        if index_start is None or index_end is None:
+            raise ValueError("if one scene index is provided, both must be")
+        scene_index_bool = True
+        index_start = int(index_start)
+        index_end = int(index_end)
 
     print("\nRunning Scripts...\n")
     startTime = time.time()
@@ -71,23 +87,21 @@ if __name__ == '__main__':
     entityIds = []
     
     lines.pop(0)
-    for line in lines:        
-        entityIds.append(line.strip())
+    ### if scene indices are provided, only download those ones
+    if scene_index_bool: 
+    ### dont index past the total number of scenes
+        print(index_end)
+        if index_end > len(lines) - 1:
+            print(f"toobig:{index_end}")
+            index_end = len(lines) - 1
+            print(f"replaced:{index_end}")
+        print(f"indices: {lines[index_start:index_end]}")
+        for line in lines[index_start:index_end]:        
+            entityIds.append(line.strip())
+    else:
+        for line in lines:        
+            entityIds.append(line.strip())
 
-    # Search scenes 
-    # If you don't have a scenes text file that you can use scene-search to identify scenes you're interested in
-    # https://m2m.cr.usgs.gov/api/docs/reference/#scene-search
-    # payload = { 
-    #             'datasetName' : '', # dataset alias
-    #             'maxResults' : 10, # max results to return
-    #             'startingNumber' : 1, 
-    #             'sceneFilter' : {} # scene filter
-    #           }
-    
-    # results = m2m.sendRequest(serviceUrl + "scene-search", payload, apiKey)  
-    # for result in results:
-    #     entityIds.append(result['entityId'])
-    
     # Add scenes to a list
     listId = f"temp_{datasetName}_list" # customized list id
     payload = {
@@ -200,6 +214,3 @@ if __name__ == '__main__':
     
     executionTime = round((time.time() - startTime), 2)
     print(f'Total time: {executionTime} seconds')
-
-
-
