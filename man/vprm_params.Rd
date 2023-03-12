@@ -22,6 +22,6 @@ item{ beta }
 vprm_params
 }
 \description{
-VPRM parameters for different landcover types
+VPRM parameters for different landcover types. LC codes match NA landcover database
 }
 \keyword{datasets}

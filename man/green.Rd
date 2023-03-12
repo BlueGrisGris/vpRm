@@ -7,8 +7,8 @@ Create a green up/down pair of rasters for use in masking gee to the growing sea
 \usage{
 green(
   evi,
-  up_func = function(evi) {     return(evi > (0.85 * max(evi))) },
-  down_func = function(evi) {     return(evi < (0.85 * max(evi))) }
+  up_func = function(evi) {     return(evi > (0.5 * max(evi))) },
+  down_func = function(evi) {     return(evi < (0.65 * max(evi))) }
 )
 }
 \arguments{

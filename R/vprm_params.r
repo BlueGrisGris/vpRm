@@ -1,6 +1,6 @@
 #' VPRM parameters
 #' 
-#' VPRM parameters for different landcover types 
+#' VPRM parameters for different landcover types. LC codes match NA landcover database 
 #' 
 #' @format Data frame with 11 rows and 9 cols. 
 #' \describe{ 

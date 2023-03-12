@@ -10,10 +10,17 @@ new_vpRm(
   lc_dir = NULL,
   isa_dir = NULL,
   temp_dir = NULL,
-  par_dir = NULL,
+  dswrf_dir = NULL,
+  landsat_dir = NULL,
   evi_dir = NULL,
+  lswi_dir = NULL,
   evi_extrema_dir = NULL,
   green_dir = NULL,
+  vprm_params = vpRm::vprm_params,
+  vpRm_crs = NULL,
+  vpRm_ext = NULL,
+  vpRm_res = NULL,
+  vpRm_time = NULL,
   verbose = F
 )
 }
@@ -26,13 +33,27 @@ new_vpRm(
 
 \item{temp_dir}{(chr): path to temperature data}
 
-\item{par_dir}{(chr): path to initialize photosynthetically available radiation data}
+\item{dswrf_dir}{(chr): path to initialize photosynthetically available radiation data}
+
+\item{landsat_dir}{(chr): path to raw landsat reflectance data}
 
 \item{evi_dir}{(chr): path to vegetation index data}
+
+\item{lswi_dir}{(chr): path to LSWI data}
 
 \item{evi_extrema_dir}{(chr): path to evi_extrema 2d data}
 
 \item{green_dir}{(chr): path to greenup/down data}
+
+\item{vprm_params}{(data.frame): VPRM parameters, trained from tower data}
+
+\item{vpRm_crs}{(terra::crs): coordinate reference system for intake}
+
+\item{vpRm_ext}{(terra::ext): extent for intake}
+
+\item{vpRm_res}{(terra::ext): resolution for intake}
+
+\item{vpRm_time}{(terra::time): times of intake}
 
 \item{verbose}{(bool): print intermediary updates?}
 }

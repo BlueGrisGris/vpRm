@@ -1,21 +1,26 @@
-skip("the test driver filenames are messed up for the parsers...")
-test_that("does run.vpRm produce the correct results?",{
+skip("doesn't work with r-cmd-check github action")
+test_that("does run_vpRm produce the correct results?",{
+	skip_on_cran() # integration test not appropriate for cran
 	vpRm <- new_vpRm(
 		vpRm_dir
 		, lc_dir
 		, isa_dir
 		, temp_dir
-		, par_dir
+		, dswrf_dir
+		, landsat_dir
 		, evi_dir
 		, evi_extrema_dir
 		, green_dir
 		, verbose = F
 		)#end new_vpRm 
-	plate <- gen_plate(matchdomain, vpRm$dirs$lc_dir)
-	Save_Rast(plate, vpRm$dirs$plate_dir)
-	vpRm <- proc_drivers.vpRm(vpRm)
-	vpRm <- run.vpRm(vpRm)
-	expect_equal( dim(terra::rast(vpRm$dirs$nee_dir)) , dim(plate) )
-	expect_equal( dim(terra::rast(vpRm$dirs$gee_dir)) , dim(plate) )
-	expect_equal( dim(terra::rast(vpRm$dirs$respir_dir)) , dim(plate) )
+	domain <- terra::rast(domain_dir)
+	domain <- domain[[5:8]]
+
+	vpRm <- set_domain(vpRm, domain)
+	vpRm <- proc_drivers(vpRm)
+	vpRm <- run_vpRm(vpRm, n_cores = 2)
+
+	expect_equal( dim(terra::rast(vpRm$dirs$nee_files_dir)) , dim(domain) )
+	expect_equal( dim(terra::rast(vpRm$dirs$gee_files_dir)) , dim(domain) )
+	expect_equal( dim(terra::rast(vpRm$dirs$respir_files_dir)) , dim(domain) )
 }) #end test_that("does run.vpRm produce the correct results?"{
