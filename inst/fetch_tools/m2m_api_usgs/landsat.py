@@ -28,23 +28,30 @@ threads = []
 if __name__ == '__main__':     
     # User input    
     parser = argparse.ArgumentParser()
-    parser.add_argument('-u', '--username', required=True, help='Username')
-    parser.add_argument('-p', '--password', required=True, help='Password')
+    parser.add_argument('-u', '--username', required=False, help='Username')
+    parser.add_argument('-p', '--password', required=False, help='Password')
+    parser.add_argument('-c', '--credentialsFile', required=False, help='path to usgs_credentials file')
     #parser.add_argument('-f', '--filetype', required=False, choices=['bundle', 'band'], help='File types to download, "bundle" for bundle files and "band" for band files')
     parser.add_argument('-d', '--path', required=True, help='path to desired download destination')
     parser.add_argument('-s', '--scenesFile', required=True, help='path to scenes.txt')
     parser.add_argument('-is', '--index_start', required=False, help='start index of scenes in scenes.txt to download')
     parser.add_argument('-ie', '--index_end', required=False, help='end index of scenes in scenes.txt to download')
 
-
-    #path = "/home/ethan/m2m_api/test_landsat/landsat" # Fill a valid download path
-    #scenesFile = '/home/ethan/m2m_api/scenes.txt'
-    
     args = parser.parse_args()
     
     username = args.username
     password = args.password
-    filetype = "band"
+    credentialsFile = args.credentialsFile
+
+    if username == None or password == None:
+        if credentialsFile == None:
+            raise ValueError("Provide either both -u and -p options or -c for usgs login")
+        with open(credentialsFile, "r") as f:
+            credentials = json.loads(json.load(f))
+
+        username = credentials["username"]
+        password = credentials["password"]
+
     path = args.path
     scenesFile = args.scenesFile
     index_start = args.index_start
@@ -66,8 +73,6 @@ if __name__ == '__main__':
     serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
     
     # Login
-    # username = "bluegrisgris"
-    # password = "Carp3jugulumusgs"
     payload = {'username' : username, 'password' : password}    
     apiKey = m2m.sendRequest(serviceUrl + "login", payload)    
     print("API Key: " + apiKey + "\n")
@@ -90,7 +95,8 @@ if __name__ == '__main__':
     ### if scene indices are provided, only download those ones
     if scene_index_bool: 
     ### dont index past the total number of scenes
-        print(index_end)
+        if index_start > len(lines) - 1:
+            raise ValueError(f"start_index > number of scenes in {scenesFile}")
         if index_end > len(lines) - 1:
             print(f"toobig:{index_end}")
             index_end = len(lines) - 1
@@ -103,7 +109,7 @@ if __name__ == '__main__':
             entityIds.append(line.strip())
 
     # Add scenes to a list
-    listId = f"temp_{datasetName}_list" # customized list id
+    listId = f"temp_{datasetName}_list_{index_start}_{index_end}" # customized list id
     payload = {
         "listId": listId,
         'idField' : idField,
@@ -126,7 +132,11 @@ if __name__ == '__main__':
     print("Got product download options\n")
     
     ### select which landsat bands you want w regex against entityIds
-    bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6"]
+    ### different bands for 7 vs 8
+    if datasetName == "landsat_ot_c2_l2":
+        bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "QA_PIXEL"]
+    if datasetName == "landsat_etm_c2_l2":
+        bands = ["SR_B1", "SR_B3", "SR_B4", "SR_B5", "QA_PIXEL"]
 
     # Select products
     downloads = []

@@ -21,11 +21,18 @@ import m2m_api as m2m
 serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
 
 # Login
-username = "bluegrisgris"
-password = "Carp3jugulumusgs"
+credentialsFile = "/n/home00/emanninen/vpRm/inst/fetch_tools/m2m_api_usgs/usgs_credentials.txt"
+with open(credentialsFile, "r") as f:
+    credentials = json.loads(json.load(f))
+
+username = credentials["username"]
+password = credentials["password"]
+
 payload = {'username' : username, 'password' : password}    
 apiKey = m2m.sendRequest(serviceUrl + "login", payload)    
 print("Logged In\n")
+
+datasetName = "landsat_ot_c2_l2"
 
 minlon = -84.5
 maxlon = -67.5 
@@ -33,10 +40,11 @@ minlat = 36
 maxlat = 48 
 
 startdate = '2018-06-01'
+#enddate = '2018-06-30'
 enddate = '2022-12-31'
 
 mincloud = 0
-maxcloud = 20
+maxcloud = 30
 
 maxResults = 5000
 
@@ -52,7 +60,7 @@ cloudCoverFilter = {'min' : mincloud, 'max' : maxcloud}
 
 ### get scenes
 payload = {
-    'datasetName' : 'landsat_ot_c2_l2'
+    'datasetName' : datasetName
     , 'maxResults' : maxResults
     , 'startingNumber' : 1
     , 'sceneFilter' : {
@@ -66,8 +74,8 @@ results = m2m.sendRequest(serviceUrl + "scene-search", payload, apiKey)["results
 
 ### init scenes.txt
 #scenesFile = open("/home/ethan/m2m_api/scenes.txt", "w")
-scenesFile = open("/n/wofsy_lab2/Users/emanninen/vprm_20230311/driver_data/landsat/scenes.txt", "w")
-scenesFile.write("landsat_ot_c2_l2|entityId\n")
+scenesFile = open("/n/wofsy_lab2/Users/emanninen/vprm_20230311/driver_data/landsat/scenes_L8.txt", "w")
+scenesFile.write(datasetName + "|entityId\n")
 ### append entityIds to scenes.txt
 for rr in range(0,len(results)):
     result = results[rr]
