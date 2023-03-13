@@ -11,13 +11,16 @@ calc_evi <- function(landsat){2.5*( (1e-4*landsat["SR_B5"] - 1e-4*landsat["SR_B4
 stilt <- rast(list.files("~/storage/STILT_slantfoot", full.name = T)[1])[[1]]
 values(stilt) <- 0
 
-filenames <- list.files("landsat", full.names = T, pattern = "SR_B")
+landsat7_dir <- "/n/wofsy_lab2/Users/emanninen/vprm_20230311/driver_data/landsat/scenes_L7"
+ 
+filenames <- list.files(landsat7_dir, full.names = T)
 ### TODO: project before mosaic/merge?
 ### is there a way to merge w/o destruction?
 ### vectorized/group/parallel mosaic/merge
 ### TODO: get dates from the filenames
 yy <- stringr::str_extract(filenames, "[0-9]{8}")
 dates <- ymd(yy)
+week(dates)
 # dates <- dates[order(dates)]
 # filenames <- filenames[order(dates)]
 filenames <- filenames[dates == ymd("2020-01-06")]

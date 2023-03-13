@@ -26,8 +26,10 @@ import test_landsat as m2m
 serviceUrl = "https://m2m.cr.usgs.gov/api/api/json/stable/"
 
 # Login
-username = "bluegrisgris"
-***REMOVED***payload = {'username' : username, 'password' : password}    
+credentialsFile = "/n/home00/emanninen/vpRm/inst/fetch_tools/m2m_api_usgs/usgs_credentials.txt"
+with open(credentialsFile, "r") as f:
+    credentials = json.loads(json.load(f))
+payload = {'username' : username, 'password' : password}    
 apiKey = m2m.sendRequest(serviceUrl + "login", payload)    
 
 minlon = -84
