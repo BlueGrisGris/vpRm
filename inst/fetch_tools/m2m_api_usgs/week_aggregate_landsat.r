@@ -35,33 +35,78 @@ ei <- "021032_20191102"
 	print(ei)
 	filenames_scene <- filenames_week[entityid == ei]
 	scene <- rast(filenames_scene)
-	plot(scene)
+	#         plot(scene)
 	names(scene) <- c("qa_pixel", "sr_b1", "sr_b3", "sr_b4", "sr_b5", "qa_cloud")
 	### TODO: we dont wnat the drift nas in the qa code to propogate>>>
 	### On the other hadn , projection might solve?
 	### on the other other hand, might be the source of our projection woes.....
-	### test if the drift nas is the cause of the all NA projection/ aggregation?? 
-	b1_proj <- terra::project(scene[["sr_b1"]], stilt, filename = file.path(landsat7_dir, "test_b1.tif"), overwrite = T) 
-	plot(scene[["sr_b1"]])
-	plot(b1_proj)
 
 	### mask then calc evi
 	scene_mask <- cloudmask(scene, "etm")
 	evi <- calc_evi(scene_mask, "etm")
+	writeRaster(evi, filename = file.path(evi_dir, paste0(ei, "_evi", ".tif")), overwrite = T)
+	writeRaster(stilt, filename = file.path(evi_dir, paste0(ei, "_stilt", ".tif")), overwrite = T)
+	evi <- rast(file.path(evi_dir, paste0(ei, "_evi", ".tif")))
+
+crs(stilt)
+stilt_x <- stilt
+values(stilt_x) <- 0
+crs(evi)
+
+library(raster)
+
+
+#### why
+target_spatraster <- rast(crs = "+proj=lonlat", extent = ext(stilt)*1.5, resolution = res(stilt))
+values(stilt_x) <- 0
+source_spatraster <- rast(crs = "+proj=lonlat", extent = ext(evi_proj), resolution = res(evi_proj))
+values(source_spatraster) <- 1:ncell(source_spatraster)
+projected_spatraster <- project(source_spatraster, target_spatraster)
+print(projected_spatraster)
+### why
+
+stilt_raster <- raster(stilt_dir)
+evi_raster <- raster(evi)
+plot(evi_raster)
+projectRaster(evi_raster, stilt_raster)
+	crs(evi_proj)
+stilt_x <- stilt
+values(stilt_x) <- NA
+#### THIS IS THE SOLN RIGHT HERE>  Landsat is on border of stilt domain.....
+ext(stilt_x) <- 1.5*ext(stilt_x)
+
+evi_proj <- raster::projectRaster(evi, stilt_raster, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
+
+evi_proj <- terra::project(evi, stilt_x, mask = T, threads = T, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
+
+
+plot(evi_proj);lines(geodata::world(path = "."))
 
 	### for some reason, direct terra::project(x,y) makes all vals NaN...
-	evi_proj <- terra::project(evi, crs(stilt), threads = T, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
+	evi_proj <- terra::project(evi, crs(stilt), mask = T, threads = T, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
 
 	print(evi_proj)
 
 	evi_ext <- terra::extend(evi_proj, stilt, filename = file.path(evi_dir, paste0(ei, "_ext", ".tif")), overwrite = T)
 
-	evi_exp <- terra::project(evi_ext, crs(stilt), threads = T, filename = file.path(evi_dir, paste0(ei, ".tif")), overwrite = T)
+	plot(evi_ext);lines(geodata::world(path = "."))
+	print(evi_ext)
+	print(stilt)
 
-	plot(evi_exp)
-	print(evi_proj)
+	evi_resamp <- terra::resample(evi_proj, stilt, filename = file.path(evi_dir, paste0(ei, "_resamp", ".tif")), overwrite = T)
 
-	evi_agg <- aggregate(evi_proj, fact = res(stilt)[1]/res(evi_proj)[1], fun = "mean")
+	#         plot(stilt);lines(geodata::world(path = "."))
+	print(evi_resamp)
+	#         evi_exp <- terra::project(evi_ext, stilt, threads = T, filename = file.path(evi_dir, paste0(ei, ".tif")), overwrite = T)
+
+	#         print(evi_exp)
+	#         plot(evi_exp)
+
+	resample
+	evi_agg <- aggregate(evi_ext, fact = res(stilt)[1]/res(evi_proj)[1], fun = "mean")
+
+	print(evi_agg)
+
 	xx <- project(stilt, evi)
 
 	resample(evi_proj, res(stilt))
@@ -69,7 +114,7 @@ ei <- "021032_20191102"
 	ext(evi_proj) <- ext(stilt)
 	merge
 	evi_res <- resample(evi_proj, stilt, threads = T)
-	plot(c(evi_res, stilt[[13]]))
+	#         plot(c(evi_res, stilt[[13]]))
 
 
 	# })#end lapply(entityid, function(ei){
