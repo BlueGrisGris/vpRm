@@ -60,12 +60,11 @@ proc_drivers <- function(
 
 	####### loop through yearly driver data
 	lapply(unique(lubridate::year(vpRm$domain$time)), function(yy){
-		if(vpRm$verbose){print(yy)}
 
 		####### process evi extrema
 		evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_files_dir)
 		evi_extrema_proc <- terra::project(evi_extrema,plate, method = "cubicspline")
-		evi_extrema_proc <- evi_extrema_proc*evi_scale_factor
+		#                 evi_extrema_proc <- evi_extrema_proc*evi_scale_factor
 		Save_Rast(evi_extrema_proc, file.path(vpRm$dirs$evi_extrema_proc_dir, paste0(yy, ".nc")))
 		rm(evi_extrema, evi_extrema_proc)
 
@@ -74,6 +73,8 @@ proc_drivers <- function(
 		green_proc <- terra::project(GREEN,plate, method = "cubicspline")
 		Save_Rast(green_proc, file.path(vpRm$dirs$green_proc_dir, paste0(yy, ".nc")))
 		rm(GREEN, green_proc)
+
+		return(NULL)
 	}) #end lapply yearly
 
 	####### loop through hourly driver data

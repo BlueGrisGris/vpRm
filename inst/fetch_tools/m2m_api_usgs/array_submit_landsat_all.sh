@@ -1,3 +1,5 @@
 #!bin/bash
-sbatch --array=1-73 array_submit_landsat_L7.sh
-sbatch --array=1-100 array_submit_landsat_L8.sh
+sbatch --array=1-97 array_submit_landsat_7.sh
+#sbatch --array=1-133 array_submit_landsat_8.sh
+#sbatch --array=1-2 array_submit_landsat_7.sh
+#sbatch --array=1-2 array_submit_landsat_8.sh

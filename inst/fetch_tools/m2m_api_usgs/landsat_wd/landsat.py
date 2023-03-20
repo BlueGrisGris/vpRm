@@ -134,9 +134,9 @@ if __name__ == '__main__':
     ### select which landsat bands you want w regex against entityIds
     ### different bands for 7 vs 8
     if datasetName == "landsat_ot_c2_l2":
-        bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "QA_PIXEL", "QA_CLOUD"]
+        bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "SR_CLOUD_QA"]
     if datasetName == "landsat_etm_c2_l2":
-        bands = ["SR_B1", "SR_B3", "SR_B4", "SR_B5", "QA_PIXEL", "QA_CLOUD"]
+        bands = ["SR_B1", "SR_B3", "SR_B4", "SR_B5", "SR_CLOUD_QA"]
 
     # Select products
     downloads = []
