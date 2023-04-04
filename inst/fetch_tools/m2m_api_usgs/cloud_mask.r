@@ -26,6 +26,7 @@ cloudmask <- function(scene, mission, qa_pixel = "qa_pixel", return_mask =F){
 	#         scene_masked <- terra::mask(scene, cloudmask, maskvalues = T, updatevalue = NA)
 
 	if(return_mask){return(scene[[qa_pixel]] %in% qa_pixel_cloud_vals)}
+	print(paste("cloud mask memory", pryr::mem_used()/1e3))
 	scene[(scene[[qa_pixel]] %in% qa_pixel_cloud_vals)] <- NA 
 	return(scene)
 }#end func cloudmask

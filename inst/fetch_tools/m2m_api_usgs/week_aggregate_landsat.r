@@ -1,9 +1,12 @@
 
+	print(paste(" before for  memory", pryr::mem_used()*1e-3))
 library(terra)
 library(tidyterra)
 library(ggplot2)
 library(lubridate)
 library(stringr)
+
+evi_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/evi"
 
 fetch_landsat_scripts_dir <- "/n/home00/emanninen/vpRm/inst/fetch_tools/m2m_api_usgs"
 source(file.path(fetch_landsat_scripts_dir, "cloud_mask.r"))
@@ -13,108 +16,126 @@ stilt_dir <- list.files("/n/wofsy_lab2/Users/emanninen/STILT_slantfoot", full.na
 stilt <- rast(stilt_dir)[[13]]
 
 landsat7_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/scenes_L7"
-filenames <- list.files(landsat7_dir, full.names = T)
+landsat7_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/old/scenes_old/scenes_L7"
 
-evi_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/evi"
+landsat8_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/old/scenes_old/scenes_L8"
 
-dates <- ymd(stringr::str_extract(filenames, "[0-9]{8}"))
-
-### aggregating all scenes w/in a week.
-yyww <- 201944
-filenames_week <- filenames[paste0(year(dates),week(dates)) == yyww]
-entityid <- stringr::str_extract(filenames_week, "[0-9]{6}_[0-9]{8}")
-
-for(ei in unique(entityid)){
-	#         print(ei)
-	filenames_scene <- filenames_week[entityid == ei]
-	if(length(filenames_scene) == 6){print(ei)}
-}#end for ei
-
-ei <- "021032_20191102" 
-# lapply(entityid, function(ei){
-	print(ei)
-	filenames_scene <- filenames_week[entityid == ei]
-	scene <- rast(filenames_scene)
-	#         plot(scene)
-	names(scene) <- c("qa_pixel", "sr_b1", "sr_b3", "sr_b4", "sr_b5", "qa_cloud")
-	### TODO: we dont wnat the drift nas in the qa code to propogate>>>
-	### On the other hadn , projection might solve?
-	### on the other other hand, might be the source of our projection woes.....
-
-	### mask then calc evi
-	scene_mask <- cloudmask(scene, "etm")
-	evi <- calc_evi(scene_mask, "etm")
-	writeRaster(evi, filename = file.path(evi_dir, paste0(ei, "_evi", ".tif")), overwrite = T)
-	writeRaster(stilt, filename = file.path(evi_dir, paste0(ei, "_stilt", ".tif")), overwrite = T)
-	evi <- rast(file.path(evi_dir, paste0(ei, "_evi", ".tif")))
-
-crs(stilt)
-stilt_x <- stilt
-values(stilt_x) <- 0
-crs(evi)
-
-library(raster)
+filenames <- list.files(c(landsat7_dir, landsat8_dir), full.names = T)
 
 
-#### why
-target_spatraster <- rast(crs = "+proj=lonlat", extent = ext(stilt)*1.5, resolution = res(stilt))
-values(stilt_x) <- 0
-source_spatraster <- rast(crs = "+proj=lonlat", extent = ext(evi_proj), resolution = res(evi_proj))
-values(source_spatraster) <- 1:ncell(source_spatraster)
-projected_spatraster <- project(source_spatraster, target_spatraster)
-print(projected_spatraster)
-### why
+LC <- stringr::str_extract(filenames, "[0-9]{2}")
 
-stilt_raster <- raster(stilt_dir)
-evi_raster <- raster(evi)
-plot(evi_raster)
-projectRaster(evi_raster, stilt_raster)
-	crs(evi_proj)
-stilt_x <- stilt
-values(stilt_x) <- NA
-#### THIS IS THE SOLN RIGHT HERE>  Landsat is on border of stilt domain.....
-ext(stilt_x) <- 1.5*ext(stilt_x)
+entityid <- paste( stringr::str_extract(filenames, "[0-9]{2}") ,stringr::str_extract(filenames, "[0-9]{6}_[0-9]{8}"), sep = "_")
+### how many of the scenese have all 6 bands?
 
-evi_proj <- raster::projectRaster(evi, stilt_raster, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
+complete_entityid <- sapply(1:length(unique(entityid)), simplify = "vector", USE.NAMES = F, function(ei){
+	ei <- unique(entityid)[ei]
+	filenames_scene <- filenames[entityid == ei]
+	lc <- stringr::str_extract(filenames_scene, "[0-9]{2}")[1]
+	#         print(filenames_scene)
+	if((length(filenames_scene) == 6 & lc == "07")| (length(filenames_scene) == 5 & lc %in% c("08", "09")) ){return(ei)}else{return()}
+}) %>% unlist()#end sapply ei
 
-evi_proj <- terra::project(evi, stilt_x, mask = T, threads = T, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
+### ~73% of the L7 scenes have 6 bands....
+# length(complete_entityid)/ length(unique(entityid))
 
 
-plot(evi_proj);lines(geodata::world(path = "."))
+complete_filenames <- filenames[entityid %in% complete_entityid]
+complete_LC <- LC[entityid %in% complete_entityid]
 
-	### for some reason, direct terra::project(x,y) makes all vals NaN...
-	evi_proj <- terra::project(evi, crs(stilt), mask = T, threads = T, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
+dates <- ymd(stringr::str_extract(complete_filenames, "[0-9]{8}"))
 
-	print(evi_proj)
+year_weeks <- as.numeric(paste0(year(dates),str_pad(week(dates), 2, "left", "0")))
 
-	evi_ext <- terra::extend(evi_proj, stilt, filename = file.path(evi_dir, paste0(ei, "_ext", ".tif")), overwrite = T)
+if(!interactive()){
+	ARGS <- commandArgs(trailingOnly = T)
+	YYWW_INDEX <- as.numeric(ARGS[1])
+}#end if(!interactive()){
+# year_weeks <- unique(year_weeks)[order(unique(year_weeks))]
 
-	plot(evi_ext);lines(geodata::world(path = "."))
-	print(evi_ext)
-	print(stilt)
+### aggregating all scenes w/in each week.
+# yyww <- c(12,13)
 
-	evi_resamp <- terra::resample(evi_proj, stilt, filename = file.path(evi_dir, paste0(ei, "_resamp", ".tif")), overwrite = T)
+# lapply(1:length(unique(year_weeks)), function(yyww){
+	if(!interactive()){
+		yyww <- unique(year_weeks)[YYWW_INDEX]
+	}else{yyww <- unique(year_weeks)[c(12)]}#end if(!interactive()){
 
-	#         plot(stilt);lines(geodata::world(path = "."))
-	print(evi_resamp)
-	#         evi_exp <- terra::project(evi_ext, stilt, threads = T, filename = file.path(evi_dir, paste0(ei, ".tif")), overwrite = T)
+	print(paste("yyww:", yyww))
 
-	#         print(evi_exp)
-	#         plot(evi_exp)
+	filenames_week <- complete_filenames[year_weeks %in% yyww]
+	entityid_week <- paste( stringr::str_extract(filenames_week, "[0-9]{2}") ,stringr::str_extract(filenames_week, "[0-9]{6}_[0-9]{8}"), sep = "_")
+	LC_week <- complete_LC[year_weeks %in% yyww]
 
-	resample
-	evi_agg <- aggregate(evi_ext, fact = res(stilt)[1]/res(evi_proj)[1], fun = "mean")
+	### set a much larger domain to fill in so projection works at the edges
+	stilt_x <- stilt
+	values(stilt_x) <- 0
+	ext(stilt_x) <- 1.2*ext(stilt_x)
 
-	print(evi_agg)
+	### terra thinks it can access the full mem of the interactive node?
+	terraOptions(memmax = 4)
+	ei <- 2
 
-	xx <- project(stilt, evi)
+	#         xx <- parallel::mclapply(1:2, mc.cores = 2, function(ei){
+	#         xx <- 	lapply(1:2, function(ei){
+				   #         parallel::mclapply(1:length(unique(entityid_week)), mc.cores = 2, function(ei){
+				   #                 print(paste("scene_index", ei))
 
-	resample(evi_proj, res(stilt))
+	#         for(ei in 1:length(unique(entityid_week))){
 
-	ext(evi_proj) <- ext(stilt)
-	merge
-	evi_res <- resample(evi_proj, stilt, threads = T)
-	#         plot(c(evi_res, stilt[[13]]))
+		ei <- unique(entityid_week)[ei]
+		print(paste("scene", ei))
+		lc <- stringr::str_extract(ei, "[0-9]{2}")
 
+		filenames_scene <- filenames_week[entityid_week == ei]
+		#                 print(filenames_scene)
+		scene <- rast(filenames_scene)
+	print(paste(" scene memory", pryr::mem_used()*1e-3))
 
-	# })#end lapply(entityid, function(ei){
+	if(F){
+		if(lc == "07"){
+			names(scene) <- c("qa_pixel", "sr_b1", "sr_b3", "sr_b4", "sr_b5", "qa_cloud")
+			### mask then calc evi
+			print("about to mask")
+	print(paste(" memory", pryr::mem_used()/1e3))
+	#                         scene_mask <- cloudmask(scene, "etm")
+	#                         print("finish to mask")
+			print("about to evi")
+			#                         evi <- calc_evi(scene_mask, "etm")
+			evi <- calc_evi(scene, "etm")
+			print("finish to evi")
+	print(paste(" memory", pryr::mem_used()/1e3))
+		}#end if lc == 07
+		if(lc %in%  c("08", "09")){
+			names(scene) <- c("qa_pixel", "sr_b2", "sr_b4", "sr_b5", "sr_b6")
+			### mask then calc evi
+			### TODO: can provide filename to reduce memory load?
+			#         print(paste("pre cloud mask memory", pryr::mem_used()/1e3))
+	#                         scene_mask <- cloudmask(scene, "oli")
+	#                         evi <- calc_evi(scene_mask, "oli")
+			evi <- calc_evi(scene, "oli")
+		}#end if lc == 07
+		### project evi to stilt domain
+			print("about  to proj")
+		evi_proj <- terra::project(evi, stilt_x, mask = T, threads = T, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
+			print("finish to proj")
+		#                 print("memory used")
+		#                 print(pryr::mem_used())
+	}#ende if F
+	}#end for	
+		#         })#end lapply(entityid, function(ei)
+	# stop("finished")
+
+	filenames_evi_week <- file.path(evi_dir, paste0(unique(entityid_week), "proj", ".tif"))
+	evi_week <- terra::rast(filenames_evi_week)
+	evi_week_mean <- mean(evi_week, na.rm = T, filename = file.path(evi_dir, paste0(yyww, ".tif")), overwrite = T)
+	unlink(filenames_evi_week)
+	#         return(NULL)
+
+	# })#end lapply year_weeks
+	#         plot(evi)
+	#         plot(evi_proj)
+	if(interactive()){
+		plot(evi_week_mean)
+	}#end interactive
+	stop("finished")
