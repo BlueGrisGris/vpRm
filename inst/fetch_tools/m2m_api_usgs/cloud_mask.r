@@ -8,7 +8,7 @@
 # plot(scene[["qa_pixel"]] %in% L7_qa_pixel)
 # plot(scene[["sr_b1"]] )
 
-cloudmask <- function(scene, mission, qa_pixel = "qa_pixel", return_mask =F){
+cloudmask <- function(scene, mission, qa_pixel = "qa_pixel", filename = "./temp_cloud_mask.tif",  return_mask =F){
 	if(!mission %in% c("etm", "oli")){stop("mission must be one of etm, oli (landsat 7, landsat 8&9)")} 
 	### Add snow??
 	if(mission == "etm"){
@@ -21,13 +21,9 @@ cloudmask <- function(scene, mission, qa_pixel = "qa_pixel", return_mask =F){
 	}#end if(mission == "etm"){
 
 	### for some reason terra::mask shits the bed and crashes R..
-	#         scene_masked <- terra::mask(scene, scene[[qa_pixel]], maskvalues = qa_pixel_cloud_vals, updatevalue = NA)
-	#         cloudmask <- !(scene[[qa_pixel]] %in% qa_pixel_cloud_vals)
-	#         scene_masked <- terra::mask(scene, cloudmask, maskvalues = T, updatevalue = NA)
+	### I think the overwrite is oK guh
+	scene <- terra::mask(scene, scene[[qa_pixel]], maskvalues = qa_pixel_cloud_vals, updatevalue = NA, filename = filename, overwrite = T)
 
-	if(return_mask){return(scene[[qa_pixel]] %in% qa_pixel_cloud_vals)}
-	print(paste("cloud mask memory", pryr::mem_used()/1e3))
-	scene[(scene[[qa_pixel]] %in% qa_pixel_cloud_vals)] <- NA 
 	return(scene)
 }#end func cloudmask
 
