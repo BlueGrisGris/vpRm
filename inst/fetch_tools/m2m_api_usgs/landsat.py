@@ -66,11 +66,10 @@ if __name__ == '__main__':
         password = credentials["password"]
         path = "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/scenes_L7/"
         scenesFile = "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/scenes_L7.txt"
-        index_start = 1
-        index_end = 2
+        index_start = 0
+        index_end = 1
         index_start = None
         index_end = None
-
 
     scene_index_bool = False
     ### if both start and end indexes were given, only take those scenes
@@ -118,8 +117,9 @@ if __name__ == '__main__':
             print(f"replaced:{index_end}")
         print(f"index_start: {index_start}")
         print(f"index_end: {index_end}")
-        print(f"entityIds from indices before append: {lines[index_start:index_end]}")
-        for line in lines[index_start:index_end]:        
+        print(f"entityIds from indices before append: {lines[index_start:index_end+1]}")
+        ### I do not know why, but you need the index_end+1
+        for line in lines[index_start:index_end+1]:        
             entityIds.append(line.strip())
     else:
         for line in lines:        
@@ -154,9 +154,9 @@ if __name__ == '__main__':
     ### select which landsat bands you want w regex against entityIds
     ### different bands for 7 vs 8
     if datasetName == "landsat_ot_c2_l2":
-        bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "QA_PIXEL", "QA_CLOUD"]
+        bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "QA_PIXEL"]
     if datasetName == "landsat_etm_c2_l2":
-        bands = ["SR_B1", "SR_B3", "SR_B4", "SR_B5", "QA_PIXEL", "QA_CLOUD"]
+        bands = ["SR_B1", "SR_B3", "SR_B4", "SR_B5", "QA_PIXEL"]
 
     # Select products
     downloads = []
@@ -167,7 +167,7 @@ if __name__ == '__main__':
                 ### only take bulk downloadable entityIds
                 ### and filter for the landsat bands you want!
                 if secondaryDownload["bulkAvailable"] and any(band in secondaryDownload["entityId"] for band in bands):
-                    # print(secondaryDownload["entityId"])
+                    print(secondaryDownload["entityId"])
                     downloads.append({"entityId":secondaryDownload["entityId"], "productId":secondaryDownload["id"]})
     
     # Remove the list
