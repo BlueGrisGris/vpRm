@@ -42,8 +42,8 @@ startdate = '2018-01-01'
 #enddate = '2018-06-30'
 enddate = '2022-12-31'
 
-mincloud = 0
-maxcloud = 50
+mincloud = 50
+maxcloud = 100
 
 maxResults = 20000
 

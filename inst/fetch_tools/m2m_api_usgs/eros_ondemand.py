@@ -1,6 +1,4 @@
 
-# coding: utf-8
-
 # # ESPA-API DEMO code
 # 
 # Since many of our services written in python also interact with the API, we have
@@ -120,10 +118,11 @@ espa_api('user', uauth=('invalid', 'invalid'))
 # Call to demonstrate what is returned from available-products
 
 # In[10]:
+### TODO: read in scene list
 
 print('GET /api/v1/available-products')
-avail_list = {'inputs': ['LE07_L1TP_029030_20170221_20170319_01_T1',
-                         'MOD09A1.A2017073.h10v04.006.2017082160945.hdf',
+avail_list = {'inputs': [
+    'LE07_L2SP_009029_20220621_20220826_02_T1'
                          #'bad_scene_id'  # <-- Note: Unrecognized ID
                         ]
              }
@@ -191,6 +190,9 @@ projection = {'aea': {'standard_parallel_1': 29.5,
 
 # Let available-products place the acquisitions under their respective sensors
 ls = l8_ls + l7_ls
+ls = [ 
+    'LE07_L2SP_009029_20220621_20220826_02_T1'
+    ]
 
 print('GET /api/v1/available-products')
 order = espa_api('available-products', body=dict(inputs=ls))
@@ -234,7 +236,6 @@ print((json.dumps(resp, indent=4)))
 # In[22]:
 
 orderid = resp['orderid']
-
 
 # ## Check the status of an order
 # 

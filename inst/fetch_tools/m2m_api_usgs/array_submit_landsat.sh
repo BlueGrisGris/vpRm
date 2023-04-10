@@ -3,7 +3,7 @@
 #SBATCH -J download_landsat
 #SBATCH -p serial_requeue # Partition
 #SBATCH -c 5
-#SBATCH -t 0-10:30 
+#SBATCH -t 0-15:30 
 #SBATCH --mem-per-cpu 4000 
 #SBATCH -o /n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/logs_download_landsat/%a_download_landsat_out.txt
 

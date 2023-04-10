@@ -15,7 +15,7 @@ import re
 import threading
 import datetime
 
-maxthreads = 8 # Threads count for downloads
+maxthreads = 5 # Threads count for downloads
 sema = threading.Semaphore(value=maxthreads)
 
 # Send http request
