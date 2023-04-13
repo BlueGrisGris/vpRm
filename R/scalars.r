@@ -63,6 +63,21 @@ mah_Wscalar <- function(LSWI,LSWImax){
 }#end func Wscalar
 
 ### simplified Wscalar for forests.  avg value from mahadevan 2008
-Wscalar <- function(LSWI,LSWImax){
-	return(.9)
+Wscalar <- function(LSWI,LSWImax, tt){
+	mahadevan_monthly_Wscalar <- c(
+		0.98
+		, 0.97
+		, 0.82
+		, 0.75
+		, 0.81
+		, 0.88
+		, 0.88
+		, 0.88
+		, 0.88
+		, 0.80
+		, 0.75
+		, 0.78
+	)#end c
+	Wscalar <- mahadevan_monthly_Wscalar[lubridate::month(tt)]
+	return(Wscalar)
 }#end function Wscalar
