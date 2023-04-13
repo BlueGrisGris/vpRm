@@ -5,7 +5,13 @@ library(ggplot2)
 library(lubridate)
 library(stringr)
 
+terraOptions(memmax = 50)
+print(paste("available RAM:", free_RAM()*1e-6))
+
 evi_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/evi/weekly_evi"
+# evi_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/evi/two_week/weekly_evi"
+# evi_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/evi/covid_two_week/weekly_evi"
+# evi_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/evi/one_week/weekly_evi"
 
 fetch_landsat_scripts_dir <- "/n/home00/emanninen/vpRm/inst/fetch_tools/m2m_api_usgs"
 source(file.path(fetch_landsat_scripts_dir, "cloud_mask.r"))
@@ -44,7 +50,6 @@ complete_LC <- LC[entityid %in% complete_entityid]
 dates <- ymd(stringr::str_extract(complete_filenames, "[0-9]{8}"))
 
 year_weeks <- as.numeric(paste0(year(dates),str_pad(week(dates), 2, "left", "0")))
-# unique(year_weeks)
 
 if(!interactive()){
 	ARGS <- commandArgs(trailingOnly = T)
@@ -57,13 +62,18 @@ if(!interactive()){
 
 # lapply(1:length(unique(year_weeks)), function(yyww){
 	if(!interactive()){
+		### if we are doing biweekly
+		#                 YYWW_INDEX <- 2*(YYWW_INDEX-1) + 1
+		#                 yyww <- unique(year_weeks)[YYWW_INDEX:(YYWW_INDEX+1)]
 		yyww <- unique(year_weeks)[YYWW_INDEX]
-		#                 yyww <- unique(year_weeks)[YYWW_INDEX-1:YYWW_INDEX+1]
 	}else{yyww <- unique(year_weeks)[c(1)]}#end if(!interactive()){
 
 	print(paste("yyww:", yyww))
 
 	filenames_week <- complete_filenames[year_weeks %in% yyww]
+	dates_week <- dates[year_weeks %in% yyww]
+	### give it the first date in the 2 week period 
+	date_week <- round_date(dates_week[1], "week")
 	entityid_week <- paste( stringr::str_extract(filenames_week, "[0-9]{2}") ,stringr::str_extract(filenames_week, "[0-9]{6}_[0-9]{8}"), sep = "_")
 	LC_week <- complete_LC[year_weeks %in% yyww]
 
@@ -77,10 +87,11 @@ if(!interactive()){
 	ei <- 50
 
 	#         parallel::mclapply(1:8, mc.cores = 8, function(ei){
-	parallel::mclapply(1:length(unique(entityid_week)), mc.cores = 8, function(ei){
+	parallel::mclapply(1:length(unique(entityid_week)), mc.cores = 5, function(ei){
 
 		ei <- unique(entityid_week)[ei]
 		print(paste("scene", ei))
+		terraOptions(memmax = 50)
 		lc <- stringr::str_extract(ei, "[0-9]{2}")
 
 		filenames_scene <- filenames_week[entityid_week == ei]
@@ -97,6 +108,7 @@ if(!interactive()){
 			#                         print("finish to mask")
 			#                         print("about to evi")
 			evi <- calc_evi(scene, "etm")
+			time(evi) <- date_week 
 			#                         print("finish to evi")
 		}#end if lc == 07
 		if(lc %in%  c("08", "09")){
@@ -107,13 +119,13 @@ if(!interactive()){
 			#                         print("finish to mask")
 			#                         print("about to evi")
 			evi <- calc_evi(scene, "oli")
+			time(evi) <- date_week 
 			#                         print("finish to evi")
 		}#end if lc == 07
 		### project evi to stilt domain
 		#                 print("about  to proj")
 		evi_proj <- terra::project(evi, stilt_x, mask = T, threads = T, filename = file.path(evi_dir, paste0(ei, "proj", ".tif")), overwrite = T)
 		#                 print("finish to proj")
-
 		unlink(filename_mask)
 	})#edn mclapply
 
@@ -125,7 +137,6 @@ if(!interactive()){
 ###################
 if(interactive()){
 evi_xx <- 2.5*( (1e-4*scene["sr_b5"] - 1e-4*scene["sr_b4"]) / (1e-4*scene["sr_b5"] + 6 * 1e-4*scene["sr_b4"] - 7.5*1e-4*scene["sr_b2"] + 1) )
-
 
 scene <- scene * 0.0000275  - .2
 evi_xx <- 2.5*( (as.numeric(scene["sr_b5"]) - as.numeric(scene["sr_b4"])) / (as.numeric(scene["sr_b5"]) + 6 * as.numeric(scene["sr_b4"]) - 7.5*as.numeric(scene["sr_b2"]) + 1) )
