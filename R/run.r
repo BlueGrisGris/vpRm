@@ -68,10 +68,12 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 	### running is already pretty fast though
 	yy <- lubridate::year(tt)
 	evi_extrema_dir_yy <- vpRm$dirs$evi_extrema_proc_files_dir[grep(yy, vpRm$dirs$evi_extrema_proc_files_dir)]
+	lswi_extrema_dir_yy <- vpRm$dirs$lswi_extrema_proc_files_dir[grep(yy, vpRm$dirs$lswi_extrema_proc_files_dir)]
 
 	green_dir_yy <- vpRm$dirs$green_proc_files_dir[grep(yy, vpRm$dirs$green_proc_files_dir)]
 
 	EVIextrema <- terra::rast(evi_extrema_dir_yy)
+	LSWIextrema <- terra::rast(lswi_extrema_dir_yy)
 	GREEN <- terra::rast(green_dir_yy)
 	# if( any(dim(EVIextrema) != c(dim(plate)[1:2], 2) )){stop(paste("dim EVIextrema_proc =", dim(EVIextrema), " does not align dim plate =", dim(plate)))}
 	# if( any(dim(GREEN) != c(dim(plate)[1:2], 2) )){stop(paste("dim green_proc =", dim(GREEN), " does not align dim plate =", dim(plate)))}
@@ -79,6 +81,7 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 	TEMP <- terra::rast(vpRm$dirs$temp_proc_files_dir[tt_idx])
 	PAR <- terra::rast(vpRm$dirs$par_proc_files_dir[tt_idx])
 	EVI <- terra::rast(vpRm$dirs$evi_proc_files_dir[tt_idx])
+	LSWI <- terra::rast(vpRm$dirs$lswi_proc_files_dir[tt_idx])
 	# if( any(dim(TEMP) != dim(plate)) ){stop(paste("dim temp_proc =", dim(TEMP), " does not match dim plate =", dim(plate)))}
 	# if( any(dim(PAR) != dim(plate)) ){stop(paste("dim par_proc =", dim(PAR), " does not match dim plate =", dim(plate)))}
 	# if( any(dim(evi) != dim(plate)) ){stop(paste("dim evi_proc =", dim(evi), " does not match dim plate =", dim(plate)))}
@@ -88,19 +91,20 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 	### calculate scalars
 	#############################################
 
-	### simplified Tscalar
+	### calculate winbourne 2021 Tscalar
 	Tscalar <- Tscalar(TEMP, Tmin, Tmax)
 
 	### calculate Pscalar
 	EVImax <- EVIextrema[[1]]
 	EVImin <- EVIextrema[[2]]
 
+	### calculate winbourne 2021 Pscalar
 	Pscalar <- Pscalar(EVI, EVImax, EVImin) 
 	### phenology of evergreens is always max
 	Pscalar[sum(LC == evergreen_lc)] <- 1
 
-	### simplified Wscalar
-	Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
+	### calculate Mahadevan 2008 Wscalar
+	Wscalar <- Wscalar(LSWI, LSWImax)  
 
 	#############################################
 	### calculate gee

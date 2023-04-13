@@ -41,6 +41,7 @@ new_vpRm <- function(
 	, lswi_dir = NULL
 
 	, evi_extrema_dir = NULL
+	, lswi_extrema_dir = NULL
 	, green_dir = NULL
 
 	, vprm_params = vpRm::vprm_params 
@@ -82,6 +83,7 @@ Dir_Create(lswi_proc_dir)
 
 ### parent directories of processed yearly driver data
 evi_extrema_proc_dir <- file.path(proc_dir, "evi_extrema")
+lswi_extrema_proc_dir <- file.path(proc_dir, "lswi_extrema")
 green_proc_dir <- file.path(proc_dir, "green")
 Dir_Create(evi_extrema_proc_dir)
 Dir_Create(green_proc_dir)
@@ -123,9 +125,11 @@ vpRm <- list(
 
 		, landsat_dir = landsat_dir
 		, evi_dir = evi_dir
+		, evi_dir = evi_dir
 		, lswi_dir = lswi_dir
 
 		, evi_extrema_dir = evi_extrema_dir
+		, lswi_extrema_dir = lswi_extrema_dir
 		, green_dir = green_dir
 
 		, proc_dir = proc_dir
@@ -138,6 +142,7 @@ vpRm <- list(
 		, temp_proc_dir = temp_proc_dir
 		, par_proc_dir = par_proc_dir
 		, evi_proc_dir = evi_proc_dir
+		, lswi_proc_dir = lswi_proc_dir
 		### filenames of processed hourly driver data
 		, temp_proc_files_dir = temp_proc_files_dir
 		, par_proc_files_dir = par_proc_files_dir
@@ -145,9 +150,11 @@ vpRm <- list(
 
 		### parent directories of processed yearly driver data
 		, evi_extrema_proc_dir = evi_extrema_proc_dir
+		, lswi_extrema_proc_dir = lswi_extrema_proc_dir
 		, green_proc_dir = green_proc_dir
 		### filenames of processed yearly driver data
 		, evi_extrema_proc_files_dir = evi_extrema_proc_files_dir
+		, lswi_extrema_proc_files_dir = lswi_extrema_proc_files_dir
 		, green_proc_files_dir = green_proc_files_dir
 
 		### parent directories of VPRM outputs
