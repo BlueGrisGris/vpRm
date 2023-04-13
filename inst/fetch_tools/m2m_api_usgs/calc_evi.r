@@ -18,3 +18,22 @@ calc_evi <- function(scene, mission){
 		return(evi)
 	}#end if 
 }#end func calc_evi
+
+calc_lswi <- function(scene, mission){
+	if(!mission %in% c("etm", "oli")){stop("mission must be one of etm, oli")} 
+	### apply landsat collection 2 surface reflectance scale factor
+	### https://www.usgs.gov/faqs/how-do-i-use-scale-factor-landsat-level-2-science-products
+	scene <- scene * 0.0000275  - .2
+	if(mission == "etm"){
+		### should LSWI have a range?
+		lswi <- (scene["sr_b4"] - scene["sr_b5"])/(scene["sr_b4"] + scene["sr_b5"] )
+		names(lswi) <- "LSWI"
+		return(lswi)
+	}#end if 
+	if(mission == "oli"){
+		lswi <- (scene["sr_b5"] - scene["sr_b6"])/(scene["sr_b5"] + scene["sr_b6"] )
+		names(lswi) <- "LSWI"
+		return(lswi)
+	}#end if 
+}#end func calc_lswi
+
