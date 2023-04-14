@@ -172,7 +172,7 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 		)#end writeCDF
 		return(NULL)
 	}) #end lapply
-
+	gc()
 })#end lapply hours 
 
 return(vpRm)

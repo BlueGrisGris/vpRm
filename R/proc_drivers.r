@@ -9,9 +9,9 @@ proc_drivers <- function(
 	vpRm
 	, n_cores = 1
 	){ #end parameters
-
-	### TODO: stopif
-	if(any(is.null(c(
+browser()
+	### check the driver data
+	driver_data_dirs <- c(
 		  vpRm$dirs$lc_dir
 		, vpRm$dirs$isa_dir
 		, vpRm$dirs$temp_dir
@@ -19,9 +19,16 @@ proc_drivers <- function(
 		, vpRm$dirs$evi_dir
 		, vpRm$dirs$evi_extrema_dir
 		, vpRm$dirs$green_dir
-	)))){
+	)#end c()
+	### TODO: stopif
+	if(any(is.null(driver_data_dirs))){
 	       stop("all driver data directories must be provided")
 	}#end if is null
+	lapply(driver_data_dirs, function(dd){
+		if(!file.exists(dd)){stop(paste("driver data directory does not exists:", dd))}
+		if(length(list.files(dd)) == 0){stop(paste("driver data directory is empty:", dd))}
+		return(NULL)
+	})#end lapply
 
 	### TODO: check that domain exists
 
@@ -38,6 +45,7 @@ proc_drivers <- function(
 	evi_scale_factor <- 1e-4
 	par_scale_factor <- 1/.505
 
+	if(vpRm$verbose){print("proc lc, isa")}
 	####### process landcover
 	lc <- terra::rast(vpRm$dirs$lc_dir)
 	lc_proc <- terra::project(lc,plate, method = "near")
@@ -57,9 +65,11 @@ proc_drivers <- function(
 	### save processed isa	
 	Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 	rm(ISA, isa_proc)
-
+	gc()
+	if(vpRm$verbose){print("proc yearsly data")}
 	####### loop through yearly driver data
 	lapply(unique(lubridate::year(vpRm$domain$time)), function(yy){
+		if(vpRm$verbose){print(paste("year:", yy))}
 
 		####### process evi extrema
 		evi_extrema <- terra::rast(vpRm$dirs$evi_extrema_files_dir)
@@ -73,16 +83,17 @@ proc_drivers <- function(
 		green_proc <- terra::project(GREEN,plate, method = "cubicspline")
 		Save_Rast(green_proc, file.path(vpRm$dirs$green_proc_dir, paste0(yy, ".nc")))
 		rm(GREEN, green_proc)
-
+		gc()
 		return(NULL)
 	}) #end lapply yearly
 
+	if(vpRm$verbose){print("proc hourly data")}
 	####### loop through hourly driver data
 	parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_idx){
 
 		tt <- vpRm$domain$time[tt_idx]
 
-		if(vpRm$verbose){print(tt)}
+		if(vpRm$verbose){print(paste("hour:", tt))}
 
 		terra::time(plate) <- tt
 
@@ -116,7 +127,7 @@ proc_drivers <- function(
 		EVI_proc <- terra::project(EVI,plate, method = "cubicspline")*evi_scale_factor
 		Save_Rast(EVI_proc, vpRm$dirs$evi_proc_files_dir[tt_idx])
 		rm(EVI, EVI_proc)
-
+		gc()
 		return(NULL)
 	})#end lapply hourly
 
