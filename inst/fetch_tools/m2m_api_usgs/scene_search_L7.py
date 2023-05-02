@@ -39,14 +39,14 @@ maxlon = -67.5
 minlat = 36 
 maxlat = 48 
 
-startdate = '2018-06-01'
+startdate = '2018-01-01'
 #enddate = '2018-06-30'
 enddate = '2022-12-31'
 
-mincloud = 0
-maxcloud = 30
+mincloud = 50
+maxcloud = 100
 
-maxResults = 5000
+maxResults = 20000
 
 spatialFilter = {
     'filterType' : "mbr"
@@ -74,7 +74,7 @@ results = m2m.sendRequest(serviceUrl + "scene-search", payload, apiKey)["results
 
 ### init scenes.txt
 #scenesFile = open("/home/ethan/m2m_api/scenes.txt", "w")
-scenesFile = open("/n/wofsy_lab2/Users/emanninen/vprm_20230311/driver_data/landsat/scenes_L7.txt", "w")
+scenesFile = open("/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/scenes_L7.txt", "w")
 scenesFile.write(datasetName + "|entityId\n")
 ### append entityIds to scenes.txt
 for rr in range(0,len(results)):

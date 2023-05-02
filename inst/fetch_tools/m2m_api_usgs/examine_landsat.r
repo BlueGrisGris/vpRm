@@ -1,17 +1,23 @@
 
 library(terra)
+library(ncdf4)
 library(tidyterra)
-library(rnaturalearth)
-library(rnaturalearthdata)
+# library(rnaturalearth)
+# library(rnaturalearthdata)
 library(ggplot2)
 library(lubridate)
+library(stringr)
 
-calc_evi <- function(landsat){2.5*( (1e-4*landsat["SR_B5"] - 1e-4*landsat["SR_B4"])/(1e-4*landsat["SR_B5"] + 6 * 1e-4*landsat["SR_B4"] - 7.5*1e-4*landsat["SR_B2"] + 1) )}
 
-stilt <- rast(list.files("~/storage/STILT_slantfoot", full.name = T)[1])[[1]]
+yang_stilt_dir <- "/n/wofsy_lab2/Users/emanninen/vprm_20230311/driver_data/landsat/scenes_L7"
+if(F){
+stilt <- rast(
+	      list.files(yang_stilt_dir, full.name = T)[1]
+	      )[[1]]
 values(stilt) <- 0
+}#ened if F
 
-landsat7_dir <- "/n/wofsy_lab2/Users/emanninen/vprm_20230311/driver_data/landsat/scenes_L7"
+landsat7_dir <- "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/test_scenes_L7"
  
 filenames <- list.files(landsat7_dir, full.names = T)
 ### TODO: project before mosaic/merge?
@@ -20,33 +26,42 @@ filenames <- list.files(landsat7_dir, full.names = T)
 ### TODO: get dates from the filenames
 yy <- stringr::str_extract(filenames, "[0-9]{8}")
 dates <- ymd(yy)
-week(dates)
-# dates <- dates[order(dates)]
-# filenames <- filenames[order(dates)]
-filenames <- filenames[dates == ymd("2020-01-06")]
-
-for(ii in 1:(length(filenames)/4)){
-	### indices of the 4 bands for each scene
-	print(ii)
-	fn <- filenames[((ii-1)*4):((ii-1)*4+3) + 1]
-	print(fn)
-	landsat <- rast(fn)
-	landsat <- project(landsat, stilt)
-	evi <- calc_evi(landsat)
-	print(evi)
-	overlay
-}#end for ii
-
-### even time steps
-fillTime
-
-sapply(1:length(dates), function(di){
-dates[di]
 
 
+### aggregating all scenes w/in a week.
+ww <- 44
+filenames_week <- filenames[week(dates) == ww]
+id <- stringr::str_extract(filenames_week, "[0-9]{6}_[0-9]{8}")
+filenames_scene <- filenames_week[id == id[1]] 
+scene <- rast(filenames_scene)
+### Do cloud QA before projecting
+names(scene) <- c("QA_CLOUD", "SR_B1", "SR_B3", "SR_B4", "SR_B5")
+qa_cloud <- values(scene[["QA_CLOUD"]])
+
+yy <- sapply(qa_cloud[!is.na(qa_cloud)], function(x){as.integer(intToBits(x))})
 
 
-})#end sapply
+scene[["cloud"]] <- as.numeric(str_sub(values(scene[["QA_CLOUD"]]), 2, 2))
+plot(scene[["cloud"]] == 1)
+
+cloud_mask <-   
+
+qa <- values(scene[["QA"]])
+
+### calc evi before or after projection?
+evi <- calc_evi(scene, "etm")
+
+
+
+
+
+
+
+
+
+
+
+
 
 landsat <- mosaic(rast(filenames[9:12]),rast(filenames[13:16]))
 

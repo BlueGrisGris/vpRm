@@ -20,7 +20,6 @@ respir <- function(tair, ALPHA, BETA, lc, ISA, evi, tlow){
 
 	respir_naive <- ALPHA * tair + BETA 
 
-	### TODO: ask Ian whats up with this madness
 	respir_het <- .5 * respir_naive * (1-ISA)
 	respir_aut <- .5 * respir_naive * evi  
 	

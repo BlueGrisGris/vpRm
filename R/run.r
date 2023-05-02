@@ -100,7 +100,7 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 	Pscalar[sum(LC == evergreen_lc)] <- 1
 
 	### simplified Wscalar
-	Wscalar <- Wscalar("fake_lswi", "fake_lswi")  
+	Wscalar <- Wscalar("fake_lswi", "fake_lswi", tt)
 
 	#############################################
 	### calculate gee
@@ -172,7 +172,7 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 		)#end writeCDF
 		return(NULL)
 	}) #end lapply
-
+	gc()
 })#end lapply hours 
 
 return(vpRm)

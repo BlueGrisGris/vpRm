@@ -57,20 +57,6 @@ if __name__ == '__main__':
     index_start = args.index_start
     index_end = args.index_end
 
-    ### for line by line
-    if False:
-        credentialsFile = "usgs_credentials.txt"
-        with open(credentialsFile, "r") as f:
-            credentials = json.loads(json.load(f))
-        username = credentials["username"]
-        password = credentials["password"]
-        path = "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/scenes_L7/"
-        scenesFile = "/n/wofsy_lab2/Users/emanninen/vprm/driver_data/landsat/scenes_L7.txt"
-        index_start = 0
-        index_end = 1
-        index_start = None
-        index_end = None
-
     scene_index_bool = False
     ### if both start and end indexes were given, only take those scenes
     if index_start is not None or index_end is not None:
@@ -115,20 +101,14 @@ if __name__ == '__main__':
             print(f"toobig:{index_end}")
             index_end = len(lines) - 1
             print(f"replaced:{index_end}")
-        print(f"index_start: {index_start}")
-        print(f"index_end: {index_end}")
-        print(f"entityIds from indices before append: {lines[index_start:index_end+1]}")
-        ### I do not know why, but you need the index_end+1
-        for line in lines[index_start:index_end+1]:        
+        print(f"indices: {lines[index_start:index_end]}")
+        for line in lines[index_start:index_end]:        
             entityIds.append(line.strip())
     else:
         for line in lines:        
             entityIds.append(line.strip())
 
-    print(f"The entityIds taken from scenes {entityIds}")
-
     # Add scenes to a list
-    ### TODO: maybe dont include index_start .. in listId if no index
     listId = f"temp_{datasetName}_list_{index_start}_{index_end}" # customized list id
     payload = {
         "listId": listId,
@@ -154,9 +134,9 @@ if __name__ == '__main__':
     ### select which landsat bands you want w regex against entityIds
     ### different bands for 7 vs 8
     if datasetName == "landsat_ot_c2_l2":
-        bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "QA_PIXEL"]
+        bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "SR_CLOUD_QA"]
     if datasetName == "landsat_etm_c2_l2":
-        bands = ["SR_B1", "SR_B3", "SR_B4", "SR_B5", "QA_PIXEL"]
+        bands = ["SR_B1", "SR_B3", "SR_B4", "SR_B5", "SR_CLOUD_QA"]
 
     # Select products
     downloads = []
@@ -167,7 +147,7 @@ if __name__ == '__main__':
                 ### only take bulk downloadable entityIds
                 ### and filter for the landsat bands you want!
                 if secondaryDownload["bulkAvailable"] and any(band in secondaryDownload["entityId"] for band in bands):
-                    print(secondaryDownload["entityId"])
+                    # print(secondaryDownload["entityId"])
                     downloads.append({"entityId":secondaryDownload["entityId"], "productId":secondaryDownload["id"]})
     
     # Remove the list
@@ -215,7 +195,7 @@ if __name__ == '__main__':
                     preparingDownloadIds.remove(result['downloadId'])
                     print(f"Get download url: {result['url']}\n" )
                     m2m.runDownload(threads, result['url'], path)
-       
+        
         # Don't get all download urls, retrieve again after 30 seconds
         while len(preparingDownloadIds) > 0: 
             print(f"{len(preparingDownloadIds)} downloads are not available yet. Waiting for 30s to retrieve again\n")
