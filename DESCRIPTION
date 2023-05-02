@@ -11,11 +11,8 @@ RoxygenNote: 7.1.2
 Imports:
 	terra
 	, raster
-	, RGISTools
 	, lubridate
 	, stringr
-	, reticulate 
-	, keyring
 	, methods
 Suggests: 
     testthat (>= 3.0.0)
