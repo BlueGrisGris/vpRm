@@ -45,24 +45,27 @@ proc_drivers <- function(
 	evi_scale_factor <- 1e-4
 	par_scale_factor <- 1/.505
 
+	### TODO: for now: dont rerun this for each slurm array job..
+	if(F){
 	if(vpRm$verbose){print("proc lc, isa")}
 	if( !file.exists(vpRm$dirs$lc_proc_dir) |(overwrite_procd_data&file.exists(vpRm$dirs$lc_proc_dir))){
 		####### process landcover
 		lc <- terra::rast(vpRm$dirs$lc_dir)
 		### TODO: switch to .tif
 		lc_proc <- terra::project(lc,plate, method = "near")
-		Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
+		vpRm::Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
 	}#end if(vpRm$verbose){print("proc lc, isa")}
 	####### process isa
 	if( !file.exists(vpRm$dirs$isa_proc_dir) |(overwrite_procd_data&file.exists(vpRm$dirs$isa_proc_dir))){
 		ISA <- terra::rast(vpRm$dirs$isa_dir)
-		isa_proc <- terra::project(ISA,plate, method = "near")
+		isa_proc <- terra::project(ISA,plate, method = "cubicspline")
 		### isa should be a fraction, 125 is ocean NA code
 		Save_Rast(isa_proc, vpRm$dirs$isa_proc_dir)
 		rm(ISA, isa_proc)
 	}#end if(vpRm$verbose){print("proc lc, isa")}
 	gc()
-	if(vpRm$verbose){print("proc yearsly data")}
+
+	if(vpRm$verbose){print("proc yearly data")}
 	####### loop through yearly driver data
 	lapply(unique(lubridate::year(vpRm$domain$time)), function(yy){
 		if(vpRm$verbose){print(paste("year:", yy))}
@@ -70,7 +73,7 @@ proc_drivers <- function(
 		evi_extrema_proc_filename <- file.path(vpRm$dirs$evi_extrema_proc_dir, paste0(yy, ".tif"))
 		if( !file.exists(evi_extrema_proc_filename ) |(overwrite_procd_data&file.exists(evi_extrema_proc_filename ))){
 			evi_extrema <- terra::rast(grep(vpRm$dirs$evi_extrema_dir, pattern = yy, value = T))
-			evi_extrema_proc <- terra::project(evi_extrema,plate, method = "cubicspline", filename = evi_extrema_proc_filename)
+			evi_extrema_proc <- terra::project(evi_extrema,plate, method = "cubicspline", filename = evi_extrema_proc_filename, overwrite = T)
 			#                 evi_extrema_proc <- evi_extrema_proc*evi_scale_factor
 			rm(evi_extrema, evi_extrema_proc)
 		}#end if( !file.exists(evi_extrema_proc_filename ) |(overwrite_procd_data&file.exists(evi_extrema_proc_filename ))){
@@ -79,12 +82,13 @@ proc_drivers <- function(
 		green_proc_filename <- file.path(vpRm$dirs$green_proc_dir, paste0(yy, ".tif"))
 		if( !file.exists(green_proc_filename ) |(overwrite_procd_data&file.exists(green_proc_filename ))){
 			GREEN <- terra::rast(grep(vpRm$dirs$green_dir, pattern = yy, value = T))
-			green_proc <- terra::project(GREEN,plate, method = "cubicspline", filename = )
+			green_proc <- terra::project(GREEN,plate, method = "cubicspline", filename = green_proc_filename, overwrite = T)
 			rm(GREEN, green_proc)
 		}#end if( !file.exists(evi_extrema_proc_filename ) |(overwrite_procd_data&file.exists(evi_extrema_proc_filename ))){
 		gc()
 		return(NULL)
 	}) #end lapply yearly
+	}#dnd if F
 
 	if(vpRm$verbose){print("proc hourly data")}
 	####### loop through hourly driver data

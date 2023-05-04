@@ -69,6 +69,8 @@ lc_isa_proc_dir <- file.path(proc_dir, "lc_isa")
 Dir_Create(lc_isa_proc_dir)
 lc_proc_dir <- file.path(lc_isa_proc_dir, "lc.nc")
 isa_proc_dir <- file.path(lc_isa_proc_dir, "isa.nc")
+# lc_proc_dir <- file.path(lc_isa_proc_dir, "lc.tif")
+# isa_proc_dir <- file.path(lc_isa_proc_dir, "isa.tif")
 
 ### parent directories of processed hourly driver data
 temp_proc_dir <- file.path(proc_dir, "temp")

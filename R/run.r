@@ -25,7 +25,6 @@ if(!methods::is(vpRm,"vpRm")){stop("must be an object of class vpRm")}
 #############################################
 ### point to processed drivers
 #############################################
-
 ### time invariant 
 LC <- terra::rast(vpRm$dirs$lc_proc_dir)
 ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
@@ -42,10 +41,11 @@ ISA <- terra::rast(vpRm$dirs$isa_proc_dir)
 
 vprm_params <- vpRm$vprm_params
 
-lambda <- sum( (LC == vprm_params[,"lc"])*vprm_params[,"lambda"] )
+lambda <- sum( (LC == vprm_params[,"lc"]) * vprm_params[,"lambda"] )
 
 Tmin <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmin"] )
 Tmax <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tmax"] )
+Tlow <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"Tlow"] )
 
 PAR0 <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"PAR0"] )
 
@@ -56,9 +56,10 @@ BETA <-  sum( (LC == vprm_params[,"lc"])*vprm_params[,"beta"] )
 water_lc <- water_lc
 evergreen_lc <- evergreen_lc
 
-### loop hourly
-parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_idx){
 
+### loop hourly
+tt_idx <- 1 # for testing
+parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_idx){
 	tt <- vpRm$domain$time[tt_idx]
 
 	if(vpRm$verbose){print(tt)}
@@ -138,6 +139,7 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 		, LC
 		, ISA
 		, EVI
+		, Tlow
 	)#end respir
 
 	terra::time(RESPIR) <- tt

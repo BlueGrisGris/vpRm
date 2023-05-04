@@ -68,8 +68,8 @@ filename_tt <- paste0(paste(
 ### set the processed data filenames
 ### yearly processed filenames
 domain_years <- unique(lubridate::year(vpRm$domain$time))
-vpRm$dirs$evi_extrema_proc_files_dir <- file.path(vpRm$dirs$evi_extrema_proc_dir, paste0(domain_years, ".nc"))
-vpRm$dirs$green_proc_files_dir <- file.path(vpRm$dirs$green_proc_dir, paste0(domain_years, ".nc"))
+vpRm$dirs$evi_extrema_proc_files_dir <- file.path(vpRm$dirs$evi_extrema_proc_dir, paste0(domain_years, ".tif"))
+vpRm$dirs$green_proc_files_dir <- file.path(vpRm$dirs$green_proc_dir, paste0(domain_years, ".tif"))
 ### hourly processed filenames
 ### TODO: evi needs to be special when we stop reproccing every hour
 vpRm$dirs$temp_proc_files_dir <- file.path(vpRm$dirs$temp_proc_dir, filename_tt)
