@@ -9,7 +9,9 @@ proc_drivers <- function(
 	vpRm
 	, n_cores = 1
 	, overwrite_procd_data = F
-	){ #end parameters
+	, evi_scale_factor = 1e-4
+	, par_scale_factor = 2.1 # scw's value, not mahadevans =1/.505
+){ #end parameters
 	### check the driver data
 	driver_data_dirs <- list(
 		  vpRm$dirs$lc_dir
@@ -42,17 +44,15 @@ proc_drivers <- function(
 
 	####### scale factors
 	### TODO: move to function input
-	evi_scale_factor <- 1e-4
-	par_scale_factor <- 1/.505
 
-	### TODO: for now: dont rerun this for each slurm array job..
 	if(F){
+	### TODO: for now: dont rerun this for each slurm array job..
 	if(vpRm$verbose){print("proc lc, isa")}
 	if( !file.exists(vpRm$dirs$lc_proc_dir) |(overwrite_procd_data&file.exists(vpRm$dirs$lc_proc_dir))){
 		####### process landcover
 		lc <- terra::rast(vpRm$dirs$lc_dir)
 		### TODO: switch to .tif
-		lc_proc <- terra::project(lc,plate, method = "near")
+		lc_proc <- terra::project(lc,plate, method = "mode")
 		vpRm::Save_Rast(lc_proc, vpRm$dirs$lc_proc_dir)
 	}#end if(vpRm$verbose){print("proc lc, isa")}
 	####### process isa
@@ -76,7 +76,7 @@ proc_drivers <- function(
 			evi_extrema_proc <- terra::project(evi_extrema,plate, method = "cubicspline", filename = evi_extrema_proc_filename, overwrite = T)
 			#                 evi_extrema_proc <- evi_extrema_proc*evi_scale_factor
 			rm(evi_extrema, evi_extrema_proc)
-		}#end if( !file.exists(evi_extrema_proc_filename ) |(overwrite_procd_data&file.exists(evi_extrema_proc_filename ))){
+		}#end if( !file.exists(evi_extrema_proc_filename ) |(overwrite_procd_data&file.exists(evi_extrema_proc_filename )))
 
 		####### process green
 		green_proc_filename <- file.path(vpRm$dirs$green_proc_dir, paste0(yy, ".tif"))
@@ -84,7 +84,7 @@ proc_drivers <- function(
 			GREEN <- terra::rast(grep(vpRm$dirs$green_dir, pattern = yy, value = T))
 			green_proc <- terra::project(GREEN,plate, method = "cubicspline", filename = green_proc_filename, overwrite = T)
 			rm(GREEN, green_proc)
-		}#end if( !file.exists(evi_extrema_proc_filename ) |(overwrite_procd_data&file.exists(evi_extrema_proc_filename ))){
+		}#end if( !file.exists(evi_extrema_proc_filename ) |(overwrite_procd_data&file.exists(evi_extrema_proc_filename )))
 		gc()
 		return(NULL)
 	}) #end lapply yearly
