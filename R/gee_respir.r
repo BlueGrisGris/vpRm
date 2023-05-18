@@ -1,7 +1,9 @@
+### TODO: SAVE TIME to the output
+
 ## Mahadevan et al 2008
 gee <- function(lambda, Tscalar, Pscalar, Wscalar, EVI, PAR, PAR0){
-
-	gee <- (lambda * Tscalar * Pscalar * Wscalar * EVI * PAR )/ ( 1+(PAR/PAR0) )
+	gee <- (lambda * Tscalar * Pscalar * Wscalar * EVI ) * (PAR / (1+(PAR/PAR0)) )
+#         gee <- (lambda * EVI ) * (PAR / (1+(PAR/PAR0)) )
 
 	if(methods::is(gee ,"SpatRaster")){
 		names(gee) <- "gee"
@@ -11,7 +13,15 @@ gee <- function(lambda, Tscalar, Pscalar, Wscalar, EVI, PAR, PAR0){
 	return(gee)
 }#end func gee
 
+### mahadevan 2008
+# if(F){
+respir <- function(tair, ALPHA, BETA, lc, ISA, evi, tlow){
+	return(ALPHA * tair + BETA)
+}#end func
+# }#end if F
+
 ### Winbourne et al 2021
+if(F){
 respir <- function(tair, ALPHA, BETA, lc, ISA, evi, tlow){
 	### soil respiration persists into cold winter when soils are insulated
 	### Mahadevan 2008
@@ -30,3 +40,4 @@ respir <- function(tair, ALPHA, BETA, lc, ISA, evi, tlow){
 	
 	return(respir)
 }#end func respir
+}#edn
