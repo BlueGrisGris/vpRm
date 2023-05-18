@@ -96,9 +96,9 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 	EVImax <- EVIextrema[[1]]
 	EVImin <- EVIextrema[[2]]
 
-	Pscalar <- Pscalar(EVI, EVImax, EVImin) 
-	### phenology of evergreens is always max
-	Pscalar[sum(LC == evergreen_lc)] <- 1
+	Pscalar <- Pscalar(EVI, EVImax, EVImin, tt)
+	### phenology of evergreens is always max?
+	#         Pscalar[sum(LC == evergreen_lc)] <- 1
 
 	### simplified Wscalar
 	Wscalar <- Wscalar("fake_lswi", "fake_lswi", tt)
@@ -158,10 +158,10 @@ parallel::mclapply(1:length(vpRm$domain$time), mc.cores = n_cores, function(tt_i
 	terra::units(NEE) <- "micromol CO2 m-2 s-1"
 
 	### save output CO2 flux fields
-	lapply(list(NEE, GEE, RESPIR), function(ff){
-		
+	### TODO: idk what up with this...
+	lapply(list(NEE), function(ff){
+		       #         lapply(list(NEE, GEE, RESPIR), function(ff){
 		filename <- vpRm$dirs[[paste(names(ff), "files_dir", sep = "_")]][tt_idx]
-		      	 
 		terra::writeCDF(
 				ff
 				, filename = filename

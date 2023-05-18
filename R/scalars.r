@@ -1,12 +1,35 @@
 
-
+### seems to be 25% too low for DBF?
+if(F){
 ### Modified Pscalar from Winbourne et al 2021
-Pscalar <- function(EVI, EVImax, EVImin){
+Pscalar <- function(EVI, EVImax, EVImin, tt){
 	Pscalar <- (EVI - EVImin)/(EVImax-EVImin)
 	Pscalar[Pscalar < 0] <- 0 
 	Pscalar[Pscalar > 1] <- 1 
 	return(Pscalar )
 }#end func Pscalar
+}#endd if F
+
+# if(F){
+Pscalar <- function(EVI, EVImax, EVImin, tt){
+	mahadevan_monthly_Pscalar <- c(
+		0.73
+		, 0.73
+		, 0.66
+		, 0.55
+		, 0.75
+		, 0.99
+		, 0.99
+		, 0.99
+		, 0.95
+		, 0.60
+		, 0.57
+		, 0.58
+	)#end c
+	Pscalar <- mahadevan_monthly_Pscalar[lubridate::month(tt)]
+	return(Pscalar)
+}#end function Pscalar
+# }#end if f
 
 ### simplified Tscalar for forests.  avg value from mahadevan 2008
 Tscalar <- function(Tair, Tmin, Tmax){
